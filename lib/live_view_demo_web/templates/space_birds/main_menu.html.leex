@@ -1,0 +1,7 @@
+<div>Enter your nickname</div>
+<input type="text" name="player_name"></input>
+<%= if @player == nil do %>
+  <button phx-click="new_player">New Player</button>
+<% else %>
+  <button phx-click="start_game">Go Go Go</button>
+<% end %>

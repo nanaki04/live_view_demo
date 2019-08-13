@@ -1,0 +1,32 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "camera": {
+    "actor": 0,
+    "type": "camera",
+    "component_data": {
+      "owner": 0,
+      "render_data": []
+    }
+  },
+  "follow": {
+    "actor": 0,
+    "type": "follow",
+    "component_data": {
+      "target": 0
+    }
+  }
+}

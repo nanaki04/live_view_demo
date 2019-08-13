@@ -1,0 +1,47 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 100,
+        "height": 100
+      }
+    }
+  },
+  "paint": {
+    "actor": 0,
+    "type": "paint",
+    "component_data": {
+      "color": {
+        "r": 100,
+        "g": 100,
+        "b": 255,
+        "a": 255
+      }
+    }
+  },
+  "movement_controller": {
+    "actor": 0,
+    "type": "movement_controller",
+    "component_data": {
+      "owner": 0,
+      "top_speed": 400,
+      "drag": 2,
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": 100,
+      "direction": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  }
+}

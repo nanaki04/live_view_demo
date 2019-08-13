@@ -1,0 +1,30 @@
+<div id="event_listener" phx-keyup="key_up" phx-keydown="key_down" phx-target="window"></div>
+<%= for %{type: :transform} = data <- @render_data do %>
+  <div style="position: fixed;
+              left: <%= data.left %>px;
+              top: <%= data.top %>px;
+              width: <%= data.width %>px;
+              height: <%= data.height %>px;
+              transform: rotate(<%= data.rotation %>deg);
+              <%= if Map.has_key?(data, :background) do %>
+                background: <%= data.background %>;
+              <% end %>
+              <%= if Map.has_key?(data, :texture) do %>
+                background-image: url(<%= Routes.static_path(LiveViewDemoWeb.Endpoint, data.texture) %>);
+              <% end %>
+              "></div>
+<% end %>
+<%= for %{type: :grid} = data <- @render_data do %>
+  <%= for x <- 0..(data.columns - 1),
+          y <- 0..(data.rows - 1)
+      do %>
+        <div phx-click="grid"
+             phx-value="<%= "#{x}_#{y}" %>"
+             style="position: fixed;
+                    left: <%= x * data.width %>px;
+                    top: <%= y * data.height %>px;
+                    width: <%= data.width %>px;
+                    height: <%= data.height %>px;
+                    "></div>
+  <% end %>
+<% end %>

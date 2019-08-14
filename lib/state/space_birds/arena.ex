@@ -92,6 +92,13 @@ defmodule SpaceBirds.State.Arena do
 
     fighter_id = arena.last_actor_id + 1
     fighter = put_in(fighter.movement_controller.component_data.owner, player.id)
+    fighter = put_in(fighter.arsenal.component_data.owner, {:some, player.id})
+    fighter = update_in(fighter.arsenal.component_data.weapons, fn weapons ->
+      Enum.reduce(weapons, %{}, fn weapon, weapons ->
+        Map.put(weapons, weapon.weapon_slot, %{weapon | actor: fighter_id})
+      end)
+    end)
+
     {:ok, arena} = add_actor(arena, fighter)
 
     camera = put_in(camera.camera.component_data.owner, player.id)

@@ -2,6 +2,9 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   use Phoenix.LiveView
   alias SpaceBirds.State.Players
   alias SpaceBirds.Actions.Action
+  alias SpaceBirds.Actions.SwapWeapon
+  alias SpaceBirds.Actions.FireWeapon
+  alias SpaceBirds.Logic.Position
 
   def render(%{state: %{location: :main_menu}} = assigns) do
     Phoenix.View.render(LiveViewDemoWeb.SpaceBirdsView, "main_menu.html", assigns)
@@ -43,7 +46,13 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   end
 
   def handle_event("grid", value, socket) do
-    IO.inspect(value)
+    position = String.split(value, "_")
+               |> Enum.map(&Integer.parse/1)
+               |> Enum.map(&elem(&1, 0))
+               |> Position.new
+
+    push_action(:fire_weapon, %FireWeapon{target: position}, socket)
+
     {:noreply, socket}
   end
 
@@ -65,6 +74,9 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "s" -> push_action(:move_down_start, socket)
       "d" -> push_action(:move_right_start, socket)
       "a" -> push_action(:move_left_start, socket)
+      "1" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 0}, socket)
+      "2" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 1}, socket)
+      "3" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 2}, socket)
       _ -> :ok
     end
 

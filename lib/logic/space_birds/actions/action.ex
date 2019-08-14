@@ -17,6 +17,9 @@ defmodule SpaceBirds.Actions.Action do
     | :move_left_stop
     | :move_right_start
     | :move_right_stop
+    | :select_weapon
+    | :deselect_weapon
+    | :fire_weapon
 
   @type payload :: term
 

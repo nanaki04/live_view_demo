@@ -6,6 +6,8 @@ defmodule SpaceBirds.Components.Camera do
   alias SpaceBirds.State.Arena
   use Component
 
+  @background_actor 1
+
   @type t :: %{
     owner: Players.player_id,
     render_data: String.t
@@ -18,8 +20,12 @@ defmodule SpaceBirds.Components.Camera do
   def run(component, arena) do
     with {:ok, camera_transform} <- Components.fetch(arena.components, :transform, component.actor),
          {:ok, transforms} <- Components.fetch(arena.components, :transform),
-         {:ok, player} <- Arena.find_player(arena, component.component_data.owner)
+         {:ok, player} <- Arena.find_player(arena, component.component_data.owner),
+         {:ok, background} <- Components.fetch(arena.components, :transform, @background_actor)
     do
+      camera_transform = cap_camera_position(camera_transform, player, background)
+      Arena.update_component(arena, camera_transform, fn _ -> {:ok, camera_transform} end)
+
       Enum.reduce(transforms, [render_grid(player)], fn {actor, transform}, render_data ->
         %{type: :transform}
         |> parse_transform(transform, camera_transform, player)
@@ -81,5 +87,24 @@ defmodule SpaceBirds.Components.Camera do
   defp parse_color(render_data, %{component_data: %{color: color}}) do
     render_data
     |> Map.put(:background, Color.to_hex(color))
+  end
+
+  defp cap_camera_position(transform, %{resolution: {res_x, res_y}}, %{component_data: %{size: field_size}}) do
+    min_x = -field_size.width / 2 + res_x / 2
+    max_x = field_size.width / 2 - res_x / 2
+    min_y = -field_size.height / 2 + res_y / 2
+    max_y = field_size.height / 2 - res_y / 2
+
+    update_in(transform.component_data.position, fn position ->
+      x = position.x
+          |> max(min_x)
+          |> min(max_x)
+
+      y = position.y
+          |> max(min_y)
+          |> min(max_y)
+
+      %{x: x, y: y}
+    end)
   end
 end

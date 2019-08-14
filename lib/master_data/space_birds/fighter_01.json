@@ -9,7 +9,7 @@
       },
       "rotation": 0,
       "size": {
-        "width": 100,
+        "width": 50,
         "height": 100
       }
     }
@@ -41,7 +41,27 @@
       "direction": {
         "x": 0,
         "y": 0
-      }
+      },
+      "bound_by_map": true
+    }
+  },
+  "arsenal": {
+    "actor": 0,
+    "type": "arsenal",
+    "component_data": {
+      "owner": 0,
+      "weapons": [
+        {
+          "actor": 0,
+          "weapon_slot": 0,
+          "weapon_name": "laser_beam",
+          "weapon_data": {
+            "projectile_path": "default",
+            "enhancements": []
+          }
+        }
+      ],
+      "selected_weapon": 0
     }
   }
 }

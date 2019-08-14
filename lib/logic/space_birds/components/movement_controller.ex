@@ -1,10 +1,13 @@
 defmodule SpaceBirds.Components.MovementController do
+  alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
   use Component
 
   @cross_speed_coefficient :math.sin(45 / (180 / :math.pi))
+
+  @background_actor 1
 
   @min_speed 10
 
@@ -14,7 +17,8 @@ defmodule SpaceBirds.Components.MovementController do
     drag: number,
     speed: %{x: number, y: number},
     acceleration: number,
-    direction: %{x: number, y: number}
+    direction: %{x: number, y: number},
+    bound_by_map: boolean
   }
 
   defstruct owner: 0,
@@ -22,7 +26,8 @@ defmodule SpaceBirds.Components.MovementController do
     drag: 1,
     speed: %{x: 0, y: 0},
     acceleration: 1,
-    direction: %{x: 0, y: 0}
+    direction: %{x: 0, y: 0},
+    bound_by_map: true
 
   defguardp is_cross_angle(v2) when :erlang.map_get(:x, v2) != 0
     and :erlang.map_get(:x, v2) != 0.0
@@ -81,7 +86,9 @@ defmodule SpaceBirds.Components.MovementController do
       transform = put_in(transform.component_data.rotation, direction_to_rotation(component.component_data.direction))
 
       speed = calculate_speed(component.component_data.speed)
-      position = v2_add(transform.component_data.position, v2_mul(speed, arena.delta_time))
+      {:ok, position} = v2_add(transform.component_data.position, v2_mul(speed, arena.delta_time))
+                        |> cap_map_bounderies(transform, component, arena)
+
       transform = put_in(transform.component_data.position, position)
 
       {:ok, transform}
@@ -93,14 +100,14 @@ defmodule SpaceBirds.Components.MovementController do
   end
 
   defp direction_to_rotation(%{x: 0, y: 0}), do: 0
-  defp direction_to_rotation(%{x: 0, y: 1}), do: 0
-  defp direction_to_rotation(%{x: 1, y: 1}), do: 45
+  defp direction_to_rotation(%{x: 0, y: -1}), do: 0
+  defp direction_to_rotation(%{x: 1, y: -1}), do: 45
   defp direction_to_rotation(%{x: 1, y: 0}), do: 90
-  defp direction_to_rotation(%{x: 1, y: -1}), do: 135
-  defp direction_to_rotation(%{x: 0, y: -1}), do: 180
-  defp direction_to_rotation(%{x: -1, y: -1}), do: 225
+  defp direction_to_rotation(%{x: 1, y: 1}), do: 135
+  defp direction_to_rotation(%{x: 0, y: 1}), do: 180
+  defp direction_to_rotation(%{x: -1, y: 1}), do: 225
   defp direction_to_rotation(%{x: -1, y: 0}), do: 270
-  defp direction_to_rotation(%{x: -1, y: 1}), do: 315
+  defp direction_to_rotation(%{x: -1, y: -1}), do: 315
 
   defp calculate_speed_offset(direction, acceleration) when is_cross_angle(direction) do
     v2_mul(direction, @cross_speed_coefficient * acceleration)
@@ -141,4 +148,29 @@ defmodule SpaceBirds.Components.MovementController do
     }
   end
 
+  defp cap_map_bounderies(position, _, %{component_data: %{bound_by_map: false}}, _) do
+    {:ok, position}
+  end
+
+  defp cap_map_bounderies(%{x: x, y: y}, transform, %{component_data: %{bound_by_map: true}}, arena) do
+    with {:ok, background_transform} <- Components.fetch(arena.components, :transform, @background_actor)
+    do
+      min_x = -background_transform.component_data.size.width / 2 + transform.component_data.size.width / 2
+      max_x = background_transform.component_data.size.width / 2 - transform.component_data.size.width / 2
+      min_y = -background_transform.component_data.size.height / 2 + transform.component_data.size.height / 2
+      max_y = background_transform.component_data.size.height / 2 - transform.component_data.size.height / 2
+
+      x = x
+          |> max(min_x)
+          |> min(max_x)
+
+      y = y
+          |> max(min_y)
+          |> min(max_y)
+
+      {:ok, %{x: x, y: y}}
+    else
+      error -> error
+    end
+  end
 end

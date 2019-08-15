@@ -15,7 +15,8 @@ defmodule LiveViewDemo.Application do
       # Starts a worker by calling: LiveViewDemo.Worker.start_link(arg)
       # {LiveViewDemo.Worker, arg},
       SpaceBirds.State.Players,
-      SpaceBirds.State.ArenaSupervisor
+      SpaceBirds.State.ArenaSupervisor,
+      {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,7 +1,16 @@
-<div>Enter your nickname</div>
-<input type="text" name="player_name"></input>
 <%= if @player == nil do %>
+  <div>Enter your nickname</div>
+  <input type="text" name="player_name"></input>
   <button phx-click="new_player">New Player</button>
 <% else %>
+  <div>Select a battle to join, or create a new one</div>
+  <form phx-change="select_battle">
+    <select name="battle_pulldown">
+      <option value="new">New Battle</option>
+      <%= for id <- @battle_list do %>
+        <option value=<%= id %> <%= if @selected_battle == id, do: "selected" %>><%= id %></option>
+      <% end %>
+    </select>
+  </form>
   <button phx-click="start_game">Go Go Go</button>
 <% end %>

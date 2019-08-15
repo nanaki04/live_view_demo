@@ -8,14 +8,14 @@ defmodule SpaceBirds.State.Arena do
   @fps 30
 
   @type t :: %{
-    id: {:global, String.t},
+    id: GenServer.name,
     components: Components.t,
     last_actor_id: Actor.t,
     players: [Players.player],
     actions: [term]
   }
 
-  defstruct id: {:global, ""},
+  defstruct id: {:via, Registry, {SpaceBirds.State.ArenaRegistry, ""}},
     components: %{},
     last_actor_id: 0,
     players: [],

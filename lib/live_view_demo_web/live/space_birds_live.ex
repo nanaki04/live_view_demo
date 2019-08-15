@@ -23,6 +23,8 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:state, %SpaceBirds.State.Application{})
     |> assign(:player, nil)
     |> assign(:render_data, [])
+    |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all())
+    |> assign(:selected_battle, "new")
     |> ok
   end
 
@@ -33,8 +35,13 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> noreply
   end
 
-  def handle_event("start_game", _, %{assigns: %{player: player, state: state}} = socket) do
-    {:ok, id} = SpaceBirds.State.ArenaSupervisor.start_child()
+  def handle_event("start_game", _, %{assigns: %{player: player, state: state, selected_battle: selected_battle}} = socket) do
+    {:ok, id} = if selected_battle == "new" do
+      SpaceBirds.State.ArenaSupervisor.start_child()
+    else
+      {:ok, {:via, Registry, {SpaceBirds.State.ArenaRegistry, selected_battle}}}
+    end
+
     {:ok, player} = Players.update(player.id, fn player -> Map.put(player, :battle_id, id) end)
     GenServer.cast(id, {:join, player})
 
@@ -81,6 +88,11 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     end
 
     {:noreply, socket}
+  end
+
+  def handle_event("select_battle", %{"battle_pulldown" => battle_id}, socket) do
+    assign(socket, :selected_battle, battle_id)
+    |> noreply
   end
 
   def handle_info({:render, render_data}, socket) do

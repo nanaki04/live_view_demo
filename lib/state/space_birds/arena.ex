@@ -168,7 +168,8 @@ defmodule SpaceBirds.State.Arena do
     |> Map.put(:frame_time, now)
   end
 
-  defp add_actor(arena, actor) do
+  @spec add_actor(t, %{term => term}) :: {:ok, t} | {:error, String.t}
+  def add_actor(arena, actor) do
     id = arena.last_actor_id + 1
     arena = %{arena | last_actor_id: id}
     Enum.reduce(actor, {:ok, arena}, fn
@@ -183,6 +184,13 @@ defmodule SpaceBirds.State.Arena do
         add_component(arena, component)
       _, error ->
         error
+    end)
+  end
+
+  @spec remove_actor(t, Actor.t) :: {:ok, t} | {:error, String.t}
+  def remove_actor(arena, actor) do
+    update_components(arena, fn components ->
+      Components.remove_components(components, actor)
     end)
   end
 end

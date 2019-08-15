@@ -12,11 +12,12 @@ defmodule SpaceBirds.Logic.Color do
     b: 0,
     a: 0
 
-  def to_hex(%{r: r, g: g, b: b, a: a}) do
+  def to_hex(%{r: r, g: g, b: b, a: _a}) do
+    # TODO handle transparancy
     "#"
-    <> Integer.to_string(r, 16)
-    <> Integer.to_string(g, 16)
-    <> Integer.to_string(b, 16)
+    <> String.pad_leading(Integer.to_string(r, 16), 2, "0")
+    <> String.pad_leading(Integer.to_string(g, 16), 2, "0")
+    <> String.pad_leading(Integer.to_string(b, 16), 2, "0")
   end
 
 end

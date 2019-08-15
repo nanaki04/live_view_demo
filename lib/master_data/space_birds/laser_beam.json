@@ -1,0 +1,46 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 10,
+        "height": 50
+      }
+    }
+  },
+  "paint": {
+    "actor": 0,
+    "type": "paint",
+    "component_data": {
+      "color": {
+        "r": 255,
+        "g": 0,
+        "b": 0,
+        "a": 255
+      }
+    }
+  },
+  "destination": {
+    "actor": 0,
+    "type": "destination",
+    "component_data": {
+      "target": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "lifetime": {
+    "actor": 0,
+    "type": "lifetime",
+    "component_data": {
+      "milliseconds": 1000
+    }
+  }
+}

@@ -32,6 +32,15 @@ defmodule SpaceBirds.Components.Components do
     |> ResultEx.return
   end
 
+  @spec remove_components(t, Actor.t) :: ResultEx.t
+  def remove_components(components, actor) do
+    Enum.map(components, fn {component_type, component_list} ->
+      {component_type, Map.delete(component_list, actor)}
+    end)
+    |> Enum.into(%{})
+    |> ResultEx.return
+  end
+
   @spec map(t, (Component.t -> {:ok, Component.t} | {:error, String.t})) :: ResultEx.t
   def map(components, iterator) do
     Map.keys(components)

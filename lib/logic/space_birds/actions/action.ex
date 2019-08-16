@@ -1,5 +1,6 @@
 defmodule SpaceBirds.Actions.Action do
   alias SpaceBirds.State.Players
+  alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Actor
 
   @behaviour Access
@@ -20,6 +21,7 @@ defmodule SpaceBirds.Actions.Action do
     | :select_weapon
     | :deselect_weapon
     | :fire_weapon
+    | :select_behaviour_node
 
   @type payload :: term
 
@@ -32,6 +34,23 @@ defmodule SpaceBirds.Actions.Action do
   defstruct sender: :system,
     name: :undefined,
     payload: %{}
+
+  @callback init(t, Arena.t) :: {:ok, t} | {:error, String.t}
+
+  def init(action, arena) do
+    module_name = action.name
+                  |> Atom.to_string
+                  |> String.split("_")
+                  |> Enum.map(&String.capitalize/1)
+                  |> Enum.join
+                  |> (& Module.concat(SpaceBirds.Actions, &1)).()
+
+    if function_exported?(module_name, :init, 2) do
+      apply(module_name, :init, [action, arena])
+    else
+      {:ok, action}
+    end
+  end
 
   @impl(Access)
   def fetch(component, key) do

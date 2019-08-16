@@ -3,9 +3,10 @@ defmodule SpaceBirds.Components.MovementController do
   alias SpaceBirds.Components.Component
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
+  alias SpaceBirds.Logic.Math
   use Component
 
-  @cross_speed_coefficient :math.sin(45 / (180 / :math.pi))
+  @cross_speed_coefficient Math.sin(45)
 
   @background_actor 1
 
@@ -71,7 +72,7 @@ defmodule SpaceBirds.Components.MovementController do
 
     speed_offset = calculate_speed_offset(
       component.component_data.direction,
-      component.component_data.acceleration
+      component.component_data.acceleration * arena.delta_time
     )
 
     component = update_in(component.component_data.speed, fn speed ->

@@ -45,7 +45,8 @@ defmodule LiveViewDemo.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:calendar, "~> 0.17.6"},
-      {:result_ex, "~> 0.1.0"}
+      {:result_ex, "~> 0.1.0"},
+      {:option_ex, "~> 0.2.0"}
     ]
   end
 

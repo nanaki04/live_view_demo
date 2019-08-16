@@ -42,5 +42,45 @@
     "component_data": {
       "milliseconds": 1000
     }
+  },
+  "movement_controller": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "top_speed": 2500,
+      "acceleration": 80000,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "drag": 1,
+      "bound_by_map": false
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "sequence",
+        "node_data": {
+          "children": [
+            {
+              "type": "move_forward",
+              "node_data": {
+                "distance": 2000,
+                "distance_left": 2000
+              }
+            }
+          ]
+        }
+      }
+    }
   }
 }

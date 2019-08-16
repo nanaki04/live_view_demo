@@ -3,6 +3,7 @@ defmodule SpaceBirds.State.Arena do
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Logic.Actor
   alias SpaceBirds.State.Players
+  alias SpaceBirds.Actions.Action
   use GenServer
 
   @fps 30
@@ -111,6 +112,7 @@ defmodule SpaceBirds.State.Arena do
   end
 
   def handle_cast({:push_action, action}, arena) do
+    {:ok, action} = Action.init(action, arena)
     arena = Map.put(arena, :actions, [action | arena.actions])
 
     {:noreply, arena}

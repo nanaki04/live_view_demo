@@ -37,7 +37,7 @@
         "x": 0,
         "y": 0
       },
-      "acceleration": 100,
+      "acceleration": 2000,
       "direction": {
         "x": 0,
         "y": 0

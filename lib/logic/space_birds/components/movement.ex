@@ -35,8 +35,6 @@ defmodule SpaceBirds.Components.Movement do
     with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor)
     do
       unit_vector = Vector2.from_rotation(transform.component_data.rotation)
-      # MEMO html is from top to bottom, so we have to invert the y axis
-      unit_vector = Vector2.new(unit_vector.x, -unit_vector.y)
 
       speed_offset = unit_vector
                      |> Vector2.mul(component.component_data.acceleration)

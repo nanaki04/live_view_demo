@@ -22,6 +22,7 @@ defmodule SpaceBirds.Actions.Action do
     | :deselect_weapon
     | :fire_weapon
     | :select_behaviour_node
+    | :collide
 
   @type payload :: term
 

@@ -19,13 +19,15 @@ defmodule SpaceBirds.Logic.Vector2 do
   def from_rotation(rotation) do
     new(
       Math.sin(rotation),
-      Math.sin(90 + rotation)
+      # MEMO html is from top to bottom, so we have to invert the y axis
+      -Math.sin(90 + rotation)
     )
   end
 
   @spec to_rotation(t) :: Rotation.t
   def to_rotation(v2) do
-    rem(round(Math.atan2(v2.x, v2.y)) + 360, 360)
+    # MEMO html is from top to bottom, so we have to invert the y axis
+    rem(round(Math.atan2(v2.x, -v2.y)) + 360, 360)
   end
 
   @spec mul(t, t | number) :: t

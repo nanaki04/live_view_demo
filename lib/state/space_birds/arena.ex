@@ -94,6 +94,7 @@ defmodule SpaceBirds.State.Arena do
     fighter_id = arena.last_actor_id + 1
     fighter = put_in(fighter.movement_controller.component_data.owner, player.id)
     fighter = put_in(fighter.arsenal.component_data.owner, {:some, player.id})
+    fighter = put_in(fighter.collider.component_data.owner, fighter_id)
     fighter = update_in(fighter.arsenal.component_data.weapons, fn weapons ->
       Enum.reduce(weapons, %{}, fn weapon, weapons ->
         Map.put(weapons, weapon.weapon_slot, %{weapon | actor: fighter_id})
@@ -144,6 +145,8 @@ defmodule SpaceBirds.State.Arena do
 
       send(player.pid, {:render, camera.component_data.render_data})
     end)
+
+    {:ok, arena} = SpaceBirds.Collision.Simulation.simulate(arena)
 
     arena = Map.put(arena, :actions, [])
 

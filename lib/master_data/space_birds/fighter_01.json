@@ -63,5 +63,14 @@
       ],
       "selected_weapon": 0
     }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "fighter",
+      "owner": 0,
+      "collides_with": []
+    }
   }
 }

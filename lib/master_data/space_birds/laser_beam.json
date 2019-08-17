@@ -82,5 +82,14 @@
         }
       }
     }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "projectile",
+      "owner": 0,
+      "collides_with": ["fighter"]
+    }
   }
 }

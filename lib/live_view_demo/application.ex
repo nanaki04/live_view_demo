@@ -16,7 +16,8 @@ defmodule LiveViewDemo.Application do
       # {LiveViewDemo.Worker, arg},
       SpaceBirds.State.Players,
       SpaceBirds.State.ArenaSupervisor,
-      {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry}
+      {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry},
+      {Task.Supervisor, name: SpaceBirds.TaskSupervisor.Collision}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

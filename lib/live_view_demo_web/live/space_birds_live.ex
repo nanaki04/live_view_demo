@@ -58,6 +58,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
                |> Enum.map(&elem(&1, 0))
                |> Position.new
 
+    IO.inspect({"push action", position})
     push_action(:fire_weapon, %FireWeapon{target: position}, socket)
 
     {:noreply, socket}

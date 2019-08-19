@@ -91,5 +91,14 @@
       "owner": 0,
       "collides_with": ["fighter"]
     }
+  },
+  "damage": {
+    "actor": 0,
+    "type": "damage",
+    "component_data": {
+      "damage": 20,
+      "on_hit_effect_path": "default",
+      "piercing": false
+    }
   }
 }

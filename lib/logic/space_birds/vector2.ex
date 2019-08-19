@@ -42,6 +42,15 @@ defmodule SpaceBirds.Logic.Vector2 do
     new(v2.x * x, v2.y * x)
   end
 
+  @spec div(t, t | number) :: t
+  def div(v2, %{x: x, y: y}) do
+    new(v2.x / x, v2.y / y)
+  end
+
+  def div(v2, x) when is_number(x) do
+    new(v2.x / x, v2.y / x)
+  end
+
   @spec add(t, t | number) :: t
   def add(v2, %{x: x, y: y}) do
     new(v2.x + x, v2.y + y)

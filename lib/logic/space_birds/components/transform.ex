@@ -18,6 +18,7 @@ defmodule SpaceBirds.Components.Transform do
     size: %Size{}
 
   def get_edges(transform) do
+    pos = transform.component_data.position
     rot = transform.component_data.rotation
     size = transform.component_data.size
 
@@ -37,6 +38,11 @@ defmodule SpaceBirds.Components.Transform do
     p2 = Vector2.mul(Vector2.from_rotation(Rotation.add(rot, rot2)), distance)
     p3 = Vector2.mul(Vector2.from_rotation(Rotation.add(rot, rot3)), distance)
     p4 = Vector2.mul(Vector2.from_rotation(Rotation.add(rot, rot4)), distance)
+
+    p1 = Vector2.add(p1, pos)
+    p2 = Vector2.add(p2, pos)
+    p3 = Vector2.add(p3, pos)
+    p4 = Vector2.add(p4, pos)
 
     [
       Edge.new(p1, p2),

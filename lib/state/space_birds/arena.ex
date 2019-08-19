@@ -13,7 +13,10 @@ defmodule SpaceBirds.State.Arena do
     components: Components.t,
     last_actor_id: Actor.t,
     players: [Players.player],
-    actions: [term]
+    actions: [term],
+    frame_time: number,
+    delta_time: number,
+    paused: boolean
   }
 
   defstruct id: {:via, Registry, {SpaceBirds.State.ArenaRegistry, ""}},
@@ -22,7 +25,8 @@ defmodule SpaceBirds.State.Arena do
     players: [],
     actions: [],
     frame_time: 0,
-    delta_time: 0
+    delta_time: 0,
+    paused: false
 
   def start_link([id: id]) do
     GenServer.start_link(__MODULE__, {id, :standard}, name: id)
@@ -81,6 +85,14 @@ defmodule SpaceBirds.State.Arena do
 
   @impl(GenServer)
   def handle_call(:inspect, _, state) do
+    {:reply, state, state}
+  end
+
+  def handle_call(:pause, _, state) do
+    state = Map.put(state, :paused, !state.paused)
+    if !state.paused do
+      Process.send_after(self(), :tick, max(round(1000 / @fps) - (System.system_time(:millisecond) - state.frame_time), 0))
+    end
     {:reply, state, state}
   end
 
@@ -150,7 +162,9 @@ defmodule SpaceBirds.State.Arena do
 
     arena = Map.put(arena, :actions, [])
 
-    Process.send_after(self(), :tick, max(round(1000 / @fps) - (System.system_time(:millisecond) - arena.frame_time), 0))
+    if !arena.paused do
+      Process.send_after(self(), :tick, max(round(1000 / @fps) - (System.system_time(:millisecond) - arena.frame_time), 0))
+    end
 
     {:noreply, arena}
   end

@@ -132,10 +132,10 @@ defmodule SpaceBirds.Components.Components do
       case Map.fetch(component_list, actor) do
         {:ok, component} ->
           updater.(component)
+          |> ResultEx.map(fn component -> Map.put(component_list, actor, component) end)
         :error ->
-          {:error, "actor `#{actor}' has no component '#{component_type}'"}
+          {:ok, component_list}
       end
-      |> ResultEx.map(fn component -> Map.put(component_list, actor, component) end)
     end)
   end
 

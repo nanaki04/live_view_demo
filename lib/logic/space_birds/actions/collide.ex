@@ -1,12 +1,13 @@
 defmodule SpaceBirds.Actions.Collide do
   alias SpaceBirds.Logic.Actor
+  alias SpaceBirds.Logic.Position
 
   @type t :: %{
-    actor: Actor.t,
-    target: Actor.t
+    target: Actor.t,
+    at: Position.t
   }
 
-  defstruct actor: 0,
-    target: 0
+  defstruct target: 0,
+    at: %{x: 0, y: 0}
 
 end

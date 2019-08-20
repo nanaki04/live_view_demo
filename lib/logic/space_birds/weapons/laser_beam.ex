@@ -3,9 +3,10 @@ defmodule SpaceBirds.Weapons.LaserBeam do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Logic.Vector2
+  alias SpaceBirds.MasterData
   use Weapon
 
-  @default_projectile_path "lib/master_data/space_birds/laser_beam.json"
+  @default_projectile_path "laser_beam"
 
   @type t :: %{
     projectile_path: String.t,
@@ -22,24 +23,23 @@ defmodule SpaceBirds.Weapons.LaserBeam do
       path -> path
     end
 
+    projectile_id = arena.last_actor_id + 1
+
     with {:ok, transform} <- Components.fetch(arena.components, :transform, weapon.actor),
-         {:ok, json} <- File.read(path),
-         {:ok, projectile} <- Jason.decode(json, keys: :atoms)
+         {:ok, projectile} <- MasterData.get_projectile(path, projectile_id, weapon.actor)
     do
       rotation = target_position
                  |> Vector2.sub(transform.component_data.position)
                  |> Vector2.to_rotation
 
-      projectile_id = arena.last_actor_id + 1
       projectile = put_in(projectile.transform.component_data.position, transform.component_data.position)
       projectile = put_in(projectile.transform.component_data.rotation, rotation)
       projectile = put_in(projectile.destination.component_data.target, {:some, target_position})
-      projectile = put_in(projectile.movement_controller.component_data.owner, {:actor, projectile_id})
-      projectile = put_in(projectile.collider.component_data.owner, weapon.actor)
 
       Arena.add_actor(arena, projectile)
     else
-      _error ->
+      error ->
+        IO.inspect(error)
         {:ok, arena}
     end
   end

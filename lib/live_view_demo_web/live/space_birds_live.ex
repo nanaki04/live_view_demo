@@ -5,6 +5,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   alias SpaceBirds.Actions.SwapWeapon
   alias SpaceBirds.Actions.FireWeapon
   alias SpaceBirds.Logic.Position
+  alias SpaceBirds.MasterData
 
   def render(%{state: %{location: :main_menu}} = assigns) do
     Phoenix.View.render(LiveViewDemoWeb.SpaceBirdsView, "main_menu.html", assigns)
@@ -25,6 +26,8 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:render_data, [])
     |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all())
     |> assign(:selected_battle, "new")
+    |> assign(:fighter_types, ResultEx.unwrap!(MasterData.get_fighter_types()))
+    |> assign(:selected_fighter_type, "hawk")
     |> ok
   end
 
@@ -35,7 +38,11 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> noreply
   end
 
-  def handle_event("start_game", _, %{assigns: %{player: player, state: state, selected_battle: selected_battle}} = socket) do
+  def handle_event(
+    "start_game",
+    _,
+    %{assigns: %{player: player, state: state, selected_battle: selected_battle, selected_fighter_type: fighter_type}} = socket
+  ) do
     {:ok, id} = if selected_battle == "new" do
       SpaceBirds.State.ArenaSupervisor.start_child()
     else
@@ -43,7 +50,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     end
 
     {:ok, player} = Players.update(player.id, fn player -> Map.put(player, :battle_id, id) end)
-    GenServer.cast(id, {:join, player})
+    GenServer.cast(id, {:join, player, fighter_type})
 
     socket
     |> assign(player: player)
@@ -93,6 +100,11 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
   def handle_event("select_battle", %{"battle_pulldown" => battle_id}, socket) do
     assign(socket, :selected_battle, battle_id)
+    |> noreply
+  end
+
+  def handle_event("select_fighter", %{"fighter_pulldown" => fighter_type}, socket) do
+    assign(socket, :selected_fighter_type, fighter_type)
     |> noreply
   end
 

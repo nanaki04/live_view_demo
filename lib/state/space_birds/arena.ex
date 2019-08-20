@@ -4,6 +4,7 @@ defmodule SpaceBirds.State.Arena do
   alias SpaceBirds.Logic.Actor
   alias SpaceBirds.State.Players
   alias SpaceBirds.Actions.Action
+  alias SpaceBirds.MasterData
   use GenServer
 
   @fps 30
@@ -72,10 +73,8 @@ defmodule SpaceBirds.State.Arena do
 
   @impl(GenServer)
   def init({id, arena_type}) do
-    {:ok, json} = File.read("lib/master_data/space_birds/#{arena_type}.json")
-    {:ok, arena} = Jason.decode(json, keys: :atoms)
-    {:ok, json} = File.read("lib/master_data/space_birds/background_#{arena_type}.json")
-    {:ok, background} = Jason.decode(json, keys: :atoms)
+    {:ok, arena} = MasterData.get_map(arena_type)
+    {:ok, background} = MasterData.get_background(arena_type)
     {:ok, arena} = add_actor(arena, background)
 
     Process.send_after(self(), :tick, 1000)
@@ -97,27 +96,11 @@ defmodule SpaceBirds.State.Arena do
   end
 
   @impl(GenServer)
-  def handle_cast({:join, player}, arena) do
-    {:ok, json} = File.read("lib/master_data/space_birds/fighter_01.json")
-    {:ok, fighter} = Jason.decode(json, keys: :atoms)
-    {:ok, json} = File.read("lib/master_data/space_birds/camera.json")
-    {:ok, camera} = Jason.decode(json, keys: :atoms)
-
+  def handle_cast({:join, player, fighter_type}, arena) do
     fighter_id = arena.last_actor_id + 1
-    fighter = put_in(fighter.movement_controller.component_data.owner, player.id)
-    fighter = put_in(fighter.arsenal.component_data.owner, {:some, player.id})
-    fighter = put_in(fighter.collider.component_data.owner, fighter_id)
-    fighter = update_in(fighter.arsenal.component_data.weapons, fn weapons ->
-      Enum.reduce(weapons, %{}, fn weapon, weapons ->
-        Map.put(weapons, weapon.weapon_slot, %{weapon | actor: fighter_id})
-      end)
-    end)
-    fighter = put_in(fighter.ui.component_data.owner, player.id)
-
+    {:ok, fighter} = MasterData.get_player_fighter(fighter_type, fighter_id, player.id)
+    {:ok, camera} = MasterData.get_camera(player.id, fighter_id)
     {:ok, arena} = add_actor(arena, fighter)
-
-    camera = put_in(camera.camera.component_data.owner, player.id)
-    camera = put_in(camera.follow.component_data.target, fighter_id)
     {:ok, arena} = add_actor(arena, camera)
 
     arena = Map.update(arena, :players, [], fn players -> [player | players] end)

@@ -4,6 +4,14 @@
     <input type="text" name="player_name"></input>
   </form>
 <% else %>
+  <div>Select your fighter model</div>
+  <form phx-change="select_fighter">
+    <select name="fighter_pulldown">
+    <%= for fighter_type <- @fighter_types do %>
+      <option value=<%= fighter_type %> <%= if @selected_fighter_type == fighter_type, do: "selected" %>><%= String.capitalize(fighter_type) %></option>
+    <% end %>
+    </select>
+  </form>
   <div>Select a battle to join, or create a new one</div>
   <form phx-change="select_battle">
     <select name="battle_pulldown">

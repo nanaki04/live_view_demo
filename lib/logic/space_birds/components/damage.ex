@@ -3,9 +3,10 @@ defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Actions.Actions
   alias SpaceBirds.State.Arena
+  alias SpaceBirds.MasterData
   use Component
 
-  @default_on_hit_effect_path "lib/master_data/space_birds/on_hit_effect_01.json"
+  @default_on_hit_effect_path "01"
 
   @type t :: %{
     damage: number,
@@ -29,13 +30,11 @@ defmodule SpaceBirds.Components.Damage do
           "none" ->
             {:ok, arena}
           "default" ->
-            {:ok, json} = File.read(@default_on_hit_effect_path)
-            {:ok, effect} = Jason.decode(json, keys: :atoms)
+            {:ok, effect} = MasterData.get_on_hit_effect(@default_on_hit_effect_path)
             effect = put_in(effect.transform.component_data.position, at)
             Arena.add_actor(arena, effect)
           path ->
-            {:ok, json} = File.read(path)
-            {:ok, effect} = Jason.decode(json, keys: :atoms)
+            {:ok, effect} = MasterData.get_on_hit_effect(path)
             effect = put_in(effect.transform.component_data.position, at)
             Arena.add_actor(arena, effect)
         end

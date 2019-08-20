@@ -1,6 +1,7 @@
 defmodule SpaceBirds.Components.Camera do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Ui
   alias SpaceBirds.Logic.Color
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
@@ -10,7 +11,7 @@ defmodule SpaceBirds.Components.Camera do
 
   @type t :: %{
     owner: Players.player_id,
-    render_data: String.t
+    render_data: term # TODO
   }
 
   defstruct owner: 0,
@@ -26,7 +27,8 @@ defmodule SpaceBirds.Components.Camera do
       camera_transform = cap_camera_position(camera_transform, player, background)
       Arena.update_component(arena, camera_transform, fn _ -> {:ok, camera_transform} end)
 
-      Enum.reduce(transforms, [render_grid(player)], fn {actor, transform}, render_data ->
+      render_data = [render_grid(player) | render_ui(component, arena)]
+      Enum.reduce(transforms, render_data, fn {actor, transform}, render_data ->
         %{type: :transform}
         |> parse_transform(transform, camera_transform, player)
         |> (fn render_data ->
@@ -58,11 +60,21 @@ defmodule SpaceBirds.Components.Camera do
   defp render_grid(%{resolution: {res_x, res_y}}) do
     %{
       type: :grid,
-      columns: round(res_x / 100),
-      rows: round(res_y / 100),
-      width: 100,
-      height: 100
+      columns: ceil(res_x / 50),
+      rows: ceil(res_y / 50),
+      width: 50,
+      height: 50
     }
+  end
+
+  defp render_ui(component, arena) do
+    with {:ok, ui_components} <- Components.fetch(arena.components, :ui),
+         {_, %{} = ui} <- Enum.find(ui_components, fn {_, ui} -> ui.component_data.owner == component.component_data.owner end) 
+    do
+      Ui.render(ui)
+    else
+      _ -> []
+    end
   end
 
   defp parse_transform(render_data, %{component_data: component_data}, %{component_data: %{position: cam_pos}}, player) do

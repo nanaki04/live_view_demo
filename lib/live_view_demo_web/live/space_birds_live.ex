@@ -28,8 +28,8 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> ok
   end
 
-  def handle_event("new_player", _, socket) do
-    {:ok, player} = Players.join(self())
+  def handle_event("new_player", %{"player_name" => player_name}, socket) do
+    {:ok, player} = Players.join(self(), player_name)
 
     assign(socket, player: player)
     |> noreply

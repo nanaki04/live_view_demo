@@ -30,3 +30,24 @@
               <% end %>
               "></div>
 <% end %>
+
+<%= for %{type: :ui} = data <- @render_data do %>
+  <%= unless data.hidden == true do %>
+    <div style="position: fixed;
+                left: <%= data.left %>px;
+                top: <%= data.top %>px;
+                width: <%= data.width %>px;
+                height: <%= data.height %>px;
+                pointer-events: none;
+                <%= if Map.has_key?(data, :background) do %>
+                  background: <%= data.background %>;
+                <% end %>
+                <%= if Map.has_key?(data, :texture) do %>
+                  background-image: url(<%= Routes.static_path(LiveViewDemoWeb.Endpoint, data.texture) %>);
+                <% end %>
+                <%= if Map.has_key?(data, :font_color) do %>
+                  color: <%= data.font_color %>;
+                <% end %>
+                "><%= data.text %></div>
+  <% end %>
+<% end %>

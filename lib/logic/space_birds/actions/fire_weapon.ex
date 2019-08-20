@@ -21,8 +21,8 @@ defmodule SpaceBirds.Actions.FireWeapon do
          {:ok, %{resolution: {res_x, res_y}}} <- Arena.find_player(arena, player_id)
     do
       zero_point = Vector2.sub(transform.component_data.position, %{x: res_x / 2, y: res_y / 2})
-      target = Vector2.mul(payload.target, 100)
-               |> Vector2.add(50)
+      target = Vector2.mul(payload.target, 50)
+               |> Vector2.add(25)
                |> Vector2.add(zero_point)
 
       action = put_in(action.payload.target, target)

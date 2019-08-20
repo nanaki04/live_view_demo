@@ -1,7 +1,8 @@
 <%= if @player == nil do %>
   <div>Enter your nickname</div>
-  <input type="text" name="player_name"></input>
-  <button phx-click="new_player">New Player</button>
+  <form phx-submit="new_player">
+    <input type="text" name="player_name"></input>
+  </form>
 <% else %>
   <div>Select a battle to join, or create a new one</div>
   <form phx-change="select_battle">

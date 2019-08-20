@@ -112,6 +112,7 @@ defmodule SpaceBirds.State.Arena do
         Map.put(weapons, weapon.weapon_slot, %{weapon | actor: fighter_id})
       end)
     end)
+    fighter = put_in(fighter.ui.component_data.owner, player.id)
 
     {:ok, arena} = add_actor(arena, fighter)
 
@@ -210,6 +211,21 @@ defmodule SpaceBirds.State.Arena do
   def remove_actor(arena, actor) do
     update_components(arena, fn components ->
       Components.remove_components(components, actor)
+    end)
+  end
+
+  @spec find_player_actor(t, Players.player_id) :: {:ok, Actor.t} | {:error, String.t}
+  def find_player_actor(arena, player_id) do
+    Components.fetch(arena.components, :ui)
+    |> ResultEx.map(fn ui_list ->
+      Enum.find(ui_list, fn
+        {_, %{component_data: %{owner: ^player_id}}} -> true 
+        _ -> false
+      end)
+    end)
+    |> ResultEx.bind(fn
+      {actor, _} -> {:ok, actor}
+      nil -> {:error, "No actor found for player #{player_id}!"}
     end)
   end
 end

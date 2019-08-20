@@ -1,7 +1,7 @@
 defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Stats
   alias SpaceBirds.Actions.Actions
-  #alias SpaceBirds.Logic.Actor
   alias SpaceBirds.State.Arena
   use Component
 
@@ -23,7 +23,8 @@ defmodule SpaceBirds.Components.Damage do
     |> Actions.filter_by_action_name(:collide)
     |> Enum.reverse
     |> (fn
-      [%{payload: %{target: _target, at: at}} | _] ->
+      [%{payload: %{target: target, at: at}} | _] ->
+        # play on hit effect
         {:ok, arena} = case component.component_data.on_hit_effect_path do
           "none" ->
             {:ok, arena}
@@ -39,8 +40,12 @@ defmodule SpaceBirds.Components.Damage do
             Arena.add_actor(arena, effect)
         end
 
-        # TODO deal damage to target
+        # deal damage to target
+        {:ok, arena} = Arena.update_component(arena, :stats, target, fn stats ->
+          Stats.receive_damage(stats, component, arena)
+        end)
 
+        # destroy projectile
         if !component.component_data.piercing do
           Arena.remove_actor(arena, component.actor)
         else

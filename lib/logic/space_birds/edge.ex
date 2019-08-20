@@ -39,7 +39,6 @@ defmodule SpaceBirds.Logic.Edge do
     case {m(edge1), b(edge1), m(edge2), b(edge2)} do
       {:infinity, :invalid, :infinity, :invalid} ->
         if edge1.a.x == edge2.a.x && (point_on_vertical_line?(edge1, edge2.a) || point_on_vertical_line?(edge1, edge2.b)) do
-          IO.inspect({edge1, edge2}, label: :straight_lines)
           edge1.a
           |> Vector2.add(edge1.b)
           |> Vector2.add(edge2.a)

@@ -7,6 +7,7 @@ defmodule SpaceBirds.State.Players do
 
   @type player :: %{
     id: player_id,
+    name: String.t,
     battle_id: battle_id,
     pid: pid | nil,
     resolution: {number, number}
@@ -15,16 +16,17 @@ defmodule SpaceBirds.State.Players do
   @type t :: {player_id, %{player_id => player}}
 
   defstruct id: 0,
+    name: "",
     battle_id: 0,
     pid: nil,
-    resolution: {1280, 960}
+    resolution: {1024, 768}
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, {0, %{}}, name: __MODULE__)
   end
 
-  def join(pid) do
-    GenServer.call(__MODULE__, {:join, pid})
+  def join(pid, name) do
+    GenServer.call(__MODULE__, {:join, pid, name})
   end
 
   def find(id) do
@@ -41,9 +43,9 @@ defmodule SpaceBirds.State.Players do
   end
 
   @impl(GenServer)
-  def handle_call({:join, pid}, _, {last_id, players}) do
+  def handle_call({:join, pid, name}, _, {last_id, players}) do
     id = last_id + 1
-    player = %__MODULE__{id: id, pid: pid}
+    player = %__MODULE__{id: id, pid: pid, name: name}
     players = Map.put(players, id, player)
 
     {:reply, {:ok, player}, {id, players}}

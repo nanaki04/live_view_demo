@@ -9,8 +9,8 @@
       },
       "rotation": 0,
       "size": {
-        "width": 10,
-        "height": 50
+        "width": 20,
+        "height": 20
       }
     }
   },
@@ -19,8 +19,8 @@
     "type": "paint",
     "component_data": {
       "color": {
-        "r": 255,
-        "g": 0,
+        "r": 0,
+        "g": 255,
         "b": 0,
         "a": 255
       }
@@ -93,9 +93,9 @@
     "actor": 0,
     "type": "damage",
     "component_data": {
-      "damage": 20,
+      "damage": 15,
       "on_hit_effect_paths": ["default"],
-      "buff_debuff_paths": [],
+      "buff_debuff_paths": ["slow"],
       "piercing": false
     }
   },
@@ -112,8 +112,8 @@
       "energy_regeneration": 0,
       "power": 0,
       "armor": 0,
-      "top_speed": 2500,
-      "acceleration": 80000,
+      "top_speed": 2000,
+      "acceleration": 60000,
       "drag": 1
     }
   }

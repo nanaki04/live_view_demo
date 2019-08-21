@@ -1,6 +1,7 @@
 defmodule SpaceBirds.Components.MovementController do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Stats
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Math
@@ -70,16 +71,18 @@ defmodule SpaceBirds.Components.MovementController do
         component
     end)
 
+    {:ok, %{component_data: readonly_stats}} = Stats.get_readonly(arena, component.actor)
+
     speed_offset = calculate_speed_offset(
       component.component_data.direction,
-      component.component_data.acceleration * arena.delta_time
+      readonly_stats.acceleration * arena.delta_time
     )
 
     component = update_in(component.component_data.speed, fn speed ->
       speed
       |> v2_add(speed_offset)
-      |> apply_drag(component.component_data.drag)
-      |> cap_top_speed(component.component_data.top_speed)
+      |> apply_drag(readonly_stats.drag)
+      |> cap_top_speed(readonly_stats.top_speed)
       |> discard_minimal_speed
     end)
 

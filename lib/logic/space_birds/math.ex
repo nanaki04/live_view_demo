@@ -5,6 +5,11 @@ defmodule SpaceBirds.Logic.Math do
     :math.sin(n / (180 / :math.pi))
   end
 
+  @spec cos(number) :: number
+  def cos(n) do
+    :math.cos(n / (180 / :math.pi))
+  end
+
   @spec asin(number) :: number
   def asin(n) do
     :math.asin(n) * (180 / :math.pi)

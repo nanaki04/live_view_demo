@@ -1,6 +1,7 @@
 defmodule SpaceBirds.Components.Movement do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Stats
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Vector2
   use Component
@@ -32,19 +33,20 @@ defmodule SpaceBirds.Components.Movement do
   def move_forward(component, arena, distance_limit \\ :unlimited) do
     distance = 0
 
-    with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor)
+    with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
+         {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, component.actor)
     do
       unit_vector = Vector2.from_rotation(transform.component_data.rotation)
 
       speed_offset = unit_vector
-                     |> Vector2.mul(component.component_data.acceleration)
+                     |> Vector2.mul(readonly_stats.acceleration)
                      |> Vector2.mul(arena.delta_time)
 
       component = update_in(component.component_data.speed, fn speed ->
         speed
         |> Vector2.add(speed_offset)
-        |> apply_drag(component.component_data.drag)
-        |> cap_top_speed(component.component_data.top_speed, unit_vector)
+        |> apply_drag(readonly_stats.drag)
+        |> cap_top_speed(readonly_stats.top_speed, unit_vector)
         |> discard_minimal_speed
       end)
 

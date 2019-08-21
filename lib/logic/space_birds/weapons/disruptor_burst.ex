@@ -1,4 +1,4 @@
-defmodule SpaceBirds.Weapons.LaserBeam do
+defmodule SpaceBirds.Weapons.DisruptorBurst do
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
@@ -6,7 +6,7 @@ defmodule SpaceBirds.Weapons.LaserBeam do
   alias SpaceBirds.MasterData
   use Weapon
 
-  @default_projectile_path "laser_beam"
+  @default_projectile_path "disruptor_burst"
 
   @type t :: %{
     projectile_path: String.t,

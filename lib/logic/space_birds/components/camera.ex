@@ -25,7 +25,7 @@ defmodule SpaceBirds.Components.Camera do
          {:ok, background} <- Components.fetch(arena.components, :transform, @background_actor)
     do
       camera_transform = cap_camera_position(camera_transform, player, background)
-      Arena.update_component(arena, camera_transform, fn _ -> {:ok, camera_transform} end)
+      {:ok, arena} = Arena.update_component(arena, camera_transform, fn _ -> {:ok, camera_transform} end)
 
       render_data = [render_grid(player) | render_ui(component, arena)]
       Enum.reduce(transforms, render_data, fn {actor, transform}, render_data ->

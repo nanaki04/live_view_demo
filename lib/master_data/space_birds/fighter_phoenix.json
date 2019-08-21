@@ -31,13 +31,10 @@
     "type": "movement_controller",
     "component_data": {
       "owner": 0,
-      "top_speed": 400,
-      "drag": 2,
       "speed": {
         "x": 0,
         "y": 0
       },
-      "acceleration": 2000,
       "direction": {
         "x": 0,
         "y": 0
@@ -181,6 +178,64 @@
                 "children": [
 
                 ]
+              },
+              {
+                "type": "stats_panel",
+                "position": {
+                  "x": 10,
+                  "y": 230
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 480,
+                  "height": 100
+                },
+                "color": {
+                  "r": 10,
+                  "g": 10,
+                  "b": 10,
+                  "a": 255
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {
+                  "other_player_index": 1
+                },
+                "children": [
+
+                ]
+              },
+              {
+                "type": "stats_panel",
+                "position": {
+                  "x": 10,
+                  "y": 340
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 480,
+                  "height": 100
+                },
+                "color": {
+                  "r": 10,
+                  "g": 10,
+                  "b": 10,
+                  "a": 255
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {
+                  "other_player_index": 2
+                },
+                "children": [
+
+                ]
               }
             ]
           },
@@ -215,6 +270,15 @@
       }
     }
   },
+  "buff_debuff_stack": {
+    "actor": 0,
+    "type": "buff_debuff_stack",
+    "component_data": {
+      "buff_debuffs": {
+        "last_id": 0
+      }
+    }
+  },
   "stats": {
     "actor": 0,
     "type": "stats",
@@ -227,7 +291,10 @@
       "energy": 100,
       "energy_regeneration": 1,
       "power": 10,
-      "armor": 1
+      "armor": 1,
+      "top_speed": 350,
+      "drag": 3,
+      "acceleration": 1500
     }
   }
 }

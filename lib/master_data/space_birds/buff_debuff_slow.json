@@ -1,0 +1,23 @@
+{
+  "id": 0,
+  "type": "slow",
+  "time": 3000,
+  "time_remaining": 3000,
+  "effect_type": "none",
+  "icon_path": "white",
+  "buff_data": {},
+  "debuff_data": {
+    "acceleration_decrease": {
+      "from": 750,
+      "to": 0
+    },
+    "top_speed_decrease": {
+      "from": 150,
+      "to": 0
+    },
+    "drag_increase": {
+      "from": 1.5,
+      "to": 0
+    }
+  }
+}

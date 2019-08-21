@@ -4,6 +4,7 @@ defmodule SpaceBirds.UI.MyStatsPanel do
   alias SpaceBirds.Logic.Color
   alias SpaceBirds.Components.Components
   alias SpaceBirds.UI.Gauge
+  alias SpaceBirds.UI.BuffDebuffPanel
   use SpaceBirds.UI.Node
 
   @impl(Node)
@@ -15,6 +16,7 @@ defmodule SpaceBirds.UI.MyStatsPanel do
     end)
 
     {:ok, stats} = Components.fetch(arena.components, :stats, component.actor)
+    {:ok, buff_debuff_stack} = Components.fetch(arena.components, :buff_debuff_stack, component.actor)
 
     node = put_in(node.children, [
       %Node{
@@ -63,8 +65,16 @@ defmodule SpaceBirds.UI.MyStatsPanel do
           min_value: stats.component_data.energy,
           border: 2
         }
+      },
+      %Node{
+        type: "buff_debuff_panel",
+        position: %Position{x: 10, y: 64},
+        size: %Size{width: 100, height: 12},
+        color: %Color{r: 0, g: 0, b: 0, a: 0},
+        node_data: %BuffDebuffPanel{
+          buff_debuff_stack: buff_debuff_stack.component_data
+        }
       }
-
     ])
 
     Node.run_children(node, component, arena)

@@ -5,6 +5,7 @@ defmodule SpaceBirds.UI.StatsPanel do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.State.Arena
   alias SpaceBirds.UI.Gauge
+  alias SpaceBirds.UI.BuffDebuffPanel
   use SpaceBirds.UI.Node
 
   @type t :: %{
@@ -22,7 +23,8 @@ defmodule SpaceBirds.UI.StatsPanel do
     end)
 
     with %{id: player_id} = player <- Enum.at(players, node.node_data.other_player_index),
-         {:ok, actor} <- Arena.find_player_actor(arena, player_id)
+         {:ok, actor} <- Arena.find_player_actor(arena, player_id),
+         {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, actor)
     do
       {:ok, stats} = Components.fetch(arena.components, :stats, actor)
 
@@ -74,6 +76,15 @@ defmodule SpaceBirds.UI.StatsPanel do
             max_value: 100,
             min_value: stats.component_data.energy,
             border: 2
+          }
+        },
+        %Node{
+          type: "buff_debuff_panel",
+          position: %Position{x: 10, y: 64},
+          size: %Size{width: 100, height: 12},
+          color: %Color{r: 0, g: 0, b: 0, a: 0},
+          node_data: %BuffDebuffPanel{
+            buff_debuff_stack: buff_debuff_stack.component_data
           }
         }
 

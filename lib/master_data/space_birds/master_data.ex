@@ -14,6 +14,8 @@ defmodule SpaceBirds.MasterData do
 
   @type on_hit_effect_type :: String.t
 
+  @type buff_debuff_type :: String.t
+
   @spec get_fighter_types() :: [fighter_type]
   def get_fighter_types() do
     with {:ok, json} <- File.read("#{@base_path}fighter_types.json"),
@@ -119,6 +121,18 @@ defmodule SpaceBirds.MasterData do
          {:ok, on_hit_effect} <- Jason.decode(json, keys: :atoms)
     do
       {:ok, on_hit_effect}
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_buff_debuff(buff_debuff_type) :: {:ok, BuffDebuff.t} | {:error, String.t}
+  def get_buff_debuff(buff_debuff_type) do
+    with {:ok, json} <- File.read("#{@base_path}buff_debuff_#{buff_debuff_type}.json"),
+         {:ok, buff_debuff} <- Jason.decode(json, keys: :atoms)
+    do
+      {:ok, buff_debuff}
     else
       error ->
         error

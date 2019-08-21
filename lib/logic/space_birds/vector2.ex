@@ -20,7 +20,7 @@ defmodule SpaceBirds.Logic.Vector2 do
     new(
       Math.sin(rotation),
       # MEMO html is from top to bottom, so we have to invert the y axis
-      -Math.sin(90 + rotation)
+      -Math.cos(rotation)
     )
   end
 

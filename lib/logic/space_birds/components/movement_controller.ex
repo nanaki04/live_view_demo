@@ -87,7 +87,10 @@ defmodule SpaceBirds.Components.MovementController do
     end)
 
     {:ok, arena} = Arena.update_component(arena, :transform, component.actor, fn transform ->
-      transform = put_in(transform.component_data.rotation, direction_to_rotation(component.component_data.direction))
+      transform = put_in(
+        transform.component_data.rotation,
+        direction_to_rotation(component.component_data.direction, transform.component_data.rotation)
+      )
 
       speed = calculate_speed(component.component_data.speed)
       {:ok, position} = v2_add(transform.component_data.position, v2_mul(speed, arena.delta_time))
@@ -103,15 +106,15 @@ defmodule SpaceBirds.Components.MovementController do
     {:ok, arena}
   end
 
-  defp direction_to_rotation(%{x: 0, y: 0}), do: 0
-  defp direction_to_rotation(%{x: 0, y: -1}), do: 0
-  defp direction_to_rotation(%{x: 1, y: -1}), do: 45
-  defp direction_to_rotation(%{x: 1, y: 0}), do: 90
-  defp direction_to_rotation(%{x: 1, y: 1}), do: 135
-  defp direction_to_rotation(%{x: 0, y: 1}), do: 180
-  defp direction_to_rotation(%{x: -1, y: 1}), do: 225
-  defp direction_to_rotation(%{x: -1, y: 0}), do: 270
-  defp direction_to_rotation(%{x: -1, y: -1}), do: 315
+  defp direction_to_rotation(%{x: 0, y: 0}, rotation), do: rotation
+  defp direction_to_rotation(%{x: 0, y: -1}, _), do: 0
+  defp direction_to_rotation(%{x: 1, y: -1}, _), do: 45
+  defp direction_to_rotation(%{x: 1, y: 0}, _), do: 90
+  defp direction_to_rotation(%{x: 1, y: 1}, _), do: 135
+  defp direction_to_rotation(%{x: 0, y: 1}, _), do: 180
+  defp direction_to_rotation(%{x: -1, y: 1}, _), do: 225
+  defp direction_to_rotation(%{x: -1, y: 0}, _), do: 270
+  defp direction_to_rotation(%{x: -1, y: -1}, _), do: 315
 
   defp calculate_speed_offset(direction, acceleration) when is_cross_angle(direction) do
     v2_mul(direction, @cross_speed_coefficient * acceleration)

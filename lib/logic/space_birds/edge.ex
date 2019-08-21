@@ -108,6 +108,32 @@ defmodule SpaceBirds.Logic.Edge do
     end
   end
 
+  def distance(%{a: %{x: x1, y: y1}, b: %{x: x2, y: y2}}) do
+    Vector2.distance(%{x: x2 - x1, y: y2 - y1})
+  end
+
+  def to_rotation(%{a: %{x: x1, y: y1}, b: %{x: x2, y: y2}}) do
+    Vector2.to_rotation(%{x: x2 - x1, y: y2 - y1})
+  end
+
+  def rotate(%{a: a} = edge, rotation) do
+    current_rotation = to_rotation(edge)
+    total_rotation = rem(Kernel.round(current_rotation + rotation) + 360, 360)
+    unit_vector = Vector2.from_rotation(total_rotation)
+    distance = distance(edge)
+    b = Vector2.mul(unit_vector, distance)
+        |> Vector2.add(a)
+
+    %{a: a, b: b}
+  end
+
+  def is_starboard?(edge, point) do
+    rotation = to_rotation(edge)
+    vertical = rotate(edge, -rotation)
+    %{b: rotated_point} = rotate(%{a: edge.a, b: point}, -rotation)
+    point_on_vertical_line?(vertical, rotated_point) && rotated_point.x >= edge.a.x
+  end
+
   defp point_on_vertical_line?(vertical_line, point) when is_number(point) do
     point_on_vertical_line?(vertical_line, %{x: 0, y: point})
   end

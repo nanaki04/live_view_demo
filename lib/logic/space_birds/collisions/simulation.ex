@@ -24,18 +24,18 @@ defmodule SpaceBirds.Collision.Simulation do
     {:ok, arena}
   end
 
-  # TODO check if object is encompassed by other object
   def test_collision({collider, transform}, colliders_and_transforms, arena_pid) do
     colliders_and_transforms
+    |> Enum.filter(fn {target_collider, _} -> target_collider != collider end)
     |> Enum.filter(fn {target_collider, _} -> is_collider_target?(collider, target_collider) end)
     |> Enum.map(fn {_, target_transform} ->
-      Enum.reduce(Transform.get_edges(transform), :none, fn
-        edge, :none ->
-          Enum.reduce(Transform.get_edges(target_transform), :none, fn
-            target_edge, :none ->
-              Edge.intersects_at(edge, target_edge)
-            _, intersection ->
-              intersection
+      Enum.reduce(Transform.get_vertices(transform), :none, fn
+        point, :none ->
+          Enum.reduce(Transform.get_edges(target_transform), {:some, point}, fn
+            _, :none ->
+              :none
+            target_edge, some_point ->
+              if Edge.is_starboard?(target_edge, point), do: some_point, else: :none
           end)
           |> OptionEx.map(fn intersection ->
             %{

@@ -18,7 +18,8 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/stars_01.png"
+      "path": "/images/stars_01.png",
+      "opacity": 255
     }
   }
 }

@@ -197,6 +197,16 @@ defmodule SpaceBirds.State.Arena do
     end)
   end
 
+  @spec remove_component(t, Component.t) :: {:ok, t} | {:error, String.t}
+  def remove_component(arena, component) do
+    update_components(arena, & Components.remove_component(&1, component))
+  end
+
+  @spec remove_component(t, Component.component_type, Actor.t) :: {:ok, t} | {:error, String.t}
+  def remove_component(arena, component_type, actor) do
+    update_components(arena, & Components.remove_component(&1, component_type, actor))
+  end
+
   @spec find_player_actor(t, Players.player_id) :: {:ok, Actor.t} | {:error, String.t}
   def find_player_actor(arena, player_id) do
     Components.fetch(arena.components, :ui)

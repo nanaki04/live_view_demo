@@ -1,5 +1,6 @@
 defmodule SpaceBirds.Logic.Color do
   alias __MODULE__
+  use SpaceBirds.Utility.MapAccess
 
   @type t :: %{
     r: number,
@@ -18,12 +19,18 @@ defmodule SpaceBirds.Logic.Color do
     b: 0,
     a: 0
 
+  @spec to_hex(t) :: String.t
   def to_hex(%{r: r, g: g, b: b, a: _a}) do
     # TODO handle transparancy
     "#"
     <> String.pad_leading(Integer.to_string(r, 16), 2, "0")
     <> String.pad_leading(Integer.to_string(g, 16), 2, "0")
     <> String.pad_leading(Integer.to_string(b, 16), 2, "0")
+  end
+
+  @spec to_opacity(t) :: number
+  def to_opacity(%{a: a}) do
+    a / 255
   end
 
   @spec new_gradient(t, t) :: gradient

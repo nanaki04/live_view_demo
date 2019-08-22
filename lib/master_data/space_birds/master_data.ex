@@ -1,6 +1,9 @@
 defmodule SpaceBirds.MasterData do
   alias SpaceBirds.Logic.Actor
   alias SpaceBirds.State.Players
+  alias SpaceBirds.Animations.Animation
+
+  # TODO cache all master data in GenServers and add a seed command
 
   @base_path "lib/master_data/space_birds/"
 
@@ -15,6 +18,8 @@ defmodule SpaceBirds.MasterData do
   @type on_hit_effect_type :: String.t
 
   @type buff_debuff_type :: String.t
+
+  @type animation_type :: String.t
 
   @spec get_fighter_types() :: [fighter_type]
   def get_fighter_types() do
@@ -133,6 +138,18 @@ defmodule SpaceBirds.MasterData do
          {:ok, buff_debuff} <- Jason.decode(json, keys: :atoms)
     do
       {:ok, buff_debuff}
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_animation(animation_type) :: {:ok, [Animation.t]} | {:error, String.t}
+  def get_animation(animation_type) do
+    with {:ok, json} <- File.read("#{@base_path}/animations/#{animation_type}.json"),
+         {:ok, animations} <- Jason.decode(json, keys: :atoms)
+    do
+      {:ok, animations}
     else
       error ->
         error

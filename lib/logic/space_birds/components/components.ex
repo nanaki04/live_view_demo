@@ -17,9 +17,9 @@ defmodule SpaceBirds.Components.Components do
   end
 
   @spec remove_component(t, Component.t) :: ResultEx.t
-  def remove_component(components, %Component{} = component) do
-    Map.update(components, component.type, %{}, fn component_list ->
-      Map.delete(component_list, component.actor)
+  def remove_component(components, %{type: type, actor: actor}) do
+    Map.update(components, type, %{}, fn component_list ->
+      Map.delete(component_list, actor)
     end)
     |> ResultEx.return
   end

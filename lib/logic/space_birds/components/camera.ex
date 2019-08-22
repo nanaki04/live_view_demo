@@ -91,14 +91,16 @@ defmodule SpaceBirds.Components.Camera do
     |> Map.put(:rotation, rotation)
   end
 
-  defp parse_texture(render_data, %{component_data: %{path: path}}) do
+  defp parse_texture(render_data, %{component_data: %{path: path, opacity: opacity}}) do
     render_data
     |> Map.put(:texture, path)
+    |> Map.put(:opacity, opacity / 255)
   end
 
   defp parse_color(render_data, %{component_data: %{color: color}}) do
     render_data
     |> Map.put(:background, Color.to_hex(color))
+    |> Map.put(:opacity, Color.to_opacity(color))
   end
 
   defp cap_camera_position(transform, %{resolution: {res_x, res_y}}, %{component_data: %{size: field_size}}) do

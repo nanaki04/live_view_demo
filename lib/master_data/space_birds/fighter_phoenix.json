@@ -279,6 +279,20 @@
       }
     }
   },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      }
+    }
+  },
+  "defeatable": {
+    "actor": 0,
+    "type": "defeatable",
+    "component_data": {}
+  },
   "stats": {
     "actor": 0,
     "type": "stats",

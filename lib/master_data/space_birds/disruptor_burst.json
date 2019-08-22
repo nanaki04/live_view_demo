@@ -93,7 +93,7 @@
     "actor": 0,
     "type": "damage",
     "component_data": {
-      "damage": 15,
+      "damage": 150,
       "on_hit_effect_paths": ["default"],
       "buff_debuff_paths": ["slow"],
       "piercing": false

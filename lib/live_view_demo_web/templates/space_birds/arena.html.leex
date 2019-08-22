@@ -22,6 +22,10 @@
               height: <%= data.height %>px;
               transform: rotate(<%= data.rotation %>deg);
               pointer-events: none;
+              <%= if Map.has_key?(data, :opacity) do %>
+                opacity: <%= data.opacity %>;
+                filter: alpha(opacity=<%= round(data.opacity * 100) %>);
+              <% end %>
               <%= if Map.has_key?(data, :background) do %>
                 background: <%= data.background %>;
               <% end %>

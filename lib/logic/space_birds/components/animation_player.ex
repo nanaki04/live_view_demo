@@ -27,10 +27,10 @@ defmodule SpaceBirds.Components.AnimationPlayer do
     end)
   end
 
-  @spec play_animation(Component.t, MasterData.animation_type) :: {:ok, t} | {:error, String.t}
-  def play_animation(component, animation_type) do
+  @spec play_animation(Component.t, MasterData.animation_type, number) :: {:ok, t} | {:error, String.t}
+  def play_animation(component, animation_type, animation_speed \\ 1) do
     {:ok, component} = clear_animations(component)
-    {:ok, animations} = MasterData.get_animation(animation_type)
+    {:ok, animations} = MasterData.get_animation(animation_type, animation_speed)
 
     Enum.reduce(animations, {:ok, component}, fn
       animation, {:ok, component} ->

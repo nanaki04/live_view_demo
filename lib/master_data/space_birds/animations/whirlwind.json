@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 20000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 137,
+              "path": "/images/whirlwind/whirlwind"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 20000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 690,
+              "path": "/images/whirlwind/whirlwind"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

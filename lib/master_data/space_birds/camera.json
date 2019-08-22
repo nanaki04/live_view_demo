@@ -26,7 +26,18 @@
     "actor": 0,
     "type": "follow",
     "component_data": {
-      "target": 0
+      "target": 0,
+      "lerp": {
+        "from": {
+          "distance": 500,
+          "speed": 10000
+        },
+        "to": {
+          "distance": 0,
+          "speed": 100
+        },
+        "curve": "inverse_exponential"
+      }
     }
   }
 }

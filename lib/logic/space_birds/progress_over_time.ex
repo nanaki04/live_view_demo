@@ -39,4 +39,23 @@ defmodule SpaceBirds.Logic.ProgressOverTime do
     from + (to - from) * progress
   end
 
+  def exponential(%{from: from, to: to}, progress) do
+    progress = progress
+               |> min(1)
+               |> max(0)
+               |> :math.pow(2)
+
+    from + (to - from) * progress
+  end
+
+  def inverse_exponential(%{from: from, to: to}, progress) do
+    progress = progress
+               |> min(1)
+               |> max(0)
+               |> :math.pow(2)
+               |> (&(1 - &1)).()
+
+    from + (to - from) * progress
+  end
+
 end

@@ -2,6 +2,7 @@ defmodule SpaceBirds.Components.Defeatable do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.AnimationPlayer
   use Component
 
@@ -16,6 +17,9 @@ defmodule SpaceBirds.Components.Defeatable do
       {:ok, arena} = Arena.remove_component(arena, component)
       Arena.update_component(arena, :animation_player, component.actor, fn animation_player ->
         AnimationPlayer.play_animation(animation_player, "fade")
+      end)
+      Arena.update_component(arena, :stats, component.actor, fn stats ->
+        Stats.deactivate(stats)
       end)
     else
       _ ->

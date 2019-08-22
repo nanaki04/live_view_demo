@@ -144,12 +144,22 @@ defmodule SpaceBirds.MasterData do
     end
   end
 
-  @spec get_animation(animation_type) :: {:ok, [Animation.t]} | {:error, String.t}
-  def get_animation(animation_type) do
+  @spec get_animation(animation_type, animation_speed :: number) :: {:ok, [Animation.t]} | {:error, String.t}
+  def get_animation(animation_type, animation_speed \\ 1) do
     with {:ok, json} <- File.read("#{@base_path}/animations/#{animation_type}.json"),
          {:ok, animations} <- Jason.decode(json, keys: :atoms)
     do
-      {:ok, animations}
+      Enum.map(animations, fn animation ->
+        Map.update(animation, :duration, 1000, & &1 * animation_speed)
+        |> Map.update(:key_frames, %{}, fn key_frames ->
+          Enum.map(key_frames, fn {type, key_frame_list} ->
+            {type, update_in(key_frame_list.next, fn next ->
+              Enum.map(next, fn next -> update_in(next.time, & &1 * animation_speed) end)
+            end)}
+          end)
+        end)
+      end)
+      |> ResultEx.return
     else
       error ->
         error

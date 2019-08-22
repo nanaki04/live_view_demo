@@ -51,7 +51,7 @@
         {
           "actor": 0,
           "weapon_slot": 0,
-          "weapon_name": "laser_beam",
+          "weapon_name": "whirlwind",
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []

@@ -63,6 +63,16 @@ defmodule SpaceBirds.Components.Stats do
     |> ResultEx.bind(fn stats -> apply_buff_debuffs(stats, arena) end)
   end
 
+  @spec deactivate(Component.t) :: {:ok, Component.t} | {:error, String.t}
+  def deactivate(component) do
+    component = put_in(component.component_data.shield_regeneration, 0)
+    component = put_in(component.component_data.shield, 0)
+    component = put_in(component.component_data.energy_regeneration, 0)
+    component = put_in(component.component_data.energy, 0)
+
+    {:ok, component}
+  end
+
   @spec regenerate_shields(Component.t, Arena.t) :: Component.t
   defp regenerate_shields(component, arena) do
     {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)

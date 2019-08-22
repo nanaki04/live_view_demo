@@ -35,3 +35,4 @@ npm-debug.log
 
 *.xcf
 *.swp
+*.DS_Store

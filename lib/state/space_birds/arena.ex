@@ -58,9 +58,11 @@ defmodule SpaceBirds.State.Arena do
 
   @spec add_component(t, Component.t) :: ResultEx.t
   def add_component(arena, component) do
-    update_components(arena, fn components ->
+    {:ok, arena} = update_components(arena, fn components ->
       Components.add_component(components, component)
     end)
+    {:ok, component} = Components.fetch(arena.components, component.type, component.actor)
+    Component.init(component, arena)
   end
 
   @spec find_player(t, Players.player_id) :: ResultEx.t
@@ -192,6 +194,11 @@ defmodule SpaceBirds.State.Arena do
 
   @spec remove_actor(t, Actor.t) :: {:ok, t} | {:error, String.t}
   def remove_actor(arena, actor) do
+    #    Components.filter_by_actor(arena.components, actor)
+    #    |> Enum.reduce({:ok, arena}, fn
+    #      component, {:ok, arena} -> Component.destroy(component, arena)
+    #      _, error -> error
+    #    end)
     update_components(arena, fn components ->
       Components.remove_components(components, actor)
     end)

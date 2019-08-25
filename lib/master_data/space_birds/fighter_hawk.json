@@ -3,27 +3,24 @@
     "actor": 0,
     "type": "transform",
     "component_data": {
+      "layer": "default",
       "position": {
         "x": 0,
         "y": 0
       },
       "rotation": 0,
       "size": {
-        "width": 50,
-        "height": 100
+        "width": 70,
+        "height": 85
       }
     }
   },
-  "paint": {
+  "texture": {
     "actor": 0,
-    "type": "paint",
+    "type": "texture",
     "component_data": {
-      "color": {
-        "r": 100,
-        "g": 100,
-        "b": 255,
-        "a": 255
-      }
+      "path": "/images/fighters/hawk_blue.png",
+      "opacity": 255
     }
   },
   "movement_controller": {
@@ -292,6 +289,13 @@
     "actor": 0,
     "type": "defeatable",
     "component_data": {}
+  },
+  "visual_effect_stack": {
+    "actor": 0,
+    "type": "visual_effect_stack",
+    "component_data": {
+      "effects": {}
+    }
   },
   "stats": {
     "actor": 0,

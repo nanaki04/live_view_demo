@@ -3,27 +3,24 @@
     "actor": 0,
     "type": "transform",
     "component_data": {
+      "layer": "upper",
       "position": {
         "x": 0,
         "y": 0
       },
       "rotation": 0,
       "size": {
-        "width": 10,
-        "height": 50
+        "width": 40,
+        "height": 100
       }
     }
   },
-  "paint": {
+  "texture": {
     "actor": 0,
-    "type": "paint",
+    "type": "texture",
     "component_data": {
-      "color": {
-        "r": 255,
-        "g": 0,
-        "b": 0,
-        "a": 255
-      }
+      "path": "/images/laser_beam/laser_beam_0000.png",
+      "opacity": 255
     }
   },
   "destination": {
@@ -115,6 +112,15 @@
       "top_speed": 2500,
       "acceleration": 80000,
       "drag": 1
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      }
     }
   }
 }

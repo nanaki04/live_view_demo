@@ -126,6 +126,17 @@ defmodule SpaceBirds.Components.Components do
     end
   end
 
+  @spec filter_by_actor(t, Actor.t) :: [Component.t]
+  def filter_by_actor(components, actor) do
+    Enum.flat_map(components, fn {component_type, component_list} ->
+      Enum.filter(component_list, fn
+        {^actor, component} -> true
+        _ -> false
+      end)
+      |> Enum.map(fn {actor, component} -> component end)
+    end)
+  end
+
   @spec update(t, Component.component_type, Actor.t, (Component.t -> ResultEx.t)) :: ResultEx.t
   def update(components, component_type, actor, updater) do
     update_list(components, component_type, fn component_list ->

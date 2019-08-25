@@ -71,10 +71,11 @@ defmodule SpaceBirds.Animations.Animation do
     update_in(animation.key_frames, fn key_frames ->
       Enum.reduce(key_frames, key_frames, fn
         {frame_type, %{past: past, next: []}}, key_frames ->
-          Map.put(key_frames, frame_type, {frame_type, %{past: [], next: Enum.reverse(past)}})
+          Map.put(key_frames, frame_type, %{past: [], next: Enum.reverse(past)})
         _, key_frames ->
           key_frames
       end)
+      |> Enum.into(%{})
     end)
     |> Map.put(:time, animation.time - animation.duration)
   end
@@ -87,6 +88,7 @@ defmodule SpaceBirds.Animations.Animation do
       _, key_frames ->
         key_frames
     end)
+    |> Enum.into(%{})
   end
 
   defp run_procced_key_frames(procced_key_frames, animation_component, arena) do

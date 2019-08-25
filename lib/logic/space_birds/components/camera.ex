@@ -27,6 +27,8 @@ defmodule SpaceBirds.Components.Camera do
       camera_transform = cap_camera_position(camera_transform, player, background)
       {:ok, arena} = Arena.update_component(arena, camera_transform, fn _ -> {:ok, camera_transform} end)
 
+      transforms = sort_by_layer(transforms)
+
       render_data = [render_grid(player) | render_ui(component, arena)]
       Enum.reduce(transforms, render_data, fn {actor, transform}, render_data ->
         %{type: :transform}
@@ -41,7 +43,10 @@ defmodule SpaceBirds.Components.Camera do
           |> ResultEx.map(fn texture -> parse_texture(render_data, texture) end)
           |> ResultEx.or_else(render_data)
         end).()
-        |> (&[&1 | render_data]).()
+        |> (fn
+          nodes when is_list(nodes) -> nodes ++ render_data
+          node -> [node | render_data]
+        end).()
       end)
       |> (fn render_data ->
         Arena.update_component(arena, component, fn _ ->
@@ -91,10 +96,20 @@ defmodule SpaceBirds.Components.Camera do
     |> Map.put(:rotation, rotation)
   end
 
-  defp parse_texture(render_data, %{component_data: %{path: path, opacity: opacity}}) do
-    render_data
-    |> Map.put(:texture, path)
-    |> Map.put(:opacity, opacity / 255)
+  defp parse_texture(render_data, %{component_data: %{path: path, opacity: opacity} = component_data}) do
+    render_data = render_data
+                  |> Map.put(:texture, path)
+                  |> Map.put(:opacity, opacity / 255)
+
+    case Map.fetch(component_data, :blit) do
+      {:ok, blit} ->
+        blit_data = render_data
+                    |> Map.put(:texture, blit)
+                    |> Map.put(:opacity, 0)
+        [render_data, blit_data]
+      _ ->
+        render_data
+    end
   end
 
   defp parse_color(render_data, %{component_data: %{color: color}}) do
@@ -119,6 +134,20 @@ defmodule SpaceBirds.Components.Camera do
           |> min(max_y)
 
       %{x: x, y: y}
+    end)
+  end
+
+  defp sort_by_layer(transforms) do
+    Enum.sort(transforms, fn
+      {_, %{component_data: %{layer: "background"}}}, _ -> true
+      _, {_, %{component_data: %{layer: "background"}}} -> false
+      {_, %{component_data: %{layer: "lower"}}}, _ -> true
+      _, {_, %{component_data: %{layer: "lower"}}} -> false
+      {_, %{component_data: %{layer: "ui"}}}, _ -> false
+      _, {_, %{component_data: %{layer: "ui"}}} -> true
+      {_, %{component_data: %{layer: "upper"}}}, _ -> false
+      _, {_, %{component_data: %{layer: "upper"}}} -> true
+      _, _ -> true
     end)
   end
 end

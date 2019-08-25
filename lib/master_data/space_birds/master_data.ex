@@ -21,6 +21,8 @@ defmodule SpaceBirds.MasterData do
 
   @type animation_type :: String.t
 
+  @type visual_effect_type :: String.t
+
   @spec get_fighter_types() :: [fighter_type]
   def get_fighter_types() do
     with {:ok, json} <- File.read("#{@base_path}fighter_types.json"),
@@ -160,6 +162,18 @@ defmodule SpaceBirds.MasterData do
         end)
       end)
       |> ResultEx.return
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_visual_effect(visual_effect_type) :: {:ok, t} | {:error, String.t}
+  def get_visual_effect(visual_effect_type) do
+    with {:ok, json} <- File.read("#{@base_path}/visual_effects/#{visual_effect_type}.json"),
+         {:ok, effect} <- Jason.decode(json, keys: :atoms)
+    do
+      {:ok, effect}
     else
       error ->
         error

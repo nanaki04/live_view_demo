@@ -10,7 +10,8 @@ defmodule SpaceBirds.Components.Transform do
   @type t :: %{
     position: Position.t,
     rotation: Rotation.t,
-    size: Size.t
+    size: Size.t,
+    layer: String.t
   }
 
   defstruct position: %Position{},

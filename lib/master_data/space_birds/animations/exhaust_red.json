@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 3000,
+    "is_loop?": true,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 28,
+              "path": "/images/exhaust_red/exhaust_red"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 3000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 57,
+              "path": "/images/exhaust_red/exhaust_red"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

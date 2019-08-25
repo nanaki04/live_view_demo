@@ -19,7 +19,8 @@ defmodule SpaceBirds.Components.Follow do
         speed: number
       },
       curve: String.t
-    }
+    },
+    optional(:offset) => Position.t
   }
 
   defstruct target: 0
@@ -35,7 +36,15 @@ defmodule SpaceBirds.Components.Follow do
       max_distance = max(to.distance, from.distance)
       diff = max_distance - min_distance
       pos = transform.component_data.position
+      rotation = target_transform.component_data.rotation
       target_pos = target_transform.component_data.position
+      target_pos = case Map.fetch(component.component_data, :offset) do
+        {:ok, offset} ->
+          target_pos = Vector2.add(target_pos, offset)
+          Edge.rotate(%{a: target_transform.component_data.position, b: target_pos}, rotation).b
+        _ ->
+          target_pos
+      end
 
       distance = Vector2.sub(pos, target_pos)
                  |> Vector2.distance
@@ -68,7 +77,14 @@ defmodule SpaceBirds.Components.Follow do
       end
 
       Arena.update_component(arena, transform, fn transform ->
-        {:ok, put_in(transform.component_data.position, destination)}
+        transform = put_in(transform.component_data.position, destination)
+        case Map.fetch(component.component_data, :offset) do
+          {:ok, _} ->
+            put_in(transform.component_data.rotation, rotation)
+          _ ->
+            transform
+        end
+        |> ResultEx.return
       end)
     else
       _ -> {:ok, arena}
@@ -79,8 +95,25 @@ defmodule SpaceBirds.Components.Follow do
     with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
          {:ok, target_transform} <- Components.fetch(arena.components, :transform, component.component_data.target)
     do
+      rotation = target_transform.component_data.rotation
+      target_pos = target_transform.component_data.position
+      target_pos = case Map.fetch(component.component_data, :offset) do
+        {:ok, offset} ->
+          target_pos = Vector2.add(target_pos, offset)
+          Edge.rotate(%{a: target_transform.component_data.position, b: target_pos}, rotation).b
+        _ ->
+          target_pos
+      end
+
       Arena.update_component(arena, transform, fn transform ->
-        {:ok, put_in(transform.component_data.position, target_transform.component_data.position)}
+        transform = put_in(transform.component_data.position, target_pos)
+        case Map.fetch(component.component_data, :offset) do
+          {:ok, _} ->
+            put_in(transform.component_data.rotation, rotation)
+          _ ->
+            transform
+        end
+        |> ResultEx.return
       end)
     else
       _ -> {:ok, arena}

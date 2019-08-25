@@ -2,6 +2,7 @@ defmodule SpaceBirds.Weapons.LaserBeam do
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Components.AnimationPlayer
   alias SpaceBirds.Logic.Vector2
   alias SpaceBirds.MasterData
   use Weapon
@@ -36,7 +37,11 @@ defmodule SpaceBirds.Weapons.LaserBeam do
       projectile = put_in(projectile.transform.component_data.rotation, rotation)
       projectile = put_in(projectile.destination.component_data.target, {:some, target_position})
 
-      Arena.add_actor(arena, projectile)
+      {:ok, arena} = Arena.add_actor(arena, projectile)
+
+      Arena.update_component(arena, :animation_player, projectile_id, fn animation_player ->
+        AnimationPlayer.play_animation(animation_player, "laser_beam")
+      end)
     else
       _ ->
         {:ok, arena}

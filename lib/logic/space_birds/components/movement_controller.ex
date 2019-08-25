@@ -2,9 +2,11 @@ defmodule SpaceBirds.Components.MovementController do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Stats
+  alias SpaceBirds.Components.VisualEffectStack
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Math
+  alias SpaceBirds.Logic.Vector2
   use Component
 
   @cross_speed_coefficient Math.sin(45)
@@ -102,6 +104,23 @@ defmodule SpaceBirds.Components.MovementController do
     end)
 
     {:ok, arena} = Arena.update_component(arena, component, fn _ -> {:ok, component} end)
+
+    {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
+    {:ok, arena} = case Vector2.round(component.component_data.speed) do
+      %{x: 0, y: 0} ->
+        VisualEffectStack.remove_visual_effect(effect_stack, "exhaust_red", arena)
+      _ ->
+        unless VisualEffectStack.owns?(effect_stack, "exhaust_red") do
+          {:ok, arena} = VisualEffectStack.add_visual_effect(effect_stack, "exhaust_red", arena)
+          {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
+          {:some, effect_id} = VisualEffectStack.find(effect_stack, "exhaust_red")
+          Arena.update_component(arena, :follow, effect_id, fn follow ->
+            {:ok, put_in(follow.component_data.target, component.actor)}
+          end)
+        else
+          {:ok, arena}
+        end
+    end
 
     {:ok, arena}
   end

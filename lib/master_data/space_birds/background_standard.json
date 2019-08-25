@@ -3,6 +3,7 @@
     "actor": 0,
     "type": "transform",
     "component_data": {
+      "layer": "background",
       "position": {
         "x": 0,
         "y": 0

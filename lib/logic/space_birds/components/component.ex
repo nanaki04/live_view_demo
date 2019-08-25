@@ -18,13 +18,21 @@ defmodule SpaceBirds.Components.Component do
     type: :undefined,
     component_data: %{}
 
+  @callback init(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback run(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
 
   defmacro __using__(_opts) do
     quote do
-      @behaviour SpaceBirds.Components.Component
+      alias SpaceBirds.Components.Component
+      @behaviour Component
       @behaviour Access
 
+      @impl(Component)
+      def init(component, arena) do
+        {:ok, arena}
+      end
+
+      @impl(Component)
       def run(component, arena) do
         {:ok, arena}
       end
@@ -44,8 +52,19 @@ defmodule SpaceBirds.Components.Component do
         Map.pop(data, key)
       end
 
-      defoverridable [run: 2]
+      defoverridable [run: 2, init: 2]
     end
+  end
+
+  @spec init(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  def init(component, arena) do
+    component.type
+    |> Atom.to_string
+    |> String.split("_")
+    |> Enum.map(&String.capitalize/1)
+    |> Enum.join
+    |> (& Module.concat(SpaceBirds.Components, &1)).()
+    |> apply(:init, [component, arena])
   end
 
   @spec put_in_data(t, term, term) :: t

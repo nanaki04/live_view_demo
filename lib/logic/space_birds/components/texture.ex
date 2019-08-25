@@ -3,8 +3,9 @@ defmodule SpaceBirds.Components.Texture do
   use Component
 
   @type t :: %{
-    path: String.t,
-    opacity: number
+    required(:path) => String.t,
+    required(:opacity) => number,
+    optional(:blit) => String.t
   }
 
   defstruct path: "",

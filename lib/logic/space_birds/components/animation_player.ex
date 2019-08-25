@@ -1,4 +1,5 @@
 defmodule SpaceBirds.Components.AnimationPlayer do
+  alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Animations.Animation
   alias SpaceBirds.MasterData
@@ -7,13 +8,26 @@ defmodule SpaceBirds.Components.AnimationPlayer do
   @type animation_id :: number
 
   @type t :: %{
-    animations: %{
+    required(:animations) => %{
       required(:last_id) => number,
       optional(animation_id) => Animation.t
     },
+    optional(:starting_animation) => MasterData.animation_type
   }
 
   defstruct animations: %{last_id: 0}
+
+  @impl(Component)
+  def init(component, arena) do
+    case Map.fetch(component.component_data, :starting_animation) do
+      {:ok, animation_type} ->
+        Arena.update_component(arena, component, fn component ->
+          play_animation(component, animation_type)
+        end)
+      _ ->
+        {:ok, arena}
+    end
+  end
 
   @impl(Component)
   def run(component, arena) do

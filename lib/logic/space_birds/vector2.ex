@@ -1,7 +1,7 @@
 defmodule SpaceBirds.Logic.Vector2 do
   alias SpaceBirds.Logic.Math
   alias SpaceBirds.Logic.Rotation
-  import Kernel, except: [min: 2, max: 2, abs: 1]
+  import Kernel, except: [min: 2, max: 2, abs: 1, round: 1]
 
   @type t :: %{
     x: number,
@@ -27,7 +27,7 @@ defmodule SpaceBirds.Logic.Vector2 do
   @spec to_rotation(t) :: Rotation.t
   def to_rotation(v2) do
     # MEMO html is from top to bottom, so we have to invert the y axis
-    rem(round(Math.atan2(v2.x, -v2.y)) + 360, 360)
+    rem(Kernel.round(Math.atan2(v2.x, -v2.y)) + 360, 360)
   end
 
   @spec mul(t, t | number) :: t
@@ -95,6 +95,10 @@ defmodule SpaceBirds.Logic.Vector2 do
   @spec abs(t) :: t
   def abs(v2) do
     new(Kernel.abs(v2.x), Kernel.abs(v2.y))
+  end
+
+  def round(%{x: x, y: y}) do
+    new(Kernel.round(x), Kernel.round(y))
   end
 
 end

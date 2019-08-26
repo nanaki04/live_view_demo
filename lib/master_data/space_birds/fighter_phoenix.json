@@ -104,7 +104,7 @@
           {
             "type": "panel",
             "position": {
-              "x": 1024,
+              "x": 904,
               "y": 0
             },
             "world_position": {
@@ -136,7 +136,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 480,
+                  "width": 110,
                   "height": 100
                 },
                 "color": {
@@ -156,14 +156,14 @@
                 "type": "stats_panel",
                 "position": {
                   "x": 10,
-                  "y": 120
+                  "y": 110
                 },
                 "world_position": {
                   "x": 0,
                   "y": 0
                 },
                 "size": {
-                  "width": 480,
+                  "width": 110,
                   "height": 100
                 },
                 "color": {
@@ -185,14 +185,14 @@
                 "type": "stats_panel",
                 "position": {
                   "x": 10,
-                  "y": 230
+                  "y": 220
                 },
                 "world_position": {
                   "x": 0,
                   "y": 0
                 },
                 "size": {
-                  "width": 480,
+                  "width": 110,
                   "height": 100
                 },
                 "color": {
@@ -214,14 +214,14 @@
                 "type": "stats_panel",
                 "position": {
                   "x": 10,
-                  "y": 340
+                  "y": 330
                 },
                 "world_position": {
                   "x": 0,
                   "y": 0
                 },
                 "size": {
-                  "width": 480,
+                  "width": 110,
                   "height": 100
                 },
                 "color": {
@@ -245,15 +245,15 @@
             "type": "panel",
             "position": {
               "x": 0,
-              "y": 768
+              "y": 668
             },
             "world_position": {
               "x": 0,
               "y": 0
             },
             "size": {
-              "width": 1524,
-              "height": 500
+              "width": 3024,
+              "height": 2000
             },
             "color": {
               "r": 0,
@@ -265,7 +265,33 @@
             "text": "",
             "node_data": {},
             "children": [
+              {
+                "type": "weapon_panel",
+                "position": {
+                  "x": 10,
+                  "y": 10
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 350,
+                  "height": 60
+                },
+                "color": {
+                  "r": 0,
+                  "g": 0,
+                  "b": 0,
+                  "a": 0
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {},
+                "children": [
 
+                ]
+              }
             ]
           }
         ]

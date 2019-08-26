@@ -1,21 +1,20 @@
 defmodule SpaceBirds.UI.WeaponPanel do
-  alias SpaceBirds.Components.Arsenal
+  alias SpaceBirds.Components.Components
   use SpaceBirds.UI.Node
 
   @icons_per_row 3
   @max_visible_icons 5
-  @icon_size %{width: 15, height: 15}
+  @icon_size %{width: 50, height: 50}
 
   @type t :: %{
-    arsenal: Arsenal.t
   }
-
-  defstruct arsenal: %Arsenal{}
 
   @impl(Node)
   def run(node, component, arena) do
+    {:ok, arsenal} = Components.fetch(arena.components, :arsenal, component.actor)
+
     node = put_in(node.children, [])
-    node = Enum.take(node.node_data.arsenal.component_data.weapons, @max_visible_icons)
+    node = Enum.take(arsenal.component_data.weapons, @max_visible_icons)
            |> Enum.reduce(node, fn
              {_, %{icon: "white"}}, node ->
                icon = %Node{
@@ -36,10 +35,10 @@ defmodule SpaceBirds.UI.WeaponPanel do
                update_in(node.children, & [icon | &1])
            end)
 
-    node = if node.node_data.arsenal.component_data.selected_weapon > 0 do
+    node = if arsenal.component_data.selected_weapon > 0 do
       selected_effect = %Node{
         type: "panel",
-        position: find_position(node.node_data.arsenal.component_data.selected_weapon - 1),
+        position: find_position(arsenal.component_data.selected_weapon - 1),
         size: @icon_size,
         color: %{r: 0, g: 0, b: 0, a: 100}
       }

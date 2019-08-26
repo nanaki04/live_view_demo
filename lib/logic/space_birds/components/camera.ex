@@ -8,6 +8,8 @@ defmodule SpaceBirds.Components.Camera do
   use Component
 
   @background_actor 1
+  @ui_width 120
+  @ui_height 100
 
   @type t :: %{
     owner: Players.player_id,
@@ -65,8 +67,8 @@ defmodule SpaceBirds.Components.Camera do
   defp render_grid(%{resolution: {res_x, res_y}}) do
     %{
       type: :grid,
-      columns: ceil(res_x / 50),
-      rows: ceil(res_y / 50),
+      columns: ceil((res_x - @ui_width) / 50),
+      rows: ceil((res_y - @ui_height) / 50),
       width: 50,
       height: 50
     }
@@ -89,8 +91,8 @@ defmodule SpaceBirds.Components.Camera do
     {res_x, res_y} = player.resolution
 
     render_data
-    |> Map.put(:left, x - width / 2 - cam_pos.x + res_x / 2)
-    |> Map.put(:top, y - height / 2 - cam_pos.y + res_y / 2)
+    |> Map.put(:left, x - width / 2 - cam_pos.x + (res_x - @ui_width) / 2)
+    |> Map.put(:top, y - height / 2 - cam_pos.y + (res_y - @ui_height) / 2)
     |> Map.put(:width, width)
     |> Map.put(:height, height)
     |> Map.put(:rotation, rotation)
@@ -119,10 +121,10 @@ defmodule SpaceBirds.Components.Camera do
   end
 
   defp cap_camera_position(transform, %{resolution: {res_x, res_y}}, %{component_data: %{size: field_size}}) do
-    min_x = -field_size.width / 2 + res_x / 2
-    max_x = field_size.width / 2 - res_x / 2
-    min_y = -field_size.height / 2 + res_y / 2
-    max_y = field_size.height / 2 - res_y / 2
+    min_x = -field_size.width / 2 + (res_x - @ui_width) / 2
+    max_x = field_size.width / 2 - (res_x - @ui_width) / 2
+    min_y = -field_size.height / 2 + (res_y - @ui_height) / 2
+    max_y = field_size.height / 2 - (res_y - @ui_height) / 2
 
     update_in(transform.component_data.position, fn position ->
       x = position.x

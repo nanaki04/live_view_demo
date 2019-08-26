@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/fighters/hawk_blue.png",
+      "path": "/images/fighters/hawk_red/fighter_hawk_red_0000.png",
       "opacity": 255
     }
   },
@@ -49,6 +49,7 @@
           "actor": 0,
           "weapon_slot": 0,
           "weapon_name": "laser_beam",
+          "icon": "white",
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []
@@ -132,7 +133,7 @@
                 },
                 "size": {
                   "width": 480,
-                  "height": 100
+                  "height": 120
                 },
                 "color": {
                   "r": 10,
@@ -151,7 +152,7 @@
                 "type": "stats_panel",
                 "position": {
                   "x": 10,
-                  "y": 120
+                  "y": 140
                 },
                 "world_position": {
                   "x": 0,
@@ -180,7 +181,7 @@
                 "type": "stats_panel",
                 "position": {
                   "x": 10,
-                  "y": 230
+                  "y": 250
                 },
                 "world_position": {
                   "x": 0,
@@ -209,7 +210,7 @@
                 "type": "stats_panel",
                 "position": {
                   "x": 10,
-                  "y": 340
+                  "y": 360
                 },
                 "world_position": {
                   "x": 0,
@@ -282,7 +283,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "fighter_hawk_red_idle"
     }
   },
   "defeatable": {

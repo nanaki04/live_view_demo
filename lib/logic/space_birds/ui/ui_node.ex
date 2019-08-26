@@ -19,7 +19,8 @@ defmodule SpaceBirds.UI.Node do
     required(:hidden) => boolean,
     optional(:font_color) => String.t,
     optional(:background) => String.t,
-    optional(:texture) => String.t
+    optional(:texture) => String.t,
+    optional(:opacity) => number
   }
 
   @type t :: %{
@@ -83,7 +84,17 @@ defmodule SpaceBirds.UI.Node do
 
         render_data = case node.color do
           %{a: 0} -> render_data
+          %{a: alpha} = color when alpha < 255 -> 
+            Map.put(render_data, :opacity, alpha / 255)
+            |> Map.put(:background, Color.to_hex(color))
           color -> Map.put(render_data, :background, Color.to_hex(color))
+        end
+
+        case Map.fetch(node, :opacity) do
+          {:ok, opacity} ->
+            Map.put(render_data, :opacity, opacity / 255)
+          _ ->
+            render_data
         end
       end
 

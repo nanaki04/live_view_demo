@@ -43,6 +43,13 @@ defmodule SpaceBirds.Components.Arsenal do
 
   def run_action(%{name: :fire_weapon, payload: payload}, component, arena) do
     {:ok, weapon} = Map.fetch(component.component_data.weapons, component.component_data.selected_weapon)
+    {:ok, arena} = if component.component_data.selected_weapon != 0 do
+      Arena.update_component(arena, component, fn component ->
+        {:ok, put_in(component.component_data.selected_weapon, 0)}
+      end)
+    else
+      {:ok, arena}
+    end
 
     module_name = weapon.weapon_name
                   |> String.split("_")

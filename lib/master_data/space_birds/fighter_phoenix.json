@@ -53,6 +53,7 @@
           "actor": 0,
           "weapon_slot": 0,
           "weapon_name": "whirlwind",
+          "icon": "white",
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []

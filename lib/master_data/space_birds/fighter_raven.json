@@ -53,8 +53,20 @@
           "actor": 0,
           "weapon_slot": 0,
           "weapon_name": "disruptor_burst",
+          "icon": "white",
           "weapon_data": {
             "projectile_path": "default",
+            "enhancements": []
+          }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 1,
+          "weapon_name": "blink",
+          "icon": "white",
+          "weapon_data": {
+            "origin_effect_path": "default",
+            "destination_effect_path": "default",
             "enhancements": []
           }
         }

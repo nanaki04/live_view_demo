@@ -20,10 +20,16 @@ defmodule SpaceBirds.Animations.TextureFrame do
 
     {:ok, arena} = change_texture(last.frame_data.path, value, animation_component, arena)
 
-    if value + 1 > next.frame_data.value do
-      {:ok, arena}
+    next_blit = if next.frame_data.value > last.frame_data.value, do: 1, else: -1
+    if (next_blit > 0 && value + 1 > next.frame_data.value) || (next_blit < 0 && value - 1 < next.frame_data.value) do
+      case Enum.reverse(animation.key_frames.texture_frame.past) do
+        [first_frame | _] ->
+          change_blit(first_frame.frame_data.path, first_frame.frame_data.value, animation_component, arena)
+        _ ->
+          {:ok, arena}
+      end
     else
-      change_blit(last.frame_data.path, value + 1, animation_component, arena)
+      change_blit(last.frame_data.path, value + next_blit, animation_component, arena)
     end
   end
 

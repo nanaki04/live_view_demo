@@ -21,7 +21,8 @@ defmodule SpaceBirds.Weapons.Weapon do
   defstruct actor: 0,
     weapon_slot: 0,
     weapon_data: %{},
-    weapon_name: :undefined
+    weapon_name: :undefined,
+    icon: "white"
 
   @callback fire(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
 

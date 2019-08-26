@@ -88,9 +88,9 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "s" -> push_action(:move_down_start, socket)
       "d" -> push_action(:move_right_start, socket)
       "a" -> push_action(:move_left_start, socket)
-      "1" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 0}, socket)
-      "2" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 1}, socket)
-      "3" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 2}, socket)
+      "1" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 1}, socket)
+      "2" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 2}, socket)
+      "3" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 3}, socket)
       " " -> GenServer.call(socket.assigns.battle, :pause)
       _ -> :ok
     end

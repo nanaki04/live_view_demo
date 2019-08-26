@@ -112,10 +112,21 @@ defmodule SpaceBirds.MasterData do
     with {:ok, json} <- File.read("#{@base_path}#{projectile_type}.json"),
          {:ok, projectile} <- Jason.decode(json, keys: :atoms)
     do
-      projectile
-      |> put_in([:movement_controller, :component_data, :owner], {:actor, actor_id})
-      |> put_in([:collider, :component_data, :owner], owner_actor_id)
-      |> ResultEx.return
+      projectile = case Map.fetch(projectile, :movement_controller) do
+        {:ok, _} ->
+          put_in(projectile.movement_controller.component_data.owner, {:actor, actor_id})
+        _ ->
+          projectile
+      end
+
+      projectile = case Map.fetch(projectile, :collider) do
+        {:ok, _} ->
+          put_in(projectile.collider.component_data.owner, owner_actor_id)
+        _ ->
+          projectile
+      end
+
+      {:ok, projectile}
     else
       error ->
         error

@@ -40,7 +40,7 @@ defmodule SpaceBirds.UI.MyStatsPanel do
         node_data: %Gauge{
           gauge_color: Color.new_gradient(%{r: 0, g: 0, b: 100, a: 255}, %{r: 0, g: 0, b: 255, a: 255}),
           max_value: stats.component_data.max_shield,
-          min_value: stats.component_data.shield,
+          current_value: stats.component_data.shield,
           border: 1
         }
       },
@@ -51,7 +51,7 @@ defmodule SpaceBirds.UI.MyStatsPanel do
         node_data: %Gauge{
           gauge_color: Color.new_gradient(%{r: 255, g: 100, b: 0, a: 255}, %{r: 0, g: 255, b: 100, a: 255}),
           max_value: stats.component_data.max_hp,
-          min_value: stats.component_data.hp,
+          current_value: stats.component_data.hp,
           border: 1
         }
       },
@@ -62,7 +62,7 @@ defmodule SpaceBirds.UI.MyStatsPanel do
         node_data: %Gauge{
           gauge_color: Color.new_gradient(%{r: 100, g: 0, b: 100, a: 255}, %{r: 150, g: 0, b: 150, a: 255}),
           max_value: 100,
-          min_value: stats.component_data.energy,
+          current_value: stats.component_data.energy,
           border: 2
         }
       },

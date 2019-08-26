@@ -50,6 +50,8 @@
           "weapon_slot": 0,
           "weapon_name": "laser_beam",
           "icon": "white",
+          "cooldown": 500,
+          "cooldown_remaining": 0,
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []
@@ -108,7 +110,7 @@
               "y": 0
             },
             "size": {
-              "width": 500,
+              "width": 2000,
               "height": 768
             },
             "color": {
@@ -132,7 +134,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {
@@ -159,7 +161,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {
@@ -188,7 +190,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {
@@ -217,7 +219,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {

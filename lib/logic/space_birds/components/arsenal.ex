@@ -19,6 +19,14 @@ defmodule SpaceBirds.Components.Arsenal do
 
   @impl(Component)
   def run(component, arena) do
+    {:ok, arena} = Arena.update_component(arena, component, fn component ->
+      update_in(component.component_data.weapons, fn weapons ->
+        Enum.map(weapons, fn {slot, weapon} -> {slot, Weapon.cool_down(weapon, arena)} end)
+        |> Enum.into(%{})
+      end)
+      |> ResultEx.return
+    end)
+
     Actions.filter_by_actor_and_maybe_player_id(arena.actions, component.actor, component.component_data.owner)
     |> Actions.filter_by_action_names([:swap_weapon, :fire_weapon])
     |> Enum.reverse
@@ -28,6 +36,11 @@ defmodule SpaceBirds.Components.Arsenal do
       action, {:ok, arena} ->
         run_action(action, component, arena)
     end)
+  end
+
+  @spec put_weapon(t, Weapon.t) :: {:ok, t} | {:error, String.t}
+  def put_weapon(arsenal, weapon) do
+    {:ok, put_in(arsenal.component_data.weapons[weapon.weapon_slot], weapon)}
   end
 
   @spec run_action(Action.t, Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
@@ -51,13 +64,6 @@ defmodule SpaceBirds.Components.Arsenal do
       {:ok, arena}
     end
 
-    module_name = weapon.weapon_name
-                  |> String.split("_")
-                  |> Enum.map(&String.capitalize/1)
-                  |> Enum.join
-
-    full_module_name = Module.concat(SpaceBirds.Weapons, module_name)
-
-    apply(full_module_name, :fire, [weapon, payload.target, arena])
+    Weapon.fire(weapon, payload.target, arena)
   end
 end

@@ -54,6 +54,8 @@
           "weapon_slot": 0,
           "weapon_name": "disruptor_burst",
           "icon": "white",
+          "cooldown": 500,
+          "cooldown_remaining": 0,
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []
@@ -64,6 +66,8 @@
           "weapon_slot": 1,
           "weapon_name": "blink",
           "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
           "weapon_data": {
             "origin_effect_path": "default",
             "destination_effect_path": "default",
@@ -123,7 +127,7 @@
               "y": 0
             },
             "size": {
-              "width": 500,
+              "width": 2000,
               "height": 768
             },
             "color": {
@@ -147,7 +151,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {
@@ -174,7 +178,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {
@@ -203,7 +207,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {
@@ -232,7 +236,7 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 110,
+                  "width": 120,
                   "height": 100
                 },
                 "color": {

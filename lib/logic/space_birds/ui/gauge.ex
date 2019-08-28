@@ -8,14 +8,16 @@ defmodule SpaceBirds.UI.Gauge do
     gauge_color: Color.t | Color.gradient,
     max_value: number,
     current_value: number,
-    border: number
+    border: number,
+    background_color: Color.t
   }
 
   defstruct gauge_color: %Color{},
     max_value: 1,
     min_value: 0,
     current_value: 0,
-    border: 3
+    border: 3,
+    background_color: %Color{r: 0, g: 0, b: 0, a: 255}
 
   @impl(Node)
   def run(node, component, arena) do
@@ -59,7 +61,7 @@ defmodule SpaceBirds.UI.Gauge do
         type: "panel",
         position: %Position{x: 0, y: 0},
         size: node.size,
-        color: %Color{r: 0, g: 0, b: 0, a: 255}
+        color: node.node_data.background_color
       },
       %Node{
         type: "panel",

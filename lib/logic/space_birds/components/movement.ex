@@ -34,7 +34,8 @@ defmodule SpaceBirds.Components.Movement do
     distance = 0
 
     with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
-         {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, component.actor)
+         {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, component.actor),
+         false <- MapSet.member?(readonly_stats.status, :stunned)
     do
       unit_vector = Vector2.from_rotation(transform.component_data.rotation)
 

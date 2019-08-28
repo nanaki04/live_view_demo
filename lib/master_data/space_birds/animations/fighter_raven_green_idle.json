@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 2000,
+    "is_loop?": true,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/fighters/raven_green/fighter_raven_green"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 2000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 19,
+              "path": "/images/fighters/raven_green/fighter_raven_green"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

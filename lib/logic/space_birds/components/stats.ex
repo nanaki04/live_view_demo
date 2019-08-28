@@ -3,8 +3,15 @@ defmodule SpaceBirds.Components.Stats do
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.BuffDebuffStack
+  alias SpaceBirds.Components.BuffDebuff
   alias SpaceBirds.Logic.Actor
   use Component
+
+  @type status :: :stunned
+    | :immune
+    | :slow_resistant
+    | {:immune_to, Actor.t}
+    | {:diminishing_returns_for, BuffDebuff.buff_debuff_type, level :: number}
 
   @type t :: %{
     hp: number,
@@ -18,7 +25,8 @@ defmodule SpaceBirds.Components.Stats do
     armor: number,
     speed: number,
     acceleration: number,
-    drag: number
+    drag: number,
+    status: MapSet.t(status)
   }
 
   defstruct hp: 0,
@@ -31,7 +39,15 @@ defmodule SpaceBirds.Components.Stats do
     power: 0,
     armor: 0,
     speed: 0,
-    acceleration: 0
+    acceleration: 0,
+    status: MapSet.new()
+
+  @impl(Component)
+  def init(component, arena) do
+    Arena.update_component(arena, component, fn component ->
+      {:ok, update_in(component.component_data, & Map.put(&1, :status, MapSet.new()))}
+    end)
+  end
 
   @impl(Component)
   def run(component, arena) do

@@ -10,21 +10,17 @@
       },
       "rotation": 0,
       "size": {
-        "width": 50,
+        "width": 75,
         "height": 80
       }
     }
   },
-  "paint": {
+  "texture": {
     "actor": 0,
-    "type": "paint",
+    "type": "texture",
     "component_data": {
-      "color": {
-        "r": 0,
-        "g": 0,
-        "b": 100,
-        "a": 255
-      }
+      "path": "/images/fighters/raven_green/fighter_raven_green_0000.png",
+      "opacity": 255
     }
   },
   "movement_controller": {
@@ -328,7 +324,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "fighter_raven_green_idle"
     }
   },
   "defeatable": {

@@ -1,5 +1,6 @@
 defmodule SpaceBirds.Components.Arsenal do
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Stats
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Weapons.Weapon
@@ -55,15 +56,19 @@ defmodule SpaceBirds.Components.Arsenal do
   end
 
   def run_action(%{name: :fire_weapon, payload: payload}, component, arena) do
-    {:ok, weapon} = Map.fetch(component.component_data.weapons, component.component_data.selected_weapon)
-    {:ok, arena} = if component.component_data.selected_weapon != 0 do
-      Arena.update_component(arena, component, fn component ->
-        {:ok, put_in(component.component_data.selected_weapon, 0)}
-      end)
-    else
-      {:ok, arena}
-    end
+    with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, component.actor),
+         false <- MapSet.member?(readonly_stats.status, :stunned),
+         {:ok, weapon} = Map.fetch(component.component_data.weapons, component.component_data.selected_weapon)
+    do
+      {:ok, arena} = if component.component_data.selected_weapon != 0 do
+        Arena.update_component(arena, component, fn component ->
+          {:ok, put_in(component.component_data.selected_weapon, 0)}
+        end)
+      else
+        {:ok, arena}
+      end
 
-    Weapon.fire(weapon, payload.target, arena)
+      Weapon.fire(weapon, payload.target, arena)
+    end
   end
 end

@@ -24,23 +24,55 @@ defmodule SpaceBirds.UI.WeaponPanel do
            |> Enum.reduce(node, fn
              {0, _}, node ->
                node
-             {_, %{icon: "white"}}, node ->
+             {_, %{icon: "white"} = weapon}, node ->
+               position = find_position(round(length(node.children) / 2))
+
                icon = %Node{
                  type: "panel",
-                 position: find_position(length(node.children)),
+                 position: position,
                  size: @icon_size
                }
 
-               update_in(node.children, & [icon | &1])
-             {_, %{icon: icon_path}}, node ->
+               cooldownGauge = %Node{
+                 type: "vertical_gauge",
+                 position: position,
+                 size: @icon_size,
+                 node_data: %Gauge{
+                   gauge_color: Color.new_gradient(%{r: 0, g: 0, b: 0, a: 200}, %{r: 0, g: 0, b: 0, a: 100}),
+                   max_value: 1,
+                   min_value: 0,
+                   current_value: 1 - Weapon.cooldown_progress(weapon),
+                   border: 0,
+                   background_color: %Color{r: 0, g: 0, b: 0, a: 0}
+                 }
+               }
+
+               update_in(node.children, & [cooldownGauge | [icon | &1]])
+             {_, %{icon: icon_path} = weapon}, node ->
+               position = find_position(round(length(node.children) / 2))
+
                icon = %Node{
                  type: "panel",
                  texture: icon_path,
-                 position: find_position(length(node.children)),
+                 position: position,
                  size: @icon_size
                }
 
-               update_in(node.children, & [icon | &1])
+               cooldownGauge = %Node{
+                 type: "vertical_gauge",
+                 position: position,
+                 size: @icon_size,
+                 node_data: %Gauge{
+                   gauge_color: Color.new_gradient(%{r: 0, g: 0, b: 0, a: 200}, %{r: 0, g: 0, b: 0, a: 100}),
+                   max_value: 1,
+                   min_value: 0,
+                   current_value: 1 - Weapon.cooldown_progress(weapon),
+                   border: 0,
+                   background_color: %Color{r: 0, g: 0, b: 0, a: 0}
+                 }
+               }
+
+               update_in(node.children, & [cooldownGauge | [icon | &1]])
            end)
 
     main_weapon_cooldown_gauge = %Node{
@@ -66,10 +98,12 @@ defmodule SpaceBirds.UI.WeaponPanel do
         color: %{r: 0, g: 0, b: 0, a: 100}
       }
 
-      update_in(node.children, & Enum.reverse([selected_effect | &1]))
+      update_in(node.children, & [selected_effect | &1])
     else
       node
     end
+
+    node = update_in(node.children, &Enum.reverse/1)
 
     Node.run_children(node, component, arena)
   end

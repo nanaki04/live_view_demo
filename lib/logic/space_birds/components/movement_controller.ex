@@ -40,8 +40,19 @@ defmodule SpaceBirds.Components.MovementController do
 
   @impl(Component)
   def run(component, arena) do
-    owner = component.component_data.owner
     actor = component.actor
+
+    {:ok, %{component_data: readonly_stats}} = Stats.get_readonly(arena, component.actor)
+
+    if MapSet.member?(readonly_stats.status, :stunned) do
+      {:ok, arena}
+    else
+      move(actor, readonly_stats, component, arena)
+    end
+  end
+
+  defp move(actor, readonly_stats, component, arena) do
+    owner = component.component_data.owner
 
     actions = Enum.reduce(arena.actions, [], fn
       %{sender: {:player, ^owner}} = action, actions ->
@@ -72,8 +83,6 @@ defmodule SpaceBirds.Components.MovementController do
       _, component ->
         component
     end)
-
-    {:ok, %{component_data: readonly_stats}} = Stats.get_readonly(arena, component.actor)
 
     speed_offset = calculate_speed_offset(
       component.component_data.direction,

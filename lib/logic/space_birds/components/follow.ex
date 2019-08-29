@@ -5,6 +5,7 @@ defmodule SpaceBirds.Components.Follow do
   alias SpaceBirds.Logic.Edge
   alias SpaceBirds.Logic.Vector2
   alias SpaceBirds.Logic.ProgressOverTime
+  alias SpaceBirds.Logic.Rotation
   use Component
 
   @type t :: %{
@@ -20,7 +21,8 @@ defmodule SpaceBirds.Components.Follow do
       },
       curve: String.t
     },
-    optional(:offset) => Position.t
+    optional(:offset) => Position.t,
+    optional(:rotation_offset) => Rotation.t
   }
 
   defstruct target: 0
@@ -37,6 +39,10 @@ defmodule SpaceBirds.Components.Follow do
       diff = max_distance - min_distance
       pos = transform.component_data.position
       rotation = target_transform.component_data.rotation
+      rotation = case Map.fetch(component.component_data, :rotation_offset) do
+        {:ok, offset} -> Rotation.add(rotation, offset)
+        _ -> rotation
+      end
       target_pos = target_transform.component_data.position
       target_pos = case Map.fetch(component.component_data, :offset) do
         {:ok, offset} ->
@@ -96,6 +102,10 @@ defmodule SpaceBirds.Components.Follow do
          {:ok, target_transform} <- Components.fetch(arena.components, :transform, component.component_data.target)
     do
       rotation = target_transform.component_data.rotation
+      rotation = case Map.fetch(component.component_data, :rotation_offset) do
+        {:ok, offset} -> Rotation.add(rotation, offset)
+        _ -> rotation
+      end
       target_pos = target_transform.component_data.position
       target_pos = case Map.fetch(component.component_data, :offset) do
         {:ok, offset} ->

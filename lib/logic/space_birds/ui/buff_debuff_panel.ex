@@ -41,7 +41,8 @@ defmodule SpaceBirds.UI.BuffDebuffPanel do
                  type: "panel",
                  texture: icon_path,
                  position: %Position{x: icon_count * 12.5, y: 0},
-                 size: %Size{width: 12, height: 12}
+                 size: %Size{width: 12, height: 12},
+                 color: %Color{r: 0, g: 0, b: 0, a: 255}
                }
                icon = flicker(buff_debuff, icon)
 
@@ -56,8 +57,8 @@ defmodule SpaceBirds.UI.BuffDebuffPanel do
     progress = max(0, 3 * progress - 2)
     progress = round(ProgressOverTime.inverse_sine_curve(%{from: 0, to: 6}, progress))
     visible = rem(progress, 2) == 0
-    color = if visible, do: %Color{r: 255, g: 255, b: 255, a: 255}, else: %Color{r: 0, g: 0, b: 0, a: 0}
-    Map.put(icon, :color, color)
+    a = if visible, do: 255, else: 0
+    put_in(icon.color.a, a)
   end
 
 end

@@ -7,6 +7,7 @@ defmodule SpaceBirds.Components.MovementController do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Math
   alias SpaceBirds.Logic.Vector2
+  alias SpaceBirds.MasterData
   use Component
 
   @cross_speed_coefficient Math.sin(45)
@@ -22,7 +23,8 @@ defmodule SpaceBirds.Components.MovementController do
     speed: %{x: number, y: number},
     acceleration: number,
     direction: %{x: number, y: number},
-    bound_by_map: boolean
+    bound_by_map: boolean,
+    visual_effects: [MasterData.visual_effect_type]
   }
 
   defstruct owner: 0,
@@ -31,7 +33,8 @@ defmodule SpaceBirds.Components.MovementController do
     speed: %{x: 0, y: 0},
     acceleration: 1,
     direction: %{x: 0, y: 0},
-    bound_by_map: true
+    bound_by_map: true,
+    visual_effects: []
 
   defguardp is_cross_angle(v2) when :erlang.map_get(:x, v2) != 0
     and :erlang.map_get(:x, v2) != 0.0
@@ -45,13 +48,15 @@ defmodule SpaceBirds.Components.MovementController do
     {:ok, %{component_data: readonly_stats}} = Stats.get_readonly(arena, component.actor)
 
     if MapSet.member?(readonly_stats.status, :stunned) do
-      {:ok, arena}
+      component = update_direction(actor, component, arena)
+
+      Arena.update_component(arena, component, fn _ -> {:ok, component} end)
     else
       move(actor, readonly_stats, component, arena)
     end
   end
 
-  defp move(actor, readonly_stats, component, arena) do
+  defp update_direction(actor, component, arena) do
     owner = component.component_data.owner
 
     actions = Enum.reduce(arena.actions, [], fn
@@ -63,7 +68,7 @@ defmodule SpaceBirds.Components.MovementController do
         actions
     end)
 
-    component = Enum.reduce(actions, component, fn
+    Enum.reduce(actions, component, fn
       %{name: :move_up_start}, component ->
         update_in(component.component_data.direction.y, & max(&1 - 1, -1))
       %{name: :move_up_stop}, component ->
@@ -83,6 +88,10 @@ defmodule SpaceBirds.Components.MovementController do
       _, component ->
         component
     end)
+  end
+
+  defp move(actor, readonly_stats, component, arena) do
+    component = update_direction(actor, component, arena)
 
     speed_offset = calculate_speed_offset(
       component.component_data.direction,
@@ -114,24 +123,32 @@ defmodule SpaceBirds.Components.MovementController do
 
     {:ok, arena} = Arena.update_component(arena, component, fn _ -> {:ok, component} end)
 
-    {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
-    {:ok, arena} = case Vector2.round(component.component_data.speed) do
-      %{x: 0, y: 0} ->
-        VisualEffectStack.remove_visual_effect(effect_stack, "exhaust_red", arena)
-      _ ->
-        unless VisualEffectStack.owns?(effect_stack, "exhaust_red") do
-          {:ok, arena} = VisualEffectStack.add_visual_effect(effect_stack, "exhaust_red", arena)
-          {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
-          {:some, effect_id} = VisualEffectStack.find(effect_stack, "exhaust_red")
-          Arena.update_component(arena, :follow, effect_id, fn follow ->
-            {:ok, put_in(follow.component_data.target, component.actor)}
-          end)
-        else
-          {:ok, arena}
-        end
-    end
+    play_visual_effects(component, arena)
+  end
 
-    {:ok, arena}
+  defp play_visual_effects(component, arena) do
+    Enum.reduce(component.component_data.visual_effects, {:ok, arena}, fn
+      visual_effect_type, {:ok, arena} ->
+        case Vector2.round(component.component_data.speed) do
+          %{x: 0, y: 0} ->
+            {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
+            VisualEffectStack.remove_visual_effect(effect_stack, visual_effect_type, arena)
+          _ ->
+            {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
+            unless VisualEffectStack.owns?(effect_stack, visual_effect_type) do
+              {:ok, arena} = VisualEffectStack.add_visual_effect(effect_stack, visual_effect_type, arena)
+              {:ok, effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
+              {:some, effect_id} = VisualEffectStack.find(effect_stack, visual_effect_type)
+              Arena.update_component(arena, :follow, effect_id, fn follow ->
+                {:ok, put_in(follow.component_data.target, component.actor)}
+              end)
+            else
+              {:ok, arena}
+            end
+        end
+      _, error ->
+        error
+    end)
   end
 
   defp direction_to_rotation(%{x: 0, y: 0}, rotation), do: rotation

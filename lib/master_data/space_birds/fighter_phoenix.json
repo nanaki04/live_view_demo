@@ -40,7 +40,9 @@
         "x": 0,
         "y": 0
       },
-      "bound_by_map": true
+      "bound_by_map": true,
+      "visual_effects": [
+      ]
     }
   },
   "arsenal": {

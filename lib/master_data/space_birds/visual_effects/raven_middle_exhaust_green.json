@@ -1,0 +1,47 @@
+{
+  "transform": {
+    "actor": "transform",
+    "type": "transform",
+    "component_data": {
+      "layer": "lower",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "size": {
+        "width": 25,
+        "height": 40
+      },
+      "rotation": 0
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/raven_middle_exhaust_green/raven_middle_vent_green_0005.png",
+      "opacity": 0
+    }
+  },
+  "follow": {
+    "actor": 0,
+    "type": "follow",
+    "component_data": {
+      "target": 0,
+      "offset": {
+        "x": 0,
+        "y": 40
+      }
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "raven_middle_exhaust_green"
+    }
+  }
+}

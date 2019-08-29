@@ -66,4 +66,11 @@ defmodule SpaceBirds.Components.Transform do
     ]
   end
 
+  @spec offset(Component.t, Position.t) :: Position.t
+  def offset(transform, offset) do
+    pos = transform.component_data.position
+    b = Vector2.add(pos, offset)
+    Edge.rotate(%{a: pos, b: b}, transform.component_data.rotation).b
+  end
+
 end

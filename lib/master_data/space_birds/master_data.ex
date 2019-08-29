@@ -135,7 +135,7 @@ defmodule SpaceBirds.MasterData do
 
   @spec get_on_hit_effect(on_hit_effect_type) :: {:ok, t} | {:error, String.t}
   def get_on_hit_effect(on_hit_effect_type) do
-    with {:ok, json} <- File.read("#{@base_path}on_hit_effect_#{on_hit_effect_type}.json"),
+    with {:ok, json} <- File.read("#{@base_path}on_hit_effects/#{on_hit_effect_type}.json"),
          {:ok, on_hit_effect} <- Jason.decode(json, keys: :atoms)
     do
       {:ok, on_hit_effect}
@@ -159,7 +159,8 @@ defmodule SpaceBirds.MasterData do
 
   @spec get_animation(animation_type, animation_speed :: number) :: {:ok, [Animation.t]} | {:error, String.t}
   def get_animation(animation_type, animation_speed \\ 1) do
-    with {:ok, json} <- File.read("#{@base_path}/animations/#{animation_type}.json"),
+    IO.inspect("#{@base_path}animations/#{animation_type}.json")
+    with {:ok, json} <- File.read("#{@base_path}animations/#{animation_type}.json"),
          {:ok, animations} <- Jason.decode(json, keys: :atoms)
     do
       Enum.map(animations, fn animation ->
@@ -181,7 +182,7 @@ defmodule SpaceBirds.MasterData do
 
   @spec get_visual_effect(visual_effect_type) :: {:ok, t} | {:error, String.t}
   def get_visual_effect(visual_effect_type) do
-    with {:ok, json} <- File.read("#{@base_path}/visual_effects/#{visual_effect_type}.json"),
+    with {:ok, json} <- File.read("#{@base_path}visual_effects/#{visual_effect_type}.json"),
          {:ok, effect} <- Jason.decode(json, keys: :atoms)
     do
       {:ok, effect}

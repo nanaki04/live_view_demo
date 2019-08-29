@@ -3,6 +3,7 @@ defmodule SpaceBirds.Components.Camera do
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Ui
   alias SpaceBirds.Logic.Color
+  alias SpaceBirds.Logic.Vector2
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
   use Component
@@ -64,14 +65,41 @@ defmodule SpaceBirds.Components.Camera do
     end
   end
 
-  defp render_grid(%{resolution: {res_x, res_y}}) do
+  defp render_grid(%{resolution: resolution}) do
+    %{width: width, height: height} = calculate_grid_size(resolution)
+
     %{
       type: :grid,
-      columns: ceil((res_x - @ui_width) / 50),
-      rows: ceil((res_y - @ui_height) / 50),
-      width: 50,
-      height: 50
+      columns: 20, # ceil((res_x - @ui_width) / 50),
+      rows: 15, # ceil((res_y - @ui_height) / 50),
+      width: width,
+      height: height
     }
+  end
+
+  defp calculate_grid_size({res_x, res_y}) do
+    %{
+      width: ceil((res_x - @ui_width) / 20),
+      height: ceil((res_y - @ui_height) / 15)
+    }
+  end
+
+  @spec convert_grid_point_to_game_point(camera :: Component.t, grid_point :: Vector2.t, Arena.t) :: {:ok, Vector2} | {:error, String.t}
+  def convert_grid_point_to_game_point(camera, grid_point, arena) do
+    with {:ok, %{resolution: {res_x, res_y} = res}} <- Arena.find_player(arena, camera.component_data.owner),
+         {:ok, transform} <- Components.fetch(arena.components, :transform, camera.actor)
+    do
+      %{width: width, height: height} = calculate_grid_size(res)
+      zero_point = Vector2.sub(transform.component_data.position, %{x: (res_x - @ui_width) / 2, y: (res_y - @ui_height) / 2})
+
+      Vector2.mul(grid_point, %{x: width, y: height})
+      |> Vector2.add(%{x: width / 2, y: width / 2})
+      |> Vector2.add(zero_point)
+      |> ResultEx.return
+    else
+      error ->
+        error
+    end
   end
 
   defp render_ui(component, arena) do

@@ -36,7 +36,12 @@
         "x": 0,
         "y": 0
       },
-      "bound_by_map": true
+      "bound_by_map": true,
+      "visual_effects": [
+        "raven_left_exhaust_green",
+        "raven_middle_exhaust_green",
+        "raven_right_exhaust_green"
+      ]
     }
   },
   "arsenal": {
@@ -48,7 +53,7 @@
         {
           "actor": 0,
           "weapon_slot": 0,
-          "weapon_name": "disruptor_burst",
+          "weapon_name": "plasma_burst",
           "icon": "white",
           "cooldown": 500,
           "cooldown_remaining": 0,

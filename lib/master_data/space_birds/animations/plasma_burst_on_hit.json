@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/plasma_burst_hit_effect/plasma_burst_hit_effect"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 1000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 27,
+              "path": "/images/plasma_burst_hit_effect/plasma_burst_hit_effect"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

@@ -83,7 +83,6 @@ defmodule SpaceBirds.UI.Node do
         end
 
         render_data = case node.color do
-          %{a: 0} -> render_data
           %{a: alpha} = color when alpha < 255 -> 
             Map.put(render_data, :opacity, alpha / 255)
             |> Map.put(:background, Color.to_hex(color))

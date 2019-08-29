@@ -1,9 +1,8 @@
 defmodule SpaceBirds.Actions.FireWeapon do
   alias SpaceBirds.Logic.Position
-  alias SpaceBirds.Logic.Vector2
   alias SpaceBirds.Actions.Action
   alias SpaceBirds.Components.Components
-  alias SpaceBirds.State.Arena
+  alias SpaceBirds.Components.Camera
 
   @behaviour Action
 
@@ -15,16 +14,10 @@ defmodule SpaceBirds.Actions.FireWeapon do
 
   @impl(Action)
   def init(%{sender: {:player, player_id}, payload: payload} = action, arena) do
-    {:ok, cameras} = Components.fetch(arena.components, :camera)
-    with {_, %{actor: actor}} <- Enum.find(cameras, fn {_, camera} -> camera.component_data.owner == player_id end),
-         {:ok, transform} <- Components.fetch(arena.components, :transform, actor),
-         {:ok, %{resolution: {res_x, res_y}}} <- Arena.find_player(arena, player_id)
+    with {:ok, cameras} <- Components.fetch(arena.components, :camera),
+         {_, camera} <- Enum.find(cameras, fn {_, camera} -> camera.component_data.owner == player_id end),
+         {:ok, target} <- Camera.convert_grid_point_to_game_point(camera, payload.target, arena)
     do
-      zero_point = Vector2.sub(transform.component_data.position, %{x: res_x / 2, y: res_y / 2})
-      target = Vector2.mul(payload.target, 50)
-               |> Vector2.add(25)
-               |> Vector2.add(zero_point)
-
       action = put_in(action.payload.target, target)
 
       {:ok, action}

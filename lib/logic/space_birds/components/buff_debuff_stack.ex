@@ -3,6 +3,7 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
   alias SpaceBirds.BuffDebuff.BuffDebuff
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.MasterData
   import Kernel, except: [apply: 3]
   use Component
 
@@ -28,12 +29,12 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
     end)
   end
 
-  @spec apply(t, BuffDebuff.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @spec apply(Component.t, BuffDebuff.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def apply(component, buff_debuff, arena) do
     BuffDebuff.on_apply(buff_debuff, component, arena)
   end
 
-  @spec affect_stats(t, stats :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
+  @spec affect_stats(Component.t, stats :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
   def affect_stats(component, stats, arena) do
     Enum.reduce(component.component_data.buff_debuffs, {:ok, stats}, fn
       {:last_id, _}, value ->
@@ -43,6 +44,18 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
       _, error ->
         error
     end)
+  end
+
+  @spec remove_by_type(Component.t, MasterData.buff_debuff_type) :: {:ok, Component.t} | {:error, String.t}
+  def remove_by_type(component, buff_debuff_type) do
+    update_in(component.component_data.buff_debuffs, fn buff_debuffs ->
+      Enum.filter(buff_debuffs, fn
+        {_, %{buff_debuff_type: ^buff_debuff_type}} -> false
+        _ -> true
+      end)
+      |> Enum.into(%{})
+    end)
+    |> ResultEx.return
   end
 
 end

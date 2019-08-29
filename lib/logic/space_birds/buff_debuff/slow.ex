@@ -1,5 +1,6 @@
 defmodule SpaceBirds.BuffDebuff.Slow do
   alias SpaceBirds.Logic.ProgressOverTime
+  alias SpaceBirds.Components.Stats
   use SpaceBirds.BuffDebuff.BuffDebuff
 
   @type t :: %{
@@ -7,6 +8,20 @@ defmodule SpaceBirds.BuffDebuff.Slow do
     top_speed_decrease: ProgressOverTime.t,
     drag_increase: ProgressOverTime.t
   }
+
+  @impl(BuffDebuff)
+  def on_apply(slow, buff_debuff_stack, arena) do
+    with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, buff_debuff_stack.actor),
+         false <- MapSet.member?(readonly_stats.status, :slow_resistant),
+         false <- MapSet.member?(readonly_stats.status, :immune)
+    do
+      put_in(slow.time_remaining, slow.time)
+      |> add_to_stack(buff_debuff_stack, arena)
+    else
+      _ ->
+        {:ok, arena}
+    end
+  end
 
   @impl(BuffDebuff)
   def affect_stats(slow, stats, _arena) do

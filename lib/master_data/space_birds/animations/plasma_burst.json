@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 9,
+              "path": "/images/plasma_burst/plasma_burst"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 1000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 23,
+              "path": "/images/plasma_burst/plasma_burst"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

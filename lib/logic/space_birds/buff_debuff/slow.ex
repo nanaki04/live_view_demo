@@ -15,8 +15,7 @@ defmodule SpaceBirds.BuffDebuff.Slow do
          false <- MapSet.member?(readonly_stats.status, :slow_resistant),
          false <- MapSet.member?(readonly_stats.status, :immune)
     do
-      put_in(slow.time_remaining, slow.time)
-      |> add_to_stack(buff_debuff_stack, arena)
+      apply_default(slow, buff_debuff_stack, arena)
     else
       _ ->
         {:ok, arena}
@@ -35,6 +34,14 @@ defmodule SpaceBirds.BuffDebuff.Slow do
     stats = update_in(stats.component_data.drag, & max(0, &1 + drag_increase))
 
     {:ok, stats}
+  end
+
+  @impl(BuffDebuff)
+  def apply_diminishing_returns(slow, level) do
+    slow
+    |> update_in([:debuff_data, :acceleration_decrease, :from], & &1 / (level + 1))
+    |> update_in([:debuff_data, :top_speed_decrease, :from], & &1 / (level + 1))
+    |> update_in([:debuff_data, :drag_increase, :from], & &1 / (level + 1))
   end
 
 end

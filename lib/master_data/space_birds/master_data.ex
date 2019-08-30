@@ -159,7 +159,6 @@ defmodule SpaceBirds.MasterData do
 
   @spec get_animation(animation_type, animation_speed :: number) :: {:ok, [Animation.t]} | {:error, String.t}
   def get_animation(animation_type, animation_speed \\ 1) do
-    IO.inspect("#{@base_path}animations/#{animation_type}.json")
     with {:ok, json} <- File.read("#{@base_path}animations/#{animation_type}.json"),
          {:ok, animations} <- Jason.decode(json, keys: :atoms)
     do

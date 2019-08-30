@@ -13,7 +13,7 @@ defmodule SpaceBirds.Components.VisualEffectStack do
   def add_visual_effect(component, visual_effect_type, arena) do
     {:ok, arena} = case Map.fetch(component.component_data.effects, visual_effect_type) do
       {:ok, old_effect} ->
-        remove_visual_effect(component, old_effect, arena)
+        Arena.remove_actor(arena, old_effect)
       _ ->
         {:ok, arena}
     end
@@ -22,6 +22,7 @@ defmodule SpaceBirds.Components.VisualEffectStack do
     actor_id = arena.last_actor_id + 1
     {:ok, arena} = Arena.add_actor(arena, visual_effect)
     component = put_in(component.component_data.effects[visual_effect_type], actor_id)
+
     Arena.update_component(arena, component, fn _ -> {:ok, component} end)
   end
 

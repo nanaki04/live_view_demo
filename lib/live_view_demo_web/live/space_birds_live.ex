@@ -24,7 +24,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:state, %SpaceBirds.State.Application{})
     |> assign(:player, nil)
     |> assign(:render_data, [])
-    |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all())
+    |> assign(:battle_list, [])
     |> assign(:selected_battle, "new")
     |> assign(:fighter_types, ResultEx.unwrap!(MasterData.get_fighter_types()))
     |> assign(:selected_fighter_type, "hawk")
@@ -35,6 +35,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     {:ok, player} = Players.join(self(), player_name)
 
     assign(socket, player: player)
+    |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all())
     |> noreply
   end
 

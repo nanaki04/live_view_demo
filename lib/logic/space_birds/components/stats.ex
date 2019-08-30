@@ -90,6 +90,49 @@ defmodule SpaceBirds.Components.Stats do
     {:ok, component}
   end
 
+  @spec find_diminishing_returns(Component.t, MasterData.buff_debuff_type, Arena.t) :: {:some, number} | :none
+  def find_diminishing_returns(component, buff_debuff_type, arena) do
+    with {:ok, stats} <- get_readonly(arena, component.actor)
+    do
+      stats
+      |> Enum.filter(fn
+        {:diminishing_returns, ^buff_debuff_type, _} -> true
+        _ -> false
+      end)
+      |> Enum.map(fn {_, _, level} -> level end)
+      |> Enum.sort(& &1 >= &2)
+      |> List.first
+      |> OptionEx.return
+    else
+      _ ->
+        :none
+    end
+  end
+
+  @spec update_diminishing_returns_level(Component.t, MasterData.buff_debuff_type, (number -> number)) :: {:ok, Component.t} | {:error, String.t}
+  def update_diminishing_returns_level(component, buff_debuff_type, update) do
+    status = component.component_data.status
+    status = Enum.find(status, fn
+      {:diminishing_returns, ^buff_debuff_type, _} -> true
+      _ -> false
+    end)
+    |> OptionEx.return
+    |> OptionEx.map(fn _ ->
+      Enum.map(status, fn
+        {:diminishing_returns, ^buff_debuff_type, level} ->
+          {:diminishing_returns, buff_debuff_type, update.(level)}
+        status ->
+          status
+      end)
+      |> Enum.into(MapSet.new)
+    end)
+    |> OptionEx.or_else_with(fn ->
+      MapSet.put(status, {:diminishing_returns, buff_debuff_type, update.(0)})
+    end)
+
+    {:ok, put_in(component.component_data.status, status)}
+  end
+
   @spec regenerate_shields(Component.t, Arena.t) :: Component.t
   defp regenerate_shields(component, arena) do
     {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)

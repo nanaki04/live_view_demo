@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/plasma_burst_on_hit/plasma_burst_on_hit_effect_0000.png",
+      "path": "/images/plasma_burst_hit_effect/plasma_burst_hit_effect_0000.png",
       "opacity": 255
     }
   },

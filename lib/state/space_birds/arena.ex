@@ -152,7 +152,11 @@ defmodule SpaceBirds.State.Arena do
       Process.send_after(self(), :tick, max(round(1000 / @fps) - (System.system_time(:millisecond) - arena.frame_time), 0))
     end
 
-    {:noreply, arena}
+    if length(online_players) > 0 do
+      {:noreply, arena}
+    else
+      {:stop, :normal, arena}
+    end
   end
 
   defp update_delta_time(%{frame_time: 0} = arena) do

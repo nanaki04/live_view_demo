@@ -50,12 +50,25 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
   def remove_by_type(component, buff_debuff_type) do
     update_in(component.component_data.buff_debuffs, fn buff_debuffs ->
       Enum.filter(buff_debuffs, fn
-        {_, %{buff_debuff_type: ^buff_debuff_type}} -> false
+        {_, %{type: ^buff_debuff_type}} -> false
         _ -> true
       end)
       |> Enum.into(%{})
     end)
     |> ResultEx.return
+  end
+
+  @spec filter_by_type(Component.t, MasterData.buff_debuff_type) :: [BuffDebuff.t]
+  def filter_by_type(component, buff_debuff_type) do
+    Enum.filter(component.component_data.buff_debuffs, fn
+      {_, %{type: ^buff_debuff_type}} -> true
+      _ -> false
+    end)
+  end
+
+  @spec count_by_type(Component.t, MasterData.buff_debuff_type) :: number
+  def count_by_type(component, buff_debuff_type) do
+    length(filter_by_type(component, buff_debuff_type))
   end
 
 end

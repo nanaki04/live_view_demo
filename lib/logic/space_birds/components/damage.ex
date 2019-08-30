@@ -57,7 +57,6 @@ defmodule SpaceBirds.Components.Damage do
         effect = put_in(effect.transform.component_data.position, at)
         Arena.add_actor(arena, effect)
       path, {:ok, arena} ->
-        IO.inspect(path)
         {:ok, effect} = MasterData.get_on_hit_effect(path)
         effect = put_in(effect.transform.component_data.position, at)
         Arena.add_actor(arena, effect)

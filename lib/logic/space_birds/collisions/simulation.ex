@@ -29,23 +29,9 @@ defmodule SpaceBirds.Collision.Simulation do
     |> Enum.filter(fn {target_collider, _} -> target_collider != collider end)
     |> Enum.filter(fn {target_collider, _} -> is_collider_target?(collider, target_collider) end)
     |> Enum.map(fn {_, target_transform} ->
-      Enum.reduce(Transform.get_vertices(transform), :none, fn
-        point, :none ->
-          Enum.reduce(Transform.get_edges(target_transform), {:some, point}, fn
-            _, :none ->
-              :none
-            target_edge, some_point ->
-              if Edge.is_starboard?(target_edge, point), do: some_point, else: :none
-          end)
-          |> OptionEx.map(fn intersection ->
-            %{
-              sender: {:actor, transform.actor},
-              name: :collide,
-              payload: %{at: intersection, target: target_transform.actor}
-            }
-          end)
-        _, action ->
-          action
+      compare_transforms(transform, target_transform, transform.actor, target_transform.actor)
+      |> OptionEx.or_try(fn ->
+        compare_transforms(target_transform, transform, transform.actor, target_transform.actor)
       end)
     end)
     |> OptionEx.filter_enum
@@ -62,6 +48,27 @@ defmodule SpaceBirds.Collision.Simulation do
 
     Enum.member?(collides_with, collider2.component_data.layer)
     && collider2.component_data.owner != owner
+  end
+
+  defp compare_transforms(transform, target_transform, actor, target_actor) do
+    Enum.reduce(Transform.get_vertices(transform), :none, fn
+      point, :none ->
+        Enum.reduce(Transform.get_edges(target_transform), {:some, point}, fn
+          _, :none ->
+            :none
+          target_edge, some_point ->
+            if Edge.is_starboard?(target_edge, point), do: some_point, else: :none
+        end)
+        |> OptionEx.map(fn intersection ->
+          %{
+            sender: {:actor, actor},
+            name: :collide,
+            payload: %{at: intersection, target: target_actor}
+          }
+        end)
+      _, action ->
+        action
+    end)
   end
 
 end

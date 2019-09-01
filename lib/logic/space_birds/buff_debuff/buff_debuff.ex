@@ -25,6 +25,7 @@ defmodule SpaceBirds.BuffDebuff.BuffDebuff do
 
   defstruct id: 0,
     type: "",
+    time: 0,
     time_remaining: 0,
     effect_type: "none",
     icon_path: "none",

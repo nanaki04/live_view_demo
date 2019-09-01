@@ -1,4 +1,11 @@
 {
+  "tag": {
+    "actor": 0,
+    "type": "tag",
+    "component_data": {
+      "tag": "blink"
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",
@@ -45,8 +52,10 @@
     "component_data": {
       "damage": 15,
       "on_hit_effect_paths": ["default"],
-      "buff_debuff_paths": ["slow"],
-      "piercing": true
+      "buff_debuff_paths": ["slow", "immune_to_blink"],
+      "piercing": {
+        "hit_cooldown": 0
+      }
     }
   },
   "stats": {

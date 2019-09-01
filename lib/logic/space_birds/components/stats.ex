@@ -11,7 +11,7 @@ defmodule SpaceBirds.Components.Stats do
     | :immune
     | :slow_resistant
     | :stun_resistant
-    | {:immune_to, Actor.t}
+    | {:immune_to, Actor.t | String.t}
     | {:diminishing_returns_for, BuffDebuff.buff_debuff_type, level :: number}
 
   @type t :: %{

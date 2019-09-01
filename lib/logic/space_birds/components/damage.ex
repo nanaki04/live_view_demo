@@ -3,6 +3,8 @@ defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.BuffDebuffStack
+  alias SpaceBirds.Components.Tag
+  alias SpaceBirds.BuffDebuff.ImmuneTo
   alias SpaceBirds.Actions.Actions
   alias SpaceBirds.State.Arena
   alias SpaceBirds.MasterData
@@ -14,7 +16,7 @@ defmodule SpaceBirds.Components.Damage do
     damage: number,
     on_hit_effect_paths: [String.t],
     buff_debuff_paths: [String.t],
-    piercing: boolean
+    piercing: %{hit_cooldown: number} | false
   }
 
   defstruct damage: 1,
@@ -33,6 +35,7 @@ defmodule SpaceBirds.Components.Damage do
       [%{payload: %{target: target, at: at}} | _] ->
         with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, target),
              false <- MapSet.member?(readonly_stats.status, {:immune_to, actor}),
+             false <- MapSet.member?(readonly_stats.status, {:immune_to, Tag.find_tag(arena, actor)}),
              false <- MapSet.member?(readonly_stats.status, :immune)
         do
           apply_damage(component, target, at, arena)
@@ -89,11 +92,21 @@ defmodule SpaceBirds.Components.Damage do
         error
     end)
 
-    # destroy projectile
-    if !component.component_data.piercing do
-      Arena.remove_actor(arena, component.actor)
-    else
-      {:ok, arena}
+    # destroy projectile, or set temporary immunity for piercing projectiles
+    case Map.fetch(component.component_data, :piercing) do
+      {:ok, %{hit_cooldown: 0}} ->
+        {:ok, arena}
+      {:ok, %{hit_cooldown: hit_cooldown}} ->
+        with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, target)
+        do
+          immunity = ImmuneTo.new(component.actor, hit_cooldown)
+          BuffDebuffStack.apply(buff_debuff_stack, immunity, arena)
+        else
+          _ ->
+            {:ok, arena}
+        end
+      _ ->
+        Arena.remove_actor(arena, component.actor)
     end
 
   end

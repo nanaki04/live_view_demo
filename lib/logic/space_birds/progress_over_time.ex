@@ -1,6 +1,12 @@
 defmodule SpaceBirds.Logic.ProgressOverTime do
   alias SpaceBirds.Logic.Math
 
+  @type curve :: :linear
+    | :sine_curve
+    | :inverse_sine_curve
+    | :exponential
+    | :inverse_exponential
+
   @type t :: %{
     from: number,
     to: number

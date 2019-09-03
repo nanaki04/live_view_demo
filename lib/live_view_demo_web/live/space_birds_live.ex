@@ -66,7 +66,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
                |> Enum.map(&elem(&1, 0))
                |> Position.new
 
-    push_action(:fire_weapon, %FireWeapon{target: position}, socket)
+    push_action(:fire_weapon, %FireWeapon{grid_point: position}, socket)
 
     {:noreply, socket}
   end

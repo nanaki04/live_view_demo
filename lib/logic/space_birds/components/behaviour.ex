@@ -15,11 +15,30 @@ defmodule SpaceBirds.Components.Behaviour do
     running_node: :none
 
   @impl(Component)
+  def init(component, arena) do
+    Arena.update_component(arena, component, fn behaviour ->
+      update_in(behaviour.component_data, fn component_data ->
+        {:ok, root} = Node.init(component_data.node_tree, 0, component, arena)
+
+        Map.merge(component_data, %__MODULE__{
+          node_tree: root,
+        })
+      end)
+      |> ResultEx.return
+    end)
+  end
+
+  @impl(Component)
   def run(component, arena) do
     component = Actions.filter_by_actor(arena.actions, component.actor)
                 |> Actions.filter_by_action_name(:select_behaviour_node)
                 |> (fn
                   [action | _] ->
+                    component = update_in(
+                      component.component_data.node_tree,
+                      & Node.sync_running_node(&1, component.component_data.running_node)
+                    )
+
                     put_in(component.component_data.running_node, {:some, action.payload.node})
                   _ ->
                     component
@@ -27,10 +46,10 @@ defmodule SpaceBirds.Components.Behaviour do
 
     running_node = component.component_data.running_node
     case {Node.select(component.component_data.node_tree, component, arena), running_node} do
-      {{:running, node}, {:some, running_node}} when running_node == node ->
+      {{:running, %{id: node_id} = node}, {:some, %{id: running_node_id}}} when running_node_id == node_id ->
         {:ok, node, arena} = Node.run(node, component, arena)
 
-        Arena.update_component(arena, component, fn component ->
+        Arena.update_component(arena, component, fn _ ->
           {:ok, put_in(component.component_data.running_node, node)}
         end)
       {{:running, node}, _} ->
@@ -39,12 +58,12 @@ defmodule SpaceBirds.Components.Behaviour do
 
         {:ok, arena}
       {:success, _} ->
-        Arena.update_component(arena, component, fn component ->
+        Arena.update_component(arena, component, fn _ ->
           Node.reset(component.component_data.node_tree, component, arena)
           |> ResultEx.map(fn node -> put_in(component.component_data.node_tree, node) end)
         end)
       {:failure, _} ->
-        Arena.update_component(arena, component, fn component ->
+        Arena.update_component(arena, component, fn _ ->
           Node.reset(component.component_data.node_tree, component, arena)
           |> ResultEx.map(fn node -> put_in(component.component_data.node_tree, node) end)
         end)

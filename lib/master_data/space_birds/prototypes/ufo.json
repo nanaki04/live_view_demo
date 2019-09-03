@@ -1,0 +1,199 @@
+{
+  "tag": {
+    "actor": 0,
+    "type": "tag",
+    "component_data": {
+      "tag": "ai"
+    }
+  },
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "default",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 150,
+        "height": 150
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/ufo/ufo_0000.png",
+      "opacity": 255
+    }
+  },
+  "destination": {
+    "actor": 0,
+    "type": "destination",
+    "component_data": {
+      "target": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "arsenal": {
+    "actor": 0,
+    "type": "arsenal",
+    "component_data": {
+      "owner": 0,
+      "weapons": [
+        {
+          "actor": 0,
+          "weapon_slot": 0,
+          "weapon_name": "laser_beam",
+          "icon": "white",
+          "cooldown": 500,
+          "cooldown_remaining": 0,
+          "weapon_data": {
+            "projectile_path": "laser_beam",
+            "enhancements": []
+          }
+        }
+      ],
+      "selected_weapon": 0
+    }
+  },
+  "movement": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "bound_by_map": true
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "selector",
+        "node_data": {  
+          "children": [
+            {
+              "type": "sequence",
+              "node_data": {
+                "children": [
+                  {
+                    "type": "chase",
+                    "node_data": {
+                      "target": "player",
+                      "scan_distance": 600,
+                      "target_distance": 300,
+                      "distance_until_giveup": 1000,
+                      "lerp": {
+                        "curve": "linear",
+                        "speed": 90
+                      }
+                    }
+                  },
+                  {
+                    "type": "attack_nearest_target",
+                    "node_data": {
+                      "target": "player"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequence",
+              "node_data": {
+                "children": [
+                  {
+                    "type": "turn",
+                    "node_data": {
+                      "degrees": 90
+                    }
+                  },
+                  {
+                    "type": "move_forward",
+                    "node_data": {
+                      "distance": 800,
+                      "distance_left": 800
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "ai",
+      "owner": 0,
+      "collides_with": []
+    }
+  },
+  "stats": {
+    "actor": 0,
+    "type": "stats",
+    "component_data": {
+      "hp": 100,
+      "max_hp": 100,
+      "shield": 50,
+      "max_shield": 50,
+      "shield_regeneration": 1,
+      "energy": 100,
+      "energy_regeneration": 1,
+      "power": 10,
+      "armor": 1,
+      "top_speed": 400,
+      "acceleration": 2000,
+      "drag": 2
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "ufo_idle"
+    }
+  },
+  "buff_debuff_stack": {
+    "actor": 0,
+    "type": "buff_debuff_stack",
+    "component_data": {
+      "buff_debuffs": {
+        "last_id": 0
+      }
+    }
+  },
+  "defeatable": {
+    "actor": 0,
+    "type": "defeatable",
+    "component_data": {}
+  },
+  "visual_effect_stack": {
+    "actor": 0,
+    "type": "visual_effect_stack",
+    "component_data": {
+      "effects": {}
+    }
+  }
+}

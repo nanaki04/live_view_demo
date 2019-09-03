@@ -11,17 +11,11 @@ defmodule SpaceBirds.Components.Movement do
   @min_speed 10
 
   @type t :: %{
-    top_speed: number,
-    drag: number,
     speed: %{x: number, y: number},
-    acceleration: number,
     bound_by_map: boolean
   }
 
-  defstruct top_speed: 1,
-    drag: 1,
-    speed: %{x: 0, y: 0},
-    acceleration: 1,
+  defstruct speed: %{x: 0, y: 0},
     bound_by_map: true
 
   @impl(Component)

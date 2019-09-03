@@ -1,4 +1,11 @@
 {
+  "tag": {
+    "actor": 0,
+    "type": "tag",
+    "component_data": {
+      "tag": "player"
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",
@@ -10,21 +17,17 @@
       },
       "rotation": 0,
       "size": {
-        "width": 120,
-        "height": 30
+        "width": 150,
+        "height": 150
       }
     }
   },
-  "paint": {
+  "texture": {
     "actor": 0,
-    "type": "paint",
+    "type": "texture",
     "component_data": {
-      "color": {
-        "r": 255,
-        "g": 100,
-        "b": 0,
-        "a": 255
-      }
+      "path": "/images/ufo/ufo_0000.png",
+      "opacity": 255
     }
   },
   "movement_controller": {
@@ -242,7 +245,36 @@
                 "children": [
 
                 ]
+              },
+              {
+                "type": "ai_stats_panel",
+                "position": {
+                  "x": 10,
+                  "y": 500
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 120,
+                  "height": 100
+                },
+                "color": {
+                  "r": 10,
+                  "g": 10,
+                  "b": 10,
+                  "a": 255
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {
+                },
+                "children": [
+
+                ]
               }
+
             ]
           },
           {
@@ -317,7 +349,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "ufo_idle"
     }
   },
   "defeatable": {

@@ -1,4 +1,11 @@
 {
+  "tag": {
+    "actor": 0,
+    "type": "tag",
+    "component_data": {
+      "tag": "player"
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",
@@ -254,7 +261,36 @@
                 "children": [
 
                 ]
+              },
+              {
+                "type": "ai_stats_panel",
+                "position": {
+                  "x": 10,
+                  "y": 500
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 120,
+                  "height": 100
+                },
+                "color": {
+                  "r": 10,
+                  "g": 10,
+                  "b": 10,
+                  "a": 255
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {
+                },
+                "children": [
+
+                ]
               }
+
             ]
           },
           {

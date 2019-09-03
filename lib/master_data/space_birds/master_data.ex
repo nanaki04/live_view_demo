@@ -23,6 +23,8 @@ defmodule SpaceBirds.MasterData do
 
   @type visual_effect_type :: String.t
 
+  @type prototype :: String.t
+
   @spec get_fighter_types() :: [fighter_type]
   def get_fighter_types() do
     with {:ok, json} <- File.read("#{@base_path}fighter_types.json"),
@@ -185,6 +187,39 @@ defmodule SpaceBirds.MasterData do
          {:ok, effect} <- Jason.decode(json, keys: :atoms)
     do
       {:ok, effect}
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_prototype(prototype, Actor.t) :: {:ok, t} | {:error, String.t}
+  def get_prototype(prototype, actor_id) do
+    with {:ok, json} <- File.read("#{@base_path}prototypes/#{prototype}.json"),
+         {:ok, prototype} <- Jason.decode(json, keys: :atoms)
+    do
+      prototype
+      |> put_in([:collider, :component_data, :owner], actor_id)
+      |> put_in([:arsenal, :component_data, :owner], :none)
+      |> update_in([:arsenal, :component_data, :weapons], fn weapons ->
+        Enum.reduce(weapons, %{}, fn weapon, weapons ->
+          Map.put(weapons, weapon.weapon_slot, %{weapon | actor: actor_id})
+        end)
+      end)
+      |> ResultEx.return
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_spawner(prototype) :: {:ok, t} | {:error, atom}
+  def get_spawner(prototype) do
+    with {:ok, json} <- File.read("#{@base_path}spawner.json"),
+         {:ok, spawner} <- Jason.decode(json, keys: :atoms)
+    do
+      spawner = put_in(spawner.spawner.component_data.prototype, prototype)
+      {:ok, spawner}
     else
       error ->
         error

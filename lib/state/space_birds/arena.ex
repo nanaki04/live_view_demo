@@ -77,7 +77,9 @@ defmodule SpaceBirds.State.Arena do
   def init({id, arena_type}) do
     {:ok, arena} = MasterData.get_map(arena_type)
     {:ok, background} = MasterData.get_background(arena_type)
+    {:ok, spawner} = MasterData.get_spawner("ufo")
     {:ok, arena} = add_actor(arena, background)
+    {:ok, arena} = add_actor(arena, spawner)
 
     Process.send_after(self(), :tick, 1000)
 

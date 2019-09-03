@@ -1,8 +1,7 @@
 defmodule SpaceBirds.Behaviour.MoveForward do
-  alias SpaceBirds.Behaviour.Node
   alias SpaceBirds.Components.Movement
   alias SpaceBirds.Components.Components
-  use Node
+  use SpaceBirds.Behaviour.Node
 
   @type t :: %{
     distance: :unlimited | number,
@@ -11,6 +10,11 @@ defmodule SpaceBirds.Behaviour.MoveForward do
 
   defstruct distance: :unlimited,
     distance_left: :unlimited
+
+  @impl(Node)
+  def init(node, _, _component, _arena) do
+    {:ok, update_in(node.node_data, & Map.merge(%__MODULE__{distance_left: &1.distance}, &1))}
+  end
 
   @impl(Node)
   def select(node, _component, _arena) do
@@ -36,7 +40,8 @@ defmodule SpaceBirds.Behaviour.MoveForward do
 
       {:ok, node, arena}
     else
-      _ -> {:ok, node, arena}
+      _ ->
+        {:ok, node, arena}
     end
   end
 

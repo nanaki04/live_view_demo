@@ -1,0 +1,89 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "default",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 0,
+        "height": 0
+      }
+    }
+  },
+  "spawner": {
+    "actor": 0,
+    "type": "spawner",
+    "component_data": {
+      "max_children": 2,
+      "interval": 5000,
+      "time_until_next_spawn": 5000,
+      "prototype": "none"
+    }
+  },
+  "movement": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "bound_by_map": true
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "sequence",
+        "node_data": {
+          "children": [
+            {
+              "type": "turn",
+              "node_data": {
+                "degrees": 90
+              }
+            },
+            {
+              "type": "move_forward",
+              "node_data": {
+                "distance": 500,
+                "distance_left": 500
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "stats": {
+    "actor": 0,
+    "type": "stats",
+    "component_data": {
+      "hp": 1,
+      "max_hp": 1,
+      "shield": 0,
+      "max_shield": 0,
+      "shield_regeneration": 0,
+      "energy": 0,
+      "energy_regeneration": 0,
+      "power": 0,
+      "armor": 0,
+      "top_speed": 1000,
+      "acceleration": 10000,
+      "drag": 1
+    }
+  }
+}

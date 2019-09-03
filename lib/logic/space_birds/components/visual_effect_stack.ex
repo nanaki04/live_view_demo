@@ -48,7 +48,7 @@ defmodule SpaceBirds.Components.VisualEffectStack do
 
   @spec remove_all_visual_effects(Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def remove_all_visual_effects(component, arena) do
-    Enum.reduce(component.component_data.effects, arena, fn
+    Enum.reduce(component.component_data.effects, {:ok, arena}, fn
       {_, effect}, {:ok, arena} ->
         Arena.remove_actor(arena, effect)
       _, error ->

@@ -29,9 +29,9 @@ defmodule SpaceBirds.Collision.Simulation do
     |> Enum.filter(fn {target_collider, _} -> target_collider != collider end)
     |> Enum.filter(fn {target_collider, _} -> is_collider_target?(collider, target_collider) end)
     |> Enum.map(fn {_, target_transform} ->
-      compare_transforms(transform, target_transform, transform.actor, target_transform.actor)
+      compare_transforms(transform, target_transform, transform.actor, target_transform.actor, collider.component_data.owner)
       |> OptionEx.or_try(fn ->
-        compare_transforms(target_transform, transform, transform.actor, target_transform.actor)
+        compare_transforms(target_transform, transform, transform.actor, target_transform.actor, collider.component_data.owner)
       end)
     end)
     |> OptionEx.filter_enum
@@ -50,7 +50,7 @@ defmodule SpaceBirds.Collision.Simulation do
     && collider2.component_data.owner != owner
   end
 
-  defp compare_transforms(transform, target_transform, actor, target_actor) do
+  defp compare_transforms(transform, target_transform, actor, target_actor, owner) do
     Enum.reduce(Transform.get_vertices(transform), :none, fn
       point, :none ->
         Enum.reduce(Transform.get_edges(target_transform), {:some, point}, fn
@@ -63,7 +63,7 @@ defmodule SpaceBirds.Collision.Simulation do
           %{
             sender: {:actor, actor},
             name: :collide,
-            payload: %{at: intersection, target: target_actor}
+            payload: %{at: intersection, target: target_actor, owner: owner}
           }
         end)
       _, action ->

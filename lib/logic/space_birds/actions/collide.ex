@@ -4,7 +4,8 @@ defmodule SpaceBirds.Actions.Collide do
 
   @type t :: %{
     target: Actor.t,
-    at: Position.t
+    at: Position.t,
+    owner: Actor.t
   }
 
   defstruct target: 0,

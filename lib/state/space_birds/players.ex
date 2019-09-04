@@ -29,6 +29,10 @@ defmodule SpaceBirds.State.Players do
     GenServer.call(__MODULE__, {:join, pid, name})
   end
 
+  def leave(player) do
+    GenServer.call(__MODULE__, {:leave, player})
+  end
+
   def find(id) do
     GenServer.call(__MODULE__, {:find, id})
   end
@@ -49,6 +53,12 @@ defmodule SpaceBirds.State.Players do
     players = Map.put(players, id, player)
 
     {:reply, {:ok, player}, {id, players}}
+  end
+
+  def handle_call({:leave, player}, _, {last_id, players}) do
+    players = Map.delete(players, player.id)
+
+    {:reply, :ok, {last_id, players}}
   end
 
   def handle_call({:find, id}, _, {_, players} = state) do

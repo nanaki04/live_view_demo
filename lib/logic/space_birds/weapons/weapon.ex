@@ -2,6 +2,7 @@ defmodule SpaceBirds.Weapons.Weapon do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Actor
   alias SpaceBirds.Logic.Position
+  alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Arsenal
   use SpaceBirds.Utility.MapAccess
 
@@ -18,7 +19,8 @@ defmodule SpaceBirds.Weapons.Weapon do
     weapon_name: weapon_name,
     icon: String.t,
     cooldown: number,
-    cooldown_remaining: number
+    cooldown_remaining: number,
+    instant?: boolean
   }
 
   defstruct actor: 0,
@@ -27,10 +29,12 @@ defmodule SpaceBirds.Weapons.Weapon do
     weapon_name: :undefined,
     icon: "white",
     cooldown: 500,
-    cooldown_remaining: 0
+    cooldown_remaining: 0,
+    instant?: false
 
   @callback fire(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_cooldown(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @callback on_hit(t, damage :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
 
   defmacro __using__(_opts) do
     quote do
@@ -48,18 +52,18 @@ defmodule SpaceBirds.Weapons.Weapon do
         {:ok, arena}
       end
 
-      defoverridable [fire: 3]
+      @impl(Weapon)
+      def on_hit(_, damage, _) do
+        {:ok, damage}
+      end
+
+      defoverridable [fire: 3, on_cooldown: 3, on_hit: 3]
     end
   end
 
   @spec fire(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def fire(weapon, target_position, arena) do
-    module_name = weapon.weapon_name
-                  |> String.split("_")
-                  |> Enum.map(&String.capitalize/1)
-                  |> Enum.join
-
-    full_module_name = Module.concat(SpaceBirds.Weapons, module_name)
+    full_module_name = find_module_name(weapon.weapon_name)
 
     if is_on_cooldown?(weapon) do
       apply(full_module_name, :on_cooldown, [weapon, target_position, arena])
@@ -83,12 +87,32 @@ defmodule SpaceBirds.Weapons.Weapon do
     1 - (weapon.cooldown_remaining / weapon.cooldown)
   end
 
+  def on_hit(weapon_type, actor, damage, arena) do
+    with {:ok, arsenal} <- Components.fetch(arena.components, :arsenal, actor),
+         {_, weapon} <- Enum.find(arsenal.component_data.weapons, &(elem(&1, 1).weapon_name == weapon_type))
+    do
+      module_name = find_module_name(weapon_type)
+      apply(module_name, :on_hit, [weapon, damage, arena])
+    else
+      _ ->
+        {:ok, damage}
+    end
+  end
+
   defp is_on_cooldown?(weapon) do
     weapon.cooldown_remaining > 0
   end
 
   defp start_cooling_down(weapon) do
     put_in(weapon.cooldown_remaining, weapon.cooldown)
+  end
+
+  defp find_module_name(weapon_name) do
+    weapon_name
+    |> String.split("_")
+    |> Enum.map(&String.capitalize/1)
+    |> Enum.join
+    |> (& Module.concat(SpaceBirds.Weapons, &1)).()
   end
 
 end

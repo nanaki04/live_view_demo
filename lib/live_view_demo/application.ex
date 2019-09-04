@@ -14,9 +14,11 @@ defmodule LiveViewDemo.Application do
       LiveViewDemoWeb.Endpoint,
       # Starts a worker by calling: LiveViewDemo.Worker.start_link(arg)
       # {LiveViewDemo.Worker, arg},
+      {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry},
+      {Registry, keys: :unique, name: SpaceBirds.State.ChatRegistry},
       SpaceBirds.State.Players,
       SpaceBirds.State.ArenaSupervisor,
-      {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry},
+      SpaceBirds.State.ChatSupervisor,
       {Task.Supervisor, name: SpaceBirds.TaskSupervisor.Collision}
     ]
 

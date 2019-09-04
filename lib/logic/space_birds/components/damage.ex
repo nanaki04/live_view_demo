@@ -4,6 +4,7 @@ defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.BuffDebuffStack
   alias SpaceBirds.Components.Tag
+  alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.BuffDebuff.ImmuneTo
   alias SpaceBirds.Actions.Actions
   alias SpaceBirds.State.Arena
@@ -16,13 +17,23 @@ defmodule SpaceBirds.Components.Damage do
     damage: number,
     on_hit_effect_paths: [String.t],
     buff_debuff_paths: [String.t],
-    piercing: %{hit_cooldown: number} | false
+    piercing: %{hit_cooldown: number} | false,
+    on_hit: MasterData.weapon_type
   }
 
   defstruct damage: 1,
     on_hit_effect_paths: ["default"],
     buff_debuff_paths: [],
-    piercing: false
+    piercing: false,
+    on_hit: "none"
+
+  @impl(Component)
+  def init(component, arena) do
+    Arena.update_component(arena, component, fn component ->
+      update_in(component.component_data, & Map.merge(%__MODULE__{}, &1))
+      |> ResultEx.return
+    end)
+  end
 
   @impl(Component)
   def run(component, arena) do
@@ -32,13 +43,13 @@ defmodule SpaceBirds.Components.Damage do
     |> Actions.filter_by_action_name(:collide)
     |> Enum.reverse
     |> (fn
-      [%{payload: %{target: target, at: at}} | _] ->
+      [%{payload: %{target: target, at: at, owner: owner}} | _] ->
         with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, target),
              false <- MapSet.member?(readonly_stats.status, {:immune_to, actor}),
              false <- MapSet.member?(readonly_stats.status, {:immune_to, Tag.find_tag(arena, actor)}),
              false <- MapSet.member?(readonly_stats.status, :immune)
         do
-          apply_damage(component, target, at, arena)
+          apply_damage(component, target, at, owner, arena)
         else
           _ ->
             {:ok, arena}
@@ -48,7 +59,12 @@ defmodule SpaceBirds.Components.Damage do
     end).()
   end
 
-  defp apply_damage(component, target, at, arena) do
+  defp apply_damage(component, target, at, owner, arena) do
+    {:ok, component} = case component.component_data.on_hit do
+      "none" -> {:ok, component}
+      weapon -> Weapon.on_hit(weapon, owner, component, arena)
+    end
+
     # play on hit effects
     {:ok, arena} = Enum.reduce(component.component_data.on_hit_effect_paths, {:ok, arena}, fn
       "", {:ok, arena} ->

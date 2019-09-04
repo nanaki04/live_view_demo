@@ -59,3 +59,24 @@
                 "><%= data.text %></div>
   <% end %>
 <% end %>
+
+<div style="position: fixed;
+            left: 600px;
+            top: 675px;
+            width: 400px;
+            height: 150px;
+            color: white;
+            background-color: black;
+            pointer-events: none;">
+
+  <%= if elem(@chat, 0) != nil do %>
+  <div><%= if @typing, do: "> #{@typing}", else: "" %></div>
+  <% end %>
+
+  <hr>
+
+  <%= for message <- elem(@chat, 2) do %>
+    <div><%= "#{message.sender}: #{message.body}" %></div>
+  <% end %>
+
+</div>

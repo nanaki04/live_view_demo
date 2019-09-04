@@ -19,6 +19,16 @@ defmodule SpaceBirds.Components.Arsenal do
     selected_weapon: 0
 
   @impl(Component)
+  def init(component, arena) do
+    Arena.update_component(arena, component, fn component ->
+      update_in(component.component_data.weapons, fn weapons ->
+        Enum.map(weapons, fn {id, weapon} -> {id, Map.merge(%Weapon{}, weapon)} end)
+      end)
+      |> ResultEx.return
+    end)
+  end
+
+  @impl(Component)
   def run(component, arena) do
     {:ok, arena} = Arena.update_component(arena, component, fn component ->
       update_in(component.component_data.weapons, fn weapons ->
@@ -47,12 +57,17 @@ defmodule SpaceBirds.Components.Arsenal do
   @spec run_action(Action.t, Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def run_action(%{name: :swap_weapon, payload: payload}, component, arena) do
     target_weapon = payload.weapon_slot
-    Arena.update_component(arena, component, fn
-      %{component_data: %{selected_weapon: ^target_weapon}} = component ->
-        {:ok, put_in(component.component_data.selected_weapon, 0)}
-      component ->
-        {:ok, put_in(component.component_data.selected_weapon, target_weapon)}
-    end)
+    case Map.fetch(component.component_data.weapons, target_weapon) do
+      {:ok, %{instant?: true} = weapon} ->
+        Weapon.fire(weapon, %{x: 0, y: 0}, arena)
+      _ ->
+        Arena.update_component(arena, component, fn
+          %{component_data: %{selected_weapon: ^target_weapon}} = component ->
+            {:ok, put_in(component.component_data.selected_weapon, 0)}
+          component ->
+            {:ok, put_in(component.component_data.selected_weapon, target_weapon)}
+        end)
+    end
   end
 
   def run_action(%{name: :fire_weapon, payload: payload}, component, arena) do
@@ -69,6 +84,9 @@ defmodule SpaceBirds.Components.Arsenal do
       end
 
       Weapon.fire(weapon, payload.target, arena)
+    else
+      _ ->
+        {:ok, arena}
     end
   end
 end

@@ -81,6 +81,19 @@
             "destination_effect_path": "default",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 2,
+          "weapon_name": "disruptor_flash",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "path": "disruptor_flash",
+            "enhancements": []
+          }
         }
       ],
       "selected_weapon": 0

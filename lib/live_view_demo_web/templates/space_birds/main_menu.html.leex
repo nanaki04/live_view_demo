@@ -23,3 +23,21 @@
   </form>
   <button phx-click="start_game">Go Go Go</button>
 <% end %>
+
+<%= if elem(@chat, 0) != nil do %>
+<form phx-submit="chat">
+  <input type="text" name="body"></input>
+</form>
+<% end %>
+
+<table>
+<tr><td>
+<%= for member <- elem(@chat, 1) do %>
+  <div><%= member %></div>
+<% end %>
+</td><td>
+<%= for message <- elem(@chat, 2) do %>
+  <div><%= "#{message.sender}: #{message.body}" %></div>
+<% end %>
+</td></tr>
+</table>

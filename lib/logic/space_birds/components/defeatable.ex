@@ -17,7 +17,7 @@ defmodule SpaceBirds.Components.Defeatable do
       {:ok, arena} = VisualEffectStack.remove_all_visual_effects(visual_effect_stack, arena)
       {:ok, arena} = Arena.remove_component(arena, :movement_controller, component.actor)
       {:ok, arena} = Arena.remove_component(arena, :movement, component.actor)
-      {:ok, arena} = Arena.remove_component(arena, :arsenal, component.actor)
+      {:ok, arena} = Arena.update_component(arena, :arsenal, component.actor, &{:ok, put_in(&1.component_data.enabled, false)})
       {:ok, arena} = Arena.remove_component(arena, :collider, component.actor)
       {:ok, arena} = Arena.remove_component(arena, :behaviour, component.actor)
       {:ok, arena} = Arena.remove_component(arena, component)

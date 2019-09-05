@@ -59,7 +59,8 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
     {:ok, battle_id, chat_id} = if selected_battle == "new" do
       {:ok, battle_id} = SpaceBirds.State.ArenaSupervisor.start_child()
-      {:ok, chat_id} = SpaceBirds.State.ChatSupervisor.start_child(battle_id)
+      {_via, _Registry, {_ArenaRegistry, raw_id}} = battle_id
+      {:ok, chat_id} = SpaceBirds.State.ChatSupervisor.start_child(raw_id)
       {:ok, battle_id, chat_id}
     else
       battle_id = {:via, Registry, {SpaceBirds.State.ArenaRegistry, selected_battle}}
@@ -173,21 +174,12 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   end
 
   @impl(Phoenix.LiveView)
-  def terminate(_reason, %{assigns: %{player: nil}}) do
-    :ok
-  end
+  def terminate(_reason, socket) do
+    player = socket.assigns.player
+    {chat_id, _, _} = socket.assigns.chat
 
-  def terminate(_reason, %{assigns: %{player: player}, battle: _battle_id}) do
-    Players.leave(player)
-    # TODO leave battle
-  end
-
-  def terminate(_reason, %{assigns: %{player: player}}) do
-    Players.leave(player)
-  end
-
-  def terminate(_, _) do
-    :ok
+    unless player == nil, do: Players.leave(player)
+    unless chat_id == nil, do: ChatRoom.leave(chat_id)
   end
 
   defp push_action(action_name, %{assigns: %{player: player, battle: battle_id}} = socket) do

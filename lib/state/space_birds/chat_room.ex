@@ -1,5 +1,5 @@
 defmodule SpaceBirds.State.ChatRoom do
-  use GenServer
+  use GenServer, restart: :transient
   use SpaceBirds.Utility.MapAccess
   import Kernel, except: [send: 2]
 
@@ -45,6 +45,11 @@ defmodule SpaceBirds.State.ChatRoom do
     GenServer.call(chat_id, {:join, player})
   end
 
+  @spec leave(chat_id) :: :ok | {:error, term}
+  def leave(chat_id) do
+    GenServer.call(chat_id, :leave)
+  end
+
   @spec leave(chat_id, Players.player) :: :ok | {:error, term}
   def leave(chat_id, player) do
     GenServer.call(chat_id, {:leave, player})
@@ -57,6 +62,7 @@ defmodule SpaceBirds.State.ChatRoom do
 
   @impl(GenServer)
   def init(id) do
+    IO.inspect(id, label: :init)
     {:ok, %__MODULE__{id: id}}
   end
 
@@ -82,13 +88,26 @@ defmodule SpaceBirds.State.ChatRoom do
     |> OptionEx.or_else({:reply, {:error, :sender_not_joined}, state})
   end
 
+  def handle_call(:leave, {pid, _}, state) do
+    player_by_pid(state, pid)
+    |> OptionEx.map(fn {player_id, {_, player_name}} ->
+      state = update_in(state.members, &Map.delete(&1, player_id))
+      message = %{body: leave_message(player_name), sender: :system}
+      state = update_in(state.messages, &Enum.slice([message | &1], 0, @message_limit))
+      broadcast(state, player_name)
+
+      destroy_when_empty(state)
+    end)
+    |> OptionEx.or_else({:reply, {:error, :sender_not_joined}, state})
+  end
+
   def handle_call({:leave, player}, _, state) do
     state = update_in(state.members, &Map.delete(&1, player.id))
     message = %{body: leave_message(player.name), sender: :system}
     state = update_in(state.messages, &Enum.slice([message | &1], 0, @message_limit))
     broadcast(state, player.name)
 
-    {:reply, :ok, state}
+    destroy_when_empty(state)
   end
 
   defp names(%{members: members}) do
@@ -100,13 +119,18 @@ defmodule SpaceBirds.State.ChatRoom do
   end
 
   defp name_by_pid(state, pid) do
+    player_by_pid(state, pid)
+    |> OptionEx.map(fn {_, {_, name}} -> name end)
+  end
+
+  defp player_by_pid(state, pid) do
     Enum.find(state.members, fn
       {_, {^pid, _}} -> true
       _ -> false
     end)
     |> (fn
       nil -> :none
-      {_, {_, name}} -> {:some, name}
+      player -> {:some, player}
     end).()
   end
 
@@ -118,6 +142,20 @@ defmodule SpaceBirds.State.ChatRoom do
     |> Enum.each(fn {_, {pid, _}} ->
       Kernel.send(pid, {:chat, state.id, {names(state), messages(state)}})
     end)
+  end
+
+  # never shutdown global chat
+  defp destroy_when_empty(%{id: {_, _, {_, "global"}}} = state) do
+    {:reply, :ok, state}
+  end
+
+  defp destroy_when_empty(%{members: members} = state) do
+    if Enum.empty?(members) do
+      IO.inspect(state.id, label: :stop)
+      {:stop, :normal, :ok, state}
+    else
+      {:reply, :ok, state}
+    end
   end
 
 end

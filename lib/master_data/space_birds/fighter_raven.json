@@ -394,6 +394,12 @@
       "effects": {}
     }
   },
+  "score": {
+    "actor": 0,
+    "type": "score",
+    "component_data": {
+    }
+  },
   "stats": {
     "actor": 0,
     "type": "stats",

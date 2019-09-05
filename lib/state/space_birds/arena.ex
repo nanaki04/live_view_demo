@@ -5,7 +5,11 @@ defmodule SpaceBirds.State.Arena do
   alias SpaceBirds.State.Players
   alias SpaceBirds.Actions.Action
   alias SpaceBirds.MasterData
-  use GenServer
+  # MEMO the restart strategy is transient, but the arena will be shut down normal anyway on the first tick of the recovered state,
+  # since all client references will be booted from the state when an error occurs
+  # this could be improved by either having the players rejoin the recovered process
+  # and if we want to get really crazy, have a backup genserver running to recover the state entirely on restart
+  use GenServer, restart: :transient
 
   @fps 30
 

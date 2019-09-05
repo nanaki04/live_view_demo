@@ -4,6 +4,7 @@ defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.BuffDebuffStack
   alias SpaceBirds.Components.Tag
+  alias SpaceBirds.Components.Score
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.BuffDebuff.ImmuneTo
   alias SpaceBirds.Actions.Actions
@@ -84,9 +85,22 @@ defmodule SpaceBirds.Components.Damage do
     end)
 
     # deal damage to target
-    {:ok, arena} = Arena.update_component(arena, :stats, target, fn stats ->
-      Stats.receive_damage(stats, component, arena)
-    end)
+    {:ok, arena} = with {:ok, stats} <- Components.fetch(arena.components, :stats, target)
+    do
+      life = stats.component_data.hp + stats.component_data.shield
+      {:ok, stats} = Stats.receive_damage(stats, component, arena)
+      damage_done = life - (stats.component_data.hp + stats.component_data.shield)
+      {:ok, arena} = Arena.update_component(arena, stats, fn _ -> {:ok, stats} end)
+      {:ok, arena} = Score.log_damage(arena, damage_done, target, owner)
+      if stats.component_data.hp <= 0 do
+        Score.log_kill(arena, target, owner)
+      else
+        {:ok, arena}
+      end
+    else
+      _ ->
+        {:ok, arena}
+    end
 
     # apply buff / debuffs
     {:ok, arena} = Enum.reduce(component.component_data.buff_debuff_paths, {:ok, arena}, fn

@@ -11,16 +11,19 @@ defmodule SpaceBirds.Components.Arsenal do
   @type t :: %{
     owner: {:some, Players.player_id} | :none,
     weapons: %{Weapon.weapon_slot => Weapon.t},
-    selected_weapon: Weapon.weapon_slot
+    selected_weapon: Weapon.weapon_slot,
+    enabled: boolean
   }
 
   defstruct owner: :none,
     weapons: %{},
-    selected_weapon: 0
+    selected_weapon: 0,
+    enabled: true
 
   @impl(Component)
   def init(component, arena) do
     Arena.update_component(arena, component, fn component ->
+      component = update_in(component.component_data, & Map.merge(%__MODULE__{}, &1))
       update_in(component.component_data.weapons, fn weapons ->
         Enum.map(weapons, fn {id, weapon} -> {id, Map.merge(%Weapon{}, weapon)} end)
       end)
@@ -29,6 +32,10 @@ defmodule SpaceBirds.Components.Arsenal do
   end
 
   @impl(Component)
+  def run(%{component_data: %{enabled: false}}, arena) do
+    {:ok, arena}
+  end
+
   def run(component, arena) do
     {:ok, arena} = Arena.update_component(arena, component, fn component ->
       update_in(component.component_data.weapons, fn weapons ->

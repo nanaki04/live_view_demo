@@ -8,6 +8,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   alias SpaceBirds.Actions.FireWeapon
   alias SpaceBirds.Logic.Position
   alias SpaceBirds.MasterData
+  alias SpaceBirds.UI.Button
 
   @impl(Phoenix.LiveView)
   def render(%{state: %{location: :main_menu}} = assigns) do
@@ -51,7 +52,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
   def handle_event(
     "start_game",
-    _,
+    x,
     %{assigns: %{player: player, state: state, selected_battle: selected_battle, selected_fighter_type: fighter_type}} = socket
   ) do
     {chat_id, _, _} = socket.assigns.chat
@@ -147,6 +148,11 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
   def handle_event("select_fighter", %{"fighter_pulldown" => fighter_type}, socket) do
     assign(socket, :selected_fighter_type, fighter_type)
+    |> noreply
+  end
+
+  def handle_event("button_click", event, socket) do
+    push_action(:button_click, %Button{id: event}, socket)
     |> noreply
   end
 

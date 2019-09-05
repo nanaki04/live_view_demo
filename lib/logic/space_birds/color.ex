@@ -19,6 +19,16 @@ defmodule SpaceBirds.Logic.Color do
     b: 0,
     a: 0
 
+  @spec white() :: t
+  def white() do
+    %Color{r: 255, g: 255, b: 255, a: 255}
+  end
+
+  @spec black() :: t
+  def black() do
+    %Color{r: 0, g: 0, b: 0, a: 255}
+  end
+
   @spec to_hex(t) :: String.t
   def to_hex(%{r: r, g: g, b: b, a: _a}) do
     # TODO handle transparancy

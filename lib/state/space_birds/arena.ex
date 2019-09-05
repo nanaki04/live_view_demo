@@ -106,7 +106,7 @@ defmodule SpaceBirds.State.Arena do
   @impl(GenServer)
   def handle_cast({:join, player, fighter_type}, arena) do
     fighter_id = arena.last_actor_id + 1
-    {:ok, fighter} = MasterData.get_player_fighter(fighter_type, fighter_id, player.id)
+    {:ok, fighter} = MasterData.get_player_fighter(fighter_type, fighter_id, player)
     {:ok, camera} = MasterData.get_camera(player.id, fighter_id)
     {:ok, arena} = add_actor(arena, fighter)
     {:ok, arena} = add_actor(arena, camera)

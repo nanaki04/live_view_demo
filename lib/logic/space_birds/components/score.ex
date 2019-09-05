@@ -7,6 +7,7 @@ defmodule SpaceBirds.Components.Score do
   use Component
 
   @type t :: %{
+    name: String.t,
     kills: number,
     assists: number,
     deaths: number,
@@ -15,7 +16,8 @@ defmodule SpaceBirds.Components.Score do
     dealt_damage_to: MapSet.t(Actor.t)
   }
 
-  defstruct kills: 0,
+  defstruct name: "",
+    kills: 0,
     assists: 0,
     deaths: 0,
     damage_done: 0,

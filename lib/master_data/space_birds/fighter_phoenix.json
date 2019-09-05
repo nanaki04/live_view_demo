@@ -327,8 +327,64 @@
                 "children": [
 
                 ]
+              },
+              {
+                "type": "button",
+                "position": {
+                  "x": 400,
+                  "y": 10
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 20,
+                  "height": 20
+                },
+                "color": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {
+                  "id": "ranking_popup"
+                },
+                "children": [
+
+                ]
               }
             ]
+          },
+          {
+            "type": "ranking_popup",
+            "position": {
+              "x": 140,
+              "y": 120
+            },
+            "world_position": {
+              "x": 0,
+              "y": 0
+            },
+            "size": {
+              "width": 600,
+              "height": 400
+            },
+            "color": {
+              "r": 150,
+              "g": 0,
+              "b": 0,
+              "a": 150
+            },
+            "node_data": {
+              "is_open?": false
+            },
+            "texture": "none",
+            "text": "",
+            "children": []
           }
         ]
       }
@@ -363,6 +419,12 @@
     "type": "visual_effect_stack",
     "component_data": {
       "effects": {}
+    }
+  },
+  "score": {
+    "actor": 0,
+    "type": "score",
+    "component_data": {
     }
   },
   "stats": {

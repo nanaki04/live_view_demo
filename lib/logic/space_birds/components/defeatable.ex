@@ -2,6 +2,7 @@ defmodule SpaceBirds.Components.Defeatable do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Components.Tag
   alias SpaceBirds.Components.Lifetime
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.AnimationPlayer
@@ -24,13 +25,19 @@ defmodule SpaceBirds.Components.Defeatable do
       {:ok, arena} = Arena.update_component(arena, :animation_player, component.actor, fn animation_player ->
         AnimationPlayer.play_animation(animation_player, "fade")
       end)
-      {:ok, arena} = Arena.add_component(arena, %Component{
-        actor: component.actor,
-        type: :lifetime,
-        component_data: %Lifetime{
-          milliseconds: 1000
-        }
-      })
+
+      {:ok, arena} = if Tag.find_tag(arena, component.actor) == "ai" do
+        Arena.add_component(arena, %Component{
+          actor: component.actor,
+          type: :lifetime,
+          component_data: %Lifetime{
+            milliseconds: 1000
+          }
+        })
+      else
+        {:ok, arena}
+      end
+
       Arena.update_component(arena, :stats, component.actor, fn stats ->
         Stats.deactivate(stats)
       end)

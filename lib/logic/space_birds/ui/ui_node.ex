@@ -20,7 +20,8 @@ defmodule SpaceBirds.UI.Node do
     optional(:font_color) => String.t,
     optional(:background) => String.t,
     optional(:texture) => String.t,
-    optional(:opacity) => number
+    optional(:opacity) => number,
+    optional(:button) => String.t
   }
 
   @type t :: %{
@@ -28,6 +29,7 @@ defmodule SpaceBirds.UI.Node do
     position: Position.t,
     world_position: Position.t,
     size: Size.t,
+    children: [t],
     color: Color.t,
     texture: String.t,
     text: String.t,

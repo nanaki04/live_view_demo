@@ -37,13 +37,14 @@ defmodule SpaceBirds.MasterData do
     end
   end
 
-  @spec get_player_fighter(fighter_type, Actor.t, Players.player_id) :: {:ok, t} | {:error, String.t}
-  def get_player_fighter(fighter_type, actor_id, player_id) do
+  @spec get_player_fighter(fighter_type, Actor.t, Players.t) :: {:ok, t} | {:error, String.t}
+  def get_player_fighter(fighter_type, actor_id, player) do
     with {:ok, fighter} <- get_fighter(fighter_type, actor_id) do
       fighter
-      |> put_in([:movement_controller, :component_data, :owner], player_id)
-      |> put_in([:arsenal, :component_data, :owner], {:some, player_id})
-      |> put_in([:ui, :component_data, :owner], player_id)
+      |> put_in([:movement_controller, :component_data, :owner], player.id)
+      |> put_in([:arsenal, :component_data, :owner], {:some, player.id})
+      |> put_in([:ui, :component_data, :owner], player.id)
+      |> put_in([:score, :component_data, :name], player.name)
       |> ResultEx.return
     else
       error ->

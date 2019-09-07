@@ -94,6 +94,19 @@
             "path": "disruptor_flash",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 3,
+          "weapon_name": "ignite",
+          "icon": "white",
+          "cooldown": 500,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "path": "default",
+            "enhancements": []
+          }
         }
       ],
       "selected_weapon": 0

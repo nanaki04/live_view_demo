@@ -13,6 +13,7 @@ defmodule SpaceBirds.Components.Stats do
     | :stun_resistant
     | {:immune_to, Actor.t | String.t}
     | {:diminishing_returns_for, BuffDebuff.buff_debuff_type, level :: number}
+    | {:channeling, Weapon.weapon_slot}
 
   @type t :: %{
     hp: number,
@@ -61,17 +62,21 @@ defmodule SpaceBirds.Components.Stats do
   end
 
   @spec receive_damage(Component.t, Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
-  def receive_damage(component, damage, arena) do
+  def receive_damage(component, damage, arena) when is_number(damage) do
     {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)
-    raw_damage = damage.component_data.damage
-    damage_to_shields = min(raw_damage, component.component_data.shield)
-    damage_to_hull = min(raw_damage - damage_to_shields - adjusted_stats.armor, component.component_data.hp)
+    damage_to_shields = min(damage, component.component_data.shield)
+    damage_to_hull = min(damage - damage_to_shields - adjusted_stats.armor, component.component_data.hp)
                      |> max(0)
 
     component = update_in(component.component_data.shield, & &1 - damage_to_shields)
     component = update_in(component.component_data.hp, & &1 - damage_to_hull)
 
     {:ok, component}
+  end
+
+  def receive_damage(component, damage, arena) do
+    raw_damage = damage.component_data.damage
+    receive_damage(component, raw_damage, arena)
   end
 
   @spec get_readonly(Arena.t, Actor.t) :: {:ok, Component.t} | {:error, String.t}

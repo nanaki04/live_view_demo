@@ -33,7 +33,7 @@ defmodule SpaceBirds.BuffDebuff.BuffDebuff do
     debuff_data: %{},
     diminishing_returns_cooldown: 0
 
-  @callback run(t, buff_debuff_stack :: Componnet.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @callback run(t, buff_debuff_stack :: Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_apply(t, buff_debuff_stack :: Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_remove(t, buff_debuff_stack :: Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback affect_stats(t, stats :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}

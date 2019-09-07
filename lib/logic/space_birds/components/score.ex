@@ -44,15 +44,19 @@ defmodule SpaceBirds.Components.Score do
 
   @spec log_kill(Arena.t, to :: Actor.t, by :: Actor.t) :: {:ok, Arena.t} | {:error, term}
   def log_kill(arena, to, by) do
+    IO.inspect("kill to #{to} by #{by}")
     case Tag.find_tag(arena, to) do
       "player" ->
         map(arena, fn
           %{actor: actor} = score when actor == to ->
+            IO.inspect("log death")
             {:ok, update_in(score.component_data.deaths, &(&1 + 1))}
           %{actor: actor} = score when actor == by ->
+            IO.inspect("log kill")
             score = update_in(score.component_data.dealt_damage_to, & MapSet.delete(&1, to))
             {:ok, update_in(score.component_data.kills, &(&1 + 1))}
           score ->
+            IO.inspect(score)
             score = if MapSet.member?(score.component_data.dealt_damage_to, to) do
               update_in(score.component_data.assists, &(&1 + 1))
             else

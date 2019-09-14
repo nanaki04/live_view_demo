@@ -97,3 +97,10 @@
   <% end %>
 
 </div>
+
+<button phx-click="update_client_version" value=<%= @version %> id="update_client_version_dispatcher"></button>
+
+<script id=<%= @version %>>
+  var button = document.getElementById("update_client_version_dispatcher");
+  button.click();
+</script>

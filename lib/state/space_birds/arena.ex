@@ -3,6 +3,8 @@ defmodule SpaceBirds.State.Arena do
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Logic.Actor
   alias SpaceBirds.State.Players
+  alias SpaceBirds.State.BackPressureSystem
+  alias SpaceBirds.State.BackPressureSupervisor
   alias SpaceBirds.Actions.Action
   alias SpaceBirds.MasterData
   # MEMO the restart strategy is transient, but the arena will be shut down normal anyway on the first tick of the recovered state,
@@ -13,6 +15,8 @@ defmodule SpaceBirds.State.Arena do
 
   @fps 30
 
+  @type id :: GenServer.name
+
   @type t :: %{
     id: GenServer.name,
     components: Components.t,
@@ -21,7 +25,8 @@ defmodule SpaceBirds.State.Arena do
     actions: [term],
     frame_time: number,
     delta_time: number,
-    paused: boolean
+    paused: boolean,
+    version: number
   }
 
   defstruct id: {:via, Registry, {SpaceBirds.State.ArenaRegistry, ""}},
@@ -31,7 +36,8 @@ defmodule SpaceBirds.State.Arena do
     actions: [],
     frame_time: 0,
     delta_time: 0,
-    paused: false
+    paused: false,
+    version: 0
 
   def start_link([id: id]) do
     GenServer.start_link(__MODULE__, {id, :standard}, name: id)
@@ -103,6 +109,15 @@ defmodule SpaceBirds.State.Arena do
     {:reply, state, state}
   end
 
+  def handle_call({:leave, player}, arena) do
+    BackPressureSystem.id(player.id, arena.id)
+    |> BackPressureSystem.stop
+
+    # TODO remove player from arena
+
+    {:reply, :ok, arena}
+  end
+
   @impl(GenServer)
   def handle_cast({:join, player, fighter_type}, arena) do
     fighter_id = arena.last_actor_id + 1
@@ -112,6 +127,8 @@ defmodule SpaceBirds.State.Arena do
     {:ok, arena} = add_actor(arena, camera)
 
     arena = Map.update(arena, :players, [], fn players -> [player | players] end)
+
+    {:ok, _} = BackPressureSupervisor.start_child(player.id, arena.id)
 
     {:noreply, arena}
   end
@@ -126,6 +143,7 @@ defmodule SpaceBirds.State.Arena do
   @impl(GenServer)
   def handle_info(:tick, arena) do
     arena = update_delta_time(arena)
+    arena = update_in(arena.version, &(&1 + 1))
 
     {:ok, arena} = Components.reduce(arena.components, arena, fn component, arena ->
       module_name = Atom.to_string(component.type)
@@ -142,12 +160,21 @@ defmodule SpaceBirds.State.Arena do
     online_players = Enum.filter(arena.players, fn player -> player.pid != nil end)
                      |> Enum.filter(fn player -> Process.alive?(player.pid) end)
 
-    Enum.each(online_players, fn player ->
+    available_players = Enum.filter(online_players, fn player ->
+                          BackPressureSystem.id(player.id, arena.id)
+                          |> BackPressureSystem.push(arena.version)
+                          |> (fn
+                            :ok -> true
+                            :refused -> false
+                          end).()
+                        end)
+
+    Enum.each(available_players, fn player ->
       {_, camera} = Enum.find(cameras, fn {_, camera} ->
         camera.component_data.owner == player.id
       end)
 
-      send(player.pid, {:render, camera.component_data.render_data})
+      send(player.pid, {:render, camera.component_data.render_data, arena.version})
     end)
 
     {:ok, arena} = SpaceBirds.Collision.Simulation.simulate(arena)

@@ -62,7 +62,6 @@ defmodule SpaceBirds.State.ChatRoom do
 
   @impl(GenServer)
   def init(id) do
-    IO.inspect(id, label: :init)
     {:ok, %__MODULE__{id: id}}
   end
 
@@ -151,7 +150,6 @@ defmodule SpaceBirds.State.ChatRoom do
 
   defp destroy_when_empty(%{members: members} = state) do
     if Enum.empty?(members) do
-      IO.inspect(state.id, label: :stop)
       {:stop, :normal, :ok, state}
     else
       {:reply, :ok, state}

@@ -41,7 +41,6 @@ defmodule SpaceBirds.BuffDebuff.Ignite do
         String.to_existing_atom(ignite.debuff_data.curve),
         [%{from: 0, to: ignite.debuff_data.damage}, tick / ignite.debuff_data.ticks]
       ) - ignite.debuff_data.damage_done
-      IO.inspect(damage, label: :ignite_damage)
 
       ignite = update_in(ignite.debuff_data.damage_done, &(&1 + damage))
       ignite = put_in(ignite.debuff_data.current_tick, tick)

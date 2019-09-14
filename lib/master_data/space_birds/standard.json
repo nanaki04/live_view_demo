@@ -7,5 +7,6 @@
   "actions": [],
   "frame_time": 0,
   "delta_time": 0,
-  "paused": false
+  "paused": false,
+  "version": 0
 }

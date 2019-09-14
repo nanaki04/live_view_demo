@@ -3,6 +3,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.ChatRoom
   alias SpaceBirds.State.ChatSupervisor
+  alias SpaceBirds.State.BackPressureSystem
   alias SpaceBirds.Actions.Action
   alias SpaceBirds.Actions.SwapWeapon
   alias SpaceBirds.Actions.FireWeapon
@@ -35,6 +36,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:selected_battle, "new")
     |> assign(:fighter_types, ResultEx.unwrap!(MasterData.get_fighter_types()))
     |> assign(:selected_fighter_type, "hawk")
+    |> assign(:version, 0)
     |> ok
   end
 
@@ -52,7 +54,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
   def handle_event(
     "start_game",
-    x,
+    _,
     %{assigns: %{player: player, state: state, selected_battle: selected_battle, selected_fighter_type: fighter_type}} = socket
   ) do
     {chat_id, _, _} = socket.assigns.chat
@@ -78,6 +80,18 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(chat: {chat_id, members, messages})
     |> assign(state: Map.put(state, :location, :arena))
     |> noreply
+  end
+
+  def handle_event("update_client_version", version, socket) do
+    battle_id = socket.assigns.battle
+    player_id = socket.assigns.player.id
+
+    BackPressureSystem.id(player_id, battle_id)
+          |> GenServer.whereis
+          |> OptionEx.return
+          |> OptionEx.map(fn pid -> BackPressureSystem.confirm(pid, version) end)
+
+    {:noreply, socket}
   end
 
   def handle_event("grid", value, socket) do
@@ -164,8 +178,9 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   end
 
   @impl(Phoenix.LiveView)
-  def handle_info({:render, render_data}, socket) do
+  def handle_info({:render, render_data, version}, socket) do
     assign(socket, :render_data, render_data)
+    |> assign(:version, version)
     |> noreply
   end
 

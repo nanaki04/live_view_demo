@@ -26,8 +26,12 @@ defmodule SpaceBirds.Components.Tag do
 
   @spec find_actors_by_tag(Arena.t, tag | [tag]) :: {:ok, [Actor.t]} | {:error, String.t}
   def find_actors_by_tag(arena, tag) when is_list(tag) do
-    Enum.reduce(tag, [], fn tag, acc ->
-      acc ++ find_actors_by_tag(arena, tag)
+    Enum.reduce(tag, {:ok, []}, fn
+      tag, {:ok, acc} ->
+        find_actors_by_tag(arena, tag)
+        |> ResultEx.map(fn actors -> Enum.uniq(acc ++ actors) end)
+      _, error ->
+        error
     end)
   end
 

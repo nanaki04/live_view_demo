@@ -73,6 +73,8 @@ defmodule SpaceBirds.Components.Components do
       _, :follow -> false
       :camera, _ -> true
       _, :camera -> false
+      :buff_debuff_stack, _ -> true
+      _, :buff_debuff_stack -> false
       _, _ -> true
     end)
   end
@@ -128,12 +130,12 @@ defmodule SpaceBirds.Components.Components do
 
   @spec filter_by_actor(t, Actor.t) :: [Component.t]
   def filter_by_actor(components, actor) do
-    Enum.flat_map(components, fn {component_type, component_list} ->
+    Enum.flat_map(components, fn {_, component_list} ->
       Enum.filter(component_list, fn
-        {^actor, component} -> true
+        {^actor, _} -> true
         _ -> false
       end)
-      |> Enum.map(fn {actor, component} -> component end)
+      |> Enum.map(fn {_, component} -> component end)
     end)
   end
 

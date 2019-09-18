@@ -265,4 +265,19 @@ defmodule SpaceBirds.State.Arena do
       nil -> {:error, "No actor found for player #{player_id}!"}
     end)
   end
+
+  @spec find_player_by_actor(t, Actor.t) :: {:ok, Players.player_id} | {:error, String.t}
+  def find_player_by_actor(arena, actor) do
+    Components.fetch(arena.components, :ui)
+    |> ResultEx.map(fn ui_list ->
+      Enum.find(ui_list, fn
+        {_, %{actor: ^actor}} -> true
+        _ -> false
+      end)
+    end)
+    |> ResultEx.bind(fn
+      {_, %{component_data: %{owner: player_id}}} -> {:ok, player_id}
+      nil -> {:error, "No player found for actor #{actor}!"}
+    end)
+  end
 end

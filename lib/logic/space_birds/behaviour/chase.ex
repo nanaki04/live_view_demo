@@ -34,7 +34,7 @@ defmodule SpaceBirds.Behaviour.Chase do
   def init(node, _, _, _) do
     lerp = case Map.fetch(node.node_data, :lerp) do
       {:ok, lerp} ->
-        update_in(lerp.curve, &String.to_existing_atom/1)
+        {:some, update_in(lerp.curve, &String.to_existing_atom/1)}
       _ ->
         :none
     end
@@ -45,7 +45,8 @@ defmodule SpaceBirds.Behaviour.Chase do
 
   @impl(Node)
   def select(node, component, arena) do
-    with {:ok, actors} <- Tag.find_actors_by_tag(arena, node.node_data.target),
+    with {:ok, [_ | _] = actors} <- Tag.find_actors_by_tag(arena, node.node_data.target)
+                                    |> ResultEx.map(fn actors -> Enum.filter(actors, & &1 != find_self(component, arena)) end),
          {:ok, transforms} <- Enum.map(actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
@@ -68,7 +69,8 @@ defmodule SpaceBirds.Behaviour.Chase do
 
   @impl(Node)
   def run(node, component, arena) do
-    with {:ok, actors} <- Tag.find_actors_by_tag(arena, node.node_data.target),
+    with {:ok, [_ | _] = actors} <- Tag.find_actors_by_tag(arena, node.node_data.target)
+                                    |> ResultEx.map(fn actors -> Enum.filter(actors, & &1 != find_self(component, arena)) end),
          {:ok, transforms} <- Enum.map(actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
@@ -113,7 +115,7 @@ defmodule SpaceBirds.Behaviour.Chase do
     end
   end
 
-  defp move(%{curve: curve, speed: speed}, transform, target_transform, arena) do
+  defp move({:some, %{curve: curve, speed: speed}}, transform, target_transform, arena) do
     with {:ok, movement} <- Components.fetch(arena.components, :movement, transform.actor),
          {:ok, transform} <- Transform.look_at_over_time(transform, target_transform, speed, curve, arena),
          {:ok, arena} <- Arena.update_component(arena, transform, fn _ -> {:ok, transform} end),
@@ -159,6 +161,16 @@ defmodule SpaceBirds.Behaviour.Chase do
       :failure
     else
       :running
+    end
+  end
+
+  defp find_self(component, arena) do
+    with {:ok, collision} <- Components.fetch(arena.components, :collider, component.actor)
+    do
+      collision.component_data.owner
+    else
+      _ ->
+        component.actor
     end
   end
 

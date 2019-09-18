@@ -45,14 +45,16 @@ defmodule SpaceBirds.Components.MovementController do
   def run(component, arena) do
     actor = component.actor
 
-    {:ok, %{component_data: readonly_stats}} = Stats.get_readonly(arena, component.actor)
-
-    if MapSet.member?(readonly_stats.status, :stunned) do
-      component = update_direction(actor, component, arena)
-
-      Arena.update_component(arena, component, fn _ -> {:ok, component} end)
+    with {:ok, stats} <- Stats.get_readonly(arena, component.actor),
+         false <- MapSet.member?(stats.component_data.status, :stunned),
+         :none <- Stats.find_status(stats, :channeling)
+    do
+      move(actor, stats.component_data, component, arena)
     else
-      move(actor, readonly_stats, component, arena)
+      _ ->
+        # MEMO: does not actually turn, but consumes key presses to prevent corrupt keypress / movement status
+        component = update_direction(actor, component, arena)
+        Arena.update_component(arena, component, fn _ -> {:ok, component} end)
     end
   end
 

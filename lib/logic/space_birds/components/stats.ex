@@ -165,4 +165,14 @@ defmodule SpaceBirds.Components.Stats do
     end
   end
 
+  @spec find_status(t, atom) :: OptionEx.t
+  def find_status(component, status) do
+    Enum.find(component.component_data.status, fn
+      ^status -> true
+      {^status, _} -> true
+      _ -> false
+    end)
+    |> OptionEx.return
+  end
+
 end

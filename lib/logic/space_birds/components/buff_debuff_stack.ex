@@ -46,16 +46,15 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
     end)
   end
 
-  @spec remove_by_type(Component.t, MasterData.buff_debuff_type) :: {:ok, Component.t} | {:error, String.t}
-  def remove_by_type(component, buff_debuff_type) do
-    update_in(component.component_data.buff_debuffs, fn buff_debuffs ->
-      Enum.filter(buff_debuffs, fn
-        {_, %{type: ^buff_debuff_type}} -> false
-        _ -> true
-      end)
-      |> Enum.into(%{})
+  @spec remove_by_type(Component.t, MasterData.buff_debuff_type, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  def remove_by_type(component, buff_debuff_type, arena) do
+    filter_by_type(component, buff_debuff_type)
+    |> Enum.reduce({:ok, arena}, fn
+      buff_debuff, {:ok, arena} ->
+        {:ok, component} = Components.fetch(arena.components, :buff_debuff_stack, component.actor)
+        BuffDebuff.on_remove(buff_debuff, component, arena)
+      _, error -> error
     end)
-    |> ResultEx.return
   end
 
   @spec filter_by_type(Component.t, MasterData.buff_debuff_type) :: [BuffDebuff.t]
@@ -64,6 +63,7 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
       {_, %{type: ^buff_debuff_type}} -> true
       _ -> false
     end)
+    |> Enum.map(fn {_, buff_debuff} -> buff_debuff end)
   end
 
   @spec count_by_type(Component.t, MasterData.buff_debuff_type) :: number

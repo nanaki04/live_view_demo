@@ -218,6 +218,12 @@ defmodule SpaceBirds.BuffDebuff.BuffDebuff do
     |> apply(:affect_stats, [buff_debuff, stats, arena])
   end
 
+  @spec on_remove(t, buff_debuff_stack :: Component.t, Arena.t) :: {:ok, Arena.t} | {:error, term}
+  def on_remove(buff_debuff, buff_debuff_stack, arena) do
+    get_module_name(buff_debuff)
+    |> apply(:on_remove, [buff_debuff, buff_debuff_stack, arena])
+  end
+
   defp get_module_name(buff_debuff) do
     buff_debuff.type
     |> String.split("_")

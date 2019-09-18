@@ -34,6 +34,7 @@ defmodule SpaceBirds.Weapons.Weapon do
 
   @callback fire(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_cooldown(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @callback run(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_hit(t, damage :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
 
   defmacro __using__(_opts) do
@@ -43,13 +44,18 @@ defmodule SpaceBirds.Weapons.Weapon do
       @behaviour Weapon
 
       @impl(Weapon)
-      def fire(_component, _target_position, arena) do
+      def fire(_weapon, _target_position, arena) do
         {:ok, arena}
       end
 
       @impl(Weapon)
-      def on_cooldown(_component, _target_position, arena) do
+      def on_cooldown(_weapon, _target_position, arena) do
         {:ok, arena}
+      end
+
+      @impl(Weapon)
+      def run(weapon, arena) do
+        cool_down(weapon, arena)
       end
 
       @impl(Weapon)
@@ -57,7 +63,14 @@ defmodule SpaceBirds.Weapons.Weapon do
         {:ok, damage}
       end
 
-      defoverridable [fire: 3, on_cooldown: 3, on_hit: 3]
+      defp cool_down(weapon, arena) do
+        Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
+          weapon = update_in(weapon.cooldown_remaining, & max(0, &1 - arena.delta_time * 1000))
+          Arsenal.put_weapon(arsenal, weapon)
+        end)
+      end
+
+      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3]
     end
   end
 
@@ -77,9 +90,10 @@ defmodule SpaceBirds.Weapons.Weapon do
     end
   end
 
-  @spec cool_down(t, Arena.t) :: t
-  def cool_down(weapon, arena) do
-    update_in(weapon.cooldown_remaining, & max(0, &1 - arena.delta_time * 1000))
+  @spec run(t, Arena.t) :: {:ok, Arena.t} | {:error, term}
+  def run(weapon, arena) do
+    find_module_name(weapon.weapon_name)
+    |> apply(:run, [weapon, arena])
   end
 
   @spec cooldown_progress(t) :: number

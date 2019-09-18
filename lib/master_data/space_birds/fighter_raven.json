@@ -107,6 +107,25 @@
             "path": "default",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 4,
+          "weapon_name": "plasma_overload",
+          "icon": "white",
+          "cooldown": 3000,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "path": "plasma_overload",
+            "enhancements": [],
+            "channel_effect_path": "slow",
+            "channel_time": 5000,
+            "charges": 30,
+            "channel_time_remaining": 5000,
+            "channeling": false,
+            "projectile_count": 0
+          }
         }
       ],
       "selected_weapon": 0

@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 4000,
+    "is_loop?": true,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/fighters/phoenix_red/phoenix_red"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 4000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 42,
+              "path": "/images/fighters/phoenix_red/phoenix_red"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

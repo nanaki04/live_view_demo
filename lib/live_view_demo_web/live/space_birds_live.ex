@@ -204,8 +204,8 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       unless player.battle_id == nil, do: GenServer.call(player.battle_id, {:leave, player})
     end)
 
-    OptionEx.return(socket.assigns.chat)
-    |> OptionEx.map(fn {chat_id, _, _} -> ChatRoom.leave(chat_id) end)
+    {chat_id, _, _} = socket.assigns.chat
+    unless chat_id == nil, do: ChatRoom.leave(chat_id)
   end
 
   defp push_action(action_name, %{assigns: %{player: player, battle: battle_id}} = socket) do

@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 500,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/rail_gun/rail_gun"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 500,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 13,
+              "path": "/images/rail_gun/rail_gun"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

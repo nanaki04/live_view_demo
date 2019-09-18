@@ -32,5 +32,12 @@
       },
       "starting_animation": "plasma_burst_on_hit"
     }
+  },
+  "lifetime": {
+    "actor": 0,
+    "type": "lifetime",
+    "component_data": {
+      "milliseconds": 1000
+    }
   }
 }

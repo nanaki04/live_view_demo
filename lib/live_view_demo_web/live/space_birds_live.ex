@@ -198,11 +198,14 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
   @impl(Phoenix.LiveView)
   def terminate(_reason, socket) do
-    player = socket.assigns.player
-    {chat_id, _, _} = socket.assigns.chat
+    OptionEx.return(socket.assigns.player)
+    |> OptionEx.map(fn player ->
+      Players.leave(player)
+      unless player.battle_id == nil, do: GenServer.call(player.battle_id, {:leave, player})
+    end)
 
-    unless player == nil, do: Players.leave(player)
-    unless chat_id == nil, do: ChatRoom.leave(chat_id)
+    OptionEx.return(socket.assigns.chat)
+    |> OptionEx.map(fn {chat_id, _, _} -> ChatRoom.leave(chat_id) end)
   end
 
   defp push_action(action_name, %{assigns: %{player: player, battle: battle_id}} = socket) do

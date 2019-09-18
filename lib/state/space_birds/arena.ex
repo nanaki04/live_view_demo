@@ -109,13 +109,21 @@ defmodule SpaceBirds.State.Arena do
     {:reply, state, state}
   end
 
-  def handle_call({:leave, player}, arena) do
+  def handle_call({:leave, player}, _, arena) do
     BackPressureSystem.id(player.id, arena.id)
     |> BackPressureSystem.stop
 
-    # TODO remove player from arena
+    arena = update_in(arena.players, fn players ->
+      Enum.filter(players, fn joined_player ->
+        joined_player.id != player.id
+      end)
+    end)
 
-    {:reply, :ok, arena}
+    if length(arena.players) <= 0 do
+      {:stop, :normal, :ok, arena}
+    else
+      {:reply, :ok, arena}
+    end
   end
 
   @impl(GenServer)
@@ -213,6 +221,7 @@ defmodule SpaceBirds.State.Arena do
   @spec add_actor(t, %{term => term}) :: {:ok, t} | {:error, String.t}
   def add_actor(arena, actor) do
     id = arena.last_actor_id + 1
+    IO.inspect(id, label: :adding_actor)
     arena = %{arena | last_actor_id: id}
     Enum.reduce(actor, {:ok, arena}, fn
       {_component_type, component}, {:ok, arena} ->
@@ -231,6 +240,7 @@ defmodule SpaceBirds.State.Arena do
 
   @spec remove_actor(t, Actor.t) :: {:ok, t} | {:error, String.t}
   def remove_actor(arena, actor) do
+    IO.inspect(actor, label: :remove_actor)
     #    Components.filter_by_actor(arena.components, actor)
     #    |> Enum.reduce({:ok, arena}, fn
     #      component, {:ok, arena} -> Component.destroy(component, arena)

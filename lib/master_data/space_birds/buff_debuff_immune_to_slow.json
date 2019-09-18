@@ -1,0 +1,14 @@
+{
+  "id": 0,
+  "type": "immune_to",
+  "time": 1000,
+  "time_remaining": 1000,
+  "effect_type": "none",
+  "icon_path": "none",
+  "diminishing_returns_cooldown": 0,
+  "buff_data": {
+    "to": "slow"
+  },
+  "debuff_data": {
+  }
+}

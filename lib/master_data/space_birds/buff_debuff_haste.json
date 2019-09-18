@@ -1,0 +1,24 @@
+{
+  "id": 0,
+  "type": "haste",
+  "time": 3000,
+  "time_remaining": 3000,
+  "effect_type": "none",
+  "icon_path": "white",
+  "diminishing_returns_cooldown": 3000,
+  "buff_data": {
+    "acceleration_increase": {
+      "from": 750,
+      "to": 0
+    },
+    "top_speed_increase": {
+      "from": 150,
+      "to": 0
+    },
+    "drag_decrease": {
+      "from": 1.5,
+      "to": 0
+    }
+  },
+  "debuff_data": {}
+}

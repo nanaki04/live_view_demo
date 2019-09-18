@@ -79,7 +79,9 @@
           "weapon_data": {
             "origin_effect_path": "default",
             "destination_effect_path": "default",
-            "enhancements": []
+            "enhancements": [],
+            "extra_charge_window": 3000,
+            "extra_charge_timer": 0
           }
         },
         {
@@ -500,9 +502,9 @@
       "energy_regeneration": 1,
       "power": 10,
       "armor": 1,
-      "top_speed": 500,
+      "top_speed": 400,
       "drag": 2,
-      "acceleration": 3000
+      "acceleration": 2000
     }
   }
 }

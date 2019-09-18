@@ -59,15 +59,28 @@ defmodule SpaceBirds.Collision.Simulation do
           target_edge, some_point ->
             if Edge.is_starboard?(target_edge, point), do: some_point, else: :none
         end)
-        |> OptionEx.map(fn intersection ->
-          %{
-            sender: {:actor, actor},
-            name: :collide,
-            payload: %{at: intersection, target: target_actor, owner: owner}
-          }
-        end)
-      _, action ->
-        action
+      _, {:some, point} ->
+        {:some, point}
+    end)
+    |> OptionEx.or_try(fn ->
+      Enum.reduce(Transform.get_edges(transform), :none, fn
+        edge, :none ->
+          Enum.reduce(Transform.get_edges(target_transform), :none, fn
+            target_edge, :none ->
+              Edge.intersects_at(edge, target_edge)
+            _, {:some, point} ->
+              {:some, point}
+          end)
+        _, {:some, point} ->
+          {:some, point}
+      end)
+    end)
+    |> OptionEx.map(fn intersection ->
+      %{
+        sender: {:actor, actor},
+        name: :collide,
+        payload: %{at: intersection, target: target_actor, owner: owner}
+      }
     end)
   end
 

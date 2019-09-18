@@ -66,6 +66,18 @@
             "projectile_path": "default",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 1,
+          "weapon_name": "rail_gun",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "weapon_data": {
+            "projectile_path": "default",
+            "enhancements": []
+          }
         }
       ],
       "selected_weapon": 0

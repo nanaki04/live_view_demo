@@ -44,20 +44,44 @@ defmodule SpaceBirds.Components.Damage do
     |> Actions.filter_by_action_name(:collide)
     |> Enum.reverse
     |> (fn
-      [%{payload: %{target: target, at: at, owner: owner}} | _] ->
-        with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, target),
-             false <- MapSet.member?(readonly_stats.status, {:immune_to, actor}),
-             false <- MapSet.member?(readonly_stats.status, {:immune_to, Tag.find_tag(arena, actor)}),
-             false <- MapSet.member?(readonly_stats.status, :immune)
-        do
-          apply_damage(component, target, at, owner, arena)
-        else
+      [_ | _] = collisions ->
+        case Map.fetch(component.component_data, :piercing) do
+          {:ok, _} ->
+            Enum.reduce(collisions, {:ok, arena}, fn
+              %{payload: %{target: target, at: at, owner: owner}}, {:ok, arena} ->
+                unless target_is_immune?(target, actor, arena) do
+                  apply_damage(component, target, at, owner, arena)
+                else
+                  {:ok, arena}
+                end
+              _, error ->
+                error
+            end)
           _ ->
-            {:ok, arena}
+            %{payload: %{target: target, at: at, owner: owner}} = hd(collisions)
+
+            unless target_is_immune?(target, actor, arena) do
+              apply_damage(component, target, at, owner, arena)
+            else
+              {:ok, arena}
+            end
         end
       _ ->
         {:ok, arena}
     end).()
+  end
+
+  defp target_is_immune?(target, actor, arena) do
+    with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, target),
+         false <- MapSet.member?(readonly_stats.status, {:immune_to, actor}),
+         false <- MapSet.member?(readonly_stats.status, {:immune_to, Tag.find_tag(arena, actor)}),
+         false <- MapSet.member?(readonly_stats.status, :immune)
+    do
+      false
+    else
+      _ ->
+        true
+    end
   end
 
   defp apply_damage(component, target, at, owner, arena) do

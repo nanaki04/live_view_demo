@@ -2,7 +2,7 @@
   {
     "id": 0,
     "time": 0,
-    "duration": 3000,
+    "duration": 1500,
     "is_loop?": true,
     "key_frames": {
       "opacity_frame": {
@@ -31,7 +31,7 @@
           },
           {
             "type": "texture_frame",
-            "time": 3000,
+            "time": 1500,
             "tween_type": "linear",
             "frame_data": {
               "value": 65,

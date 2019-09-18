@@ -79,7 +79,7 @@ defmodule SpaceBirds.Components.Arsenal do
     with {:ok, readonly_stats} <- Stats.get_readonly(arena, component.actor),
          false <- MapSet.member?(readonly_stats.component_data.status, :stunned),
          :none <- Stats.find_status(readonly_stats, :channeling),
-         {:ok, weapon} = Map.fetch(component.component_data.weapons, component.component_data.selected_weapon)
+         {:ok, weapon} <- Map.fetch(component.component_data.weapons, component.component_data.selected_weapon)
     do
       {:ok, arena} = if component.component_data.selected_weapon != 0 do
         Arena.update_component(arena, component, fn component ->

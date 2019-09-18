@@ -45,6 +45,7 @@
       },
       "bound_by_map": true,
       "visual_effects": [
+        "phoenix_red_exhaust"
       ]
     }
   },

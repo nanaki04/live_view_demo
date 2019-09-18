@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 3000,
+    "is_loop?": true,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 35,
+              "path": "/images/phoenix_exhaust_red/phoenix_red_vent"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 3000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 65,
+              "path": "/images/phoenix_exhaust_red/phoenix_red_vent"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

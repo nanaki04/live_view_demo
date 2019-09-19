@@ -1,0 +1,24 @@
+{
+  "id": 0,
+  "type": "haste",
+  "time": 3000,
+  "time_remaining": 3000,
+  "effect_type": "after_burner",
+  "icon_path": "white",
+  "diminishing_returns_cooldown": 3000,
+  "buff_data": {
+    "acceleration_increase": {
+      "from": 1500,
+      "to": 0
+    },
+    "top_speed_increase": {
+      "from": 500,
+      "to": 0
+    },
+    "drag_decrease": {
+      "from": 2,
+      "to": 0
+    }
+  },
+  "debuff_data": {}
+}

@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": true,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 36,
+              "path": "/images/shockwave/shockwave"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 1000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 48,
+              "path": "/images/shockwave/shockwave"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

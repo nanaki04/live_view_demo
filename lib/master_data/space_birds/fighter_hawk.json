@@ -78,6 +78,36 @@
             "projectile_path": "default",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 2,
+          "weapon_name": "after_burner",
+          "icon": "white",
+          "cooldown": 20000,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "projectile_path": "default",
+            "enhancements": []
+          }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 3,
+          "weapon_name": "space_mine",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "path": "space_mine",
+            "channel_effect_path": "none",
+            "enhancements": [],
+            "channel_time": 1000,
+            "channel_time_remaining": 0,
+            "channeling": false
+          }
         }
       ],
       "selected_weapon": 0

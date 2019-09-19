@@ -53,12 +53,13 @@ defmodule SpaceBirds.Behaviour.Chase do
          {:some, closest_target} <- Transform.find_closest_target(transform, transforms)
     do
       distance = Transform.distance_to(transform, closest_target)
+
       node.node_data.state
       |> verify_scan_distance(node.node_data.scan_distance, distance)
       |> verify_distance_until_giveup(node.node_data.distance_until_giveup, distance)
       |> verify_target_distance(node.node_data.target_distance, distance)
       |> (fn
-        :running -> {:running, node}
+        :running -> {:running, node} |> IO.inspect(label: :running_node)
         state -> state
       end).()
     else
@@ -130,6 +131,7 @@ defmodule SpaceBirds.Behaviour.Chase do
 
   defp verify_scan_distance(:failure, scan_distance, distance) do
     if distance <= scan_distance do
+      IO.inspect({distance, scan_distance}, label: :within_scan_distance)
       :running
     else
       :failure
@@ -148,6 +150,7 @@ defmodule SpaceBirds.Behaviour.Chase do
     if distance <= target_distance do
       :success
     else
+      IO.inspect({distance, target_distance}, label: :target_not_yet_reached)
       :running
     end
   end
@@ -158,6 +161,7 @@ defmodule SpaceBirds.Behaviour.Chase do
 
   defp verify_distance_until_giveup(_, distance_until_giveup, distance) do
     if distance > distance_until_giveup do
+      IO.inspect({distance, distance_until_giveup}, label: :target_not_out_of_range)
       :failure
     else
       :running

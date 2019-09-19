@@ -10,8 +10,8 @@
       },
       "rotation": 0,
       "size": {
-        "width": 40,
-        "height": 100
+        "width": 50,
+        "height": 50
       }
     }
   },
@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/laser_beam/laser_beam_0000.png",
+      "path": "/images/plasma_burst/plasma_burst_0009.png",
       "opacity": 255
     }
   },
@@ -37,7 +37,7 @@
     "actor": 0,
     "type": "lifetime",
     "component_data": {
-      "milliseconds": 1000
+      "milliseconds": 60000
     }
   },
   "movement_controller": {
@@ -62,14 +62,20 @@
     "component_data": {
       "running_node": "none",
       "node_tree": {
-        "type": "sequence",
+        "type": "selector",
         "node_data": {
           "children": [
             {
-              "type": "move_forward",
+              "type": "chase",
               "node_data": {
-                "distance": 2000,
-                "distance_left": 2000
+                "target": ["player", "ai"],
+                "scan_distance": 300,
+                "target_distance": 0,
+                "distance_until_giveup": 600,
+                "lerp": {
+                  "curve": "linear",
+                  "speed": 10
+                }
               }
             }
           ]
@@ -90,9 +96,9 @@
     "actor": 0,
     "type": "damage",
     "component_data": {
-      "damage": 20,
-      "on_hit_effect_paths": ["explosion_red_on_hit"],
-      "buff_debuff_paths": [],
+      "damage": 50,
+      "on_hit_effect_paths": ["plasma_burst_on_hit"],
+      "buff_debuff_paths": ["stun"],
       "piercing": false
     }
   },
@@ -109,8 +115,8 @@
       "energy_regeneration": 0,
       "power": 0,
       "armor": 0,
-      "top_speed": 2500,
-      "acceleration": 80000,
+      "top_speed": 1000,
+      "acceleration": 5000,
       "drag": 1
     }
   },
@@ -120,7 +126,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "plasma_burst"
     }
   }
 }

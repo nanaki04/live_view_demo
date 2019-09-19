@@ -4,6 +4,9 @@ defmodule SpaceBirds.Weapons.Weapon do
   alias SpaceBirds.Logic.Position
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Arsenal
+  alias SpaceBirds.Components.Stats
+  alias SpaceBirds.Components.BuffDebuffStack
+  alias SpaceBirds.BuffDebuff.Channel
   use SpaceBirds.Utility.MapAccess
 
   @type weapon_data :: term
@@ -20,7 +23,11 @@ defmodule SpaceBirds.Weapons.Weapon do
     icon: String.t,
     cooldown: number,
     cooldown_remaining: number,
-    instant?: boolean
+    instant?: boolean,
+    channel_effect_path: String.t,
+    channeling: boolean,
+    channel_time: number,
+    channel_time_remaining: number
   }
 
   defstruct actor: 0,
@@ -30,11 +37,16 @@ defmodule SpaceBirds.Weapons.Weapon do
     icon: "white",
     cooldown: 500,
     cooldown_remaining: 0,
-    instant?: false
+    instant?: false,
+    channel_effect_path: "none",
+    channeling: false,
+    channel_time: 0,
+    channel_time_remaining: 0
 
   @callback fire(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_cooldown(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback run(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @callback on_channel(t, channel_time_remaining :: number, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_hit(t, damage :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
 
   defmacro __using__(_opts) do
@@ -43,9 +55,11 @@ defmodule SpaceBirds.Weapons.Weapon do
       alias SpaceBirds.Weapons.Weapon
       @behaviour Weapon
 
+      @default_channel_effect "none"
+
       @impl(Weapon)
-      def fire(_weapon, _target_position, arena) do
-        {:ok, arena}
+      def fire(weapon, _target_position, arena) do
+        start_channeling(weapon, arena)
       end
 
       @impl(Weapon)
@@ -55,12 +69,18 @@ defmodule SpaceBirds.Weapons.Weapon do
 
       @impl(Weapon)
       def run(weapon, arena) do
-        cool_down(weapon, arena)
+        {:ok, arena} = cool_down(weapon, arena)
+        channel(weapon, arena)
       end
 
       @impl(Weapon)
       def on_hit(_, damage, _) do
         {:ok, damage}
+      end
+
+      @impl(Weapon)
+      def on_channel(_weapon, _channel_time_remaining, arena) do
+        {:ok, arena}
       end
 
       defp cool_down(weapon, arena) do
@@ -70,7 +90,87 @@ defmodule SpaceBirds.Weapons.Weapon do
         end)
       end
 
-      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3]
+      defp start_channeling(%{channel_time: 0}, arena) do
+        {:ok, arena}
+      end
+
+      defp start_channeling(weapon, arena) do
+        with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
+        do
+          path = if weapon.channel_effect_path == "default" do
+                   @default_channel_effect
+                 else
+                   weapon.channel_effect_path
+                 end
+
+          channel = Channel.new(weapon.weapon_slot, path)
+          {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, channel, arena)
+
+          Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
+            weapon = put_in(weapon.channeling, true)
+            weapon = put_in(weapon.channel_time_remaining, weapon.channel_time)
+            Arsenal.put_weapon(arsenal, weapon)
+          end)
+        else
+          _ ->
+            {:ok, arena}
+        end
+      end
+
+      defp channel(%{channeling: false}, arena) do
+        {:ok, arena}
+      end
+
+      defp channel(weapon, arena) do
+        if channeling?(weapon, arena) do
+          weapon = update_channel_time(weapon, arena)
+          {:ok, arena} = update_weapon(weapon, arena)
+          on_channel(weapon, weapon.channel_time_remaining, arena)
+        else
+          weapon = put_in(weapon.channeling, false)
+          {:ok, arena} = update_weapon(weapon, arena)
+          remove_channel(weapon, arena)
+        end
+      end
+
+      defp channeling?(%{weapon_data: %{channeling: false}}, arena) do
+        false
+      end
+
+      defp channeling?(weapon, arena) do
+        with {:ok, stats} <- Stats.get_readonly(arena, weapon.actor),
+             false <- MapSet.member?(stats.component_data.status, :stunned),
+             true <- MapSet.member?(stats.component_data.status, {:channeling, weapon.weapon_slot}),
+             true <- weapon.channel_time_remaining > 0
+        do
+          true
+        else
+          _ ->
+            false
+        end
+      end
+
+      defp update_channel_time(weapon, arena) do
+        update_in(weapon.channel_time_remaining, &(max(0, &1 - arena.delta_time * 1000)))
+      end
+
+      defp remove_channel(weapon, arena) do
+        with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
+        do
+          BuffDebuffStack.remove_by_type(buff_debuff_stack, "channel", arena)
+        else
+          _ ->
+            {:ok, arena}
+        end
+      end
+
+      defp update_weapon(weapon, arena) do
+        Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
+          Arsenal.put_weapon(arsenal, weapon)
+        end)
+      end
+
+      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3, on_channel: 3]
     end
   end
 

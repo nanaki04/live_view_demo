@@ -118,14 +118,12 @@
           "cooldown": 3000,
           "cooldown_remaining": 0,
           "instant?": true,
+          "channel_effect_path": "slow",
+          "channel_time": 5000,
           "weapon_data": {
             "path": "plasma_overload",
             "enhancements": [],
-            "channel_effect_path": "slow",
-            "channel_time": 5000,
             "charges": 30,
-            "channel_time_remaining": 5000,
-            "channeling": false,
             "projectile_count": 0
           }
         }

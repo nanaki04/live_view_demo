@@ -221,7 +221,6 @@ defmodule SpaceBirds.State.Arena do
   @spec add_actor(t, %{term => term}) :: {:ok, t} | {:error, String.t}
   def add_actor(arena, actor) do
     id = arena.last_actor_id + 1
-    IO.inspect(id, label: :adding_actor)
     arena = %{arena | last_actor_id: id}
     Enum.reduce(actor, {:ok, arena}, fn
       {_component_type, component}, {:ok, arena} ->
@@ -240,7 +239,6 @@ defmodule SpaceBirds.State.Arena do
 
   @spec remove_actor(t, Actor.t) :: {:ok, t} | {:error, String.t}
   def remove_actor(arena, actor) do
-    IO.inspect(actor, label: :remove_actor)
     #    Components.filter_by_actor(arena.components, actor)
     #    |> Enum.reduce({:ok, arena}, fn
     #      component, {:ok, arena} -> Component.destroy(component, arena)

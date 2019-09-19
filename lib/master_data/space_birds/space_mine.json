@@ -62,7 +62,7 @@
     "component_data": {
       "running_node": "none",
       "node_tree": {
-        "type": "selector",
+        "type": "sequence",
         "node_data": {
           "children": [
             {
@@ -70,13 +70,17 @@
               "node_data": {
                 "target": ["player", "ai"],
                 "scan_distance": 300,
-                "target_distance": 0,
+                "target_distance": 50,
                 "distance_until_giveup": 600,
                 "lerp": {
                   "curve": "linear",
                   "speed": 10
                 }
               }
+            },
+            {
+              "type": "destroy_self",
+              "node_data": {}
             }
           ]
         }
@@ -99,7 +103,9 @@
       "damage": 50,
       "on_hit_effect_paths": ["plasma_burst_on_hit"],
       "buff_debuff_paths": ["stun"],
-      "piercing": false
+      "piercing": {
+        "hit_cooldown": 1000
+      }
     }
   },
   "stats": {

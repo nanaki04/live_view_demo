@@ -100,13 +100,11 @@
           "cooldown": 10000,
           "cooldown_remaining": 0,
           "instant?": true,
+          "channel_effect_path": "none",
+          "channel_time": 1000,
           "weapon_data": {
             "path": "space_mine",
-            "channel_effect_path": "none",
-            "enhancements": [],
-            "channel_time": 1000,
-            "channel_time_remaining": 0,
-            "channeling": false
+            "enhancements": []
           }
         }
       ],

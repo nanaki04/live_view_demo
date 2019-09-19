@@ -74,6 +74,7 @@
           "icon": "white",
           "cooldown": 10000,
           "cooldown_remaining": 0,
+          "energy_cost": 15,
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []
@@ -87,6 +88,7 @@
           "cooldown": 20000,
           "cooldown_remaining": 0,
           "instant?": true,
+          "energy_cost": 5,
           "weapon_data": {
             "projectile_path": "default",
             "enhancements": []
@@ -102,6 +104,7 @@
           "instant?": true,
           "channel_effect_path": "none",
           "channel_time": 1000,
+          "energy_cost": 10,
           "weapon_data": {
             "path": "space_mine",
             "enhancements": []
@@ -477,7 +480,7 @@
       "max_shield": 500,
       "shield_regeneration": 1,
       "energy": 100,
-      "energy_regeneration": 1,
+      "energy_regeneration": 0.2,
       "power": 10,
       "armor": 1,
       "top_speed": 400,

@@ -76,6 +76,7 @@
           "icon": "white",
           "cooldown": 10000,
           "cooldown_remaining": 0,
+          "energy_cost": 10,
           "weapon_data": {
             "origin_effect_path": "default",
             "destination_effect_path": "default",
@@ -92,6 +93,7 @@
           "cooldown": 10000,
           "cooldown_remaining": 0,
           "instant?": true,
+          "energy_cost": 20,
           "weapon_data": {
             "path": "disruptor_flash",
             "enhancements": []
@@ -105,6 +107,7 @@
           "cooldown": 500,
           "cooldown_remaining": 0,
           "instant?": true,
+          "energy_cost": 50,
           "weapon_data": {
             "path": "default",
             "enhancements": []
@@ -120,6 +123,7 @@
           "instant?": true,
           "channel_effect_path": "slow",
           "channel_time": 5000,
+          "energy_cost": 50,
           "weapon_data": {
             "path": "plasma_overload",
             "enhancements": [],
@@ -497,7 +501,7 @@
       "max_shield": 500,
       "shield_regeneration": 1,
       "energy": 100,
-      "energy_regeneration": 1,
+      "energy_regeneration": 10,
       "power": 10,
       "armor": 1,
       "top_speed": 400,

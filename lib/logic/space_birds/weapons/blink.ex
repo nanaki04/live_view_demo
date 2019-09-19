@@ -88,7 +88,8 @@ defmodule SpaceBirds.Weapons.Blink do
   end
 
   def run(weapon, arena) do
-    cool_down(weapon, arena)
+    {:ok, {_weapon, arena}} = cool_down(weapon, arena)
+    {:ok, arena}
   end
 
 end

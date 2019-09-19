@@ -23,8 +23,7 @@ defmodule SpaceBirds.Weapons.PlasmaOverload do
   @impl(Weapon)
   def fire(weapon, _, arena) do
     weapon = put_in(weapon.weapon_data.projectile_count, 0)
-    {:ok, arena} = update_weapon(weapon, arena)
-    start_channeling(weapon, arena)
+    update_weapon(weapon, arena)
   end
 
   @impl(Weapon)

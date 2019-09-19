@@ -23,6 +23,7 @@ defmodule SpaceBirds.Weapons.Weapon do
     icon: String.t,
     cooldown: number,
     cooldown_remaining: number,
+    energy_cost: number,
     instant?: boolean,
     channel_effect_path: String.t,
     channeling: boolean,
@@ -37,6 +38,7 @@ defmodule SpaceBirds.Weapons.Weapon do
     icon: "white",
     cooldown: 500,
     cooldown_remaining: 0,
+    energy_cost: 0,
     instant?: false,
     channel_effect_path: "none",
     channeling: false,
@@ -49,17 +51,17 @@ defmodule SpaceBirds.Weapons.Weapon do
   @callback on_channel(t, channel_time_remaining :: number, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_hit(t, damage :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
 
+  @default_channel_effect "none"
+
   defmacro __using__(_opts) do
     quote do
       use SpaceBirds.Utility.MapAccess
       alias SpaceBirds.Weapons.Weapon
       @behaviour Weapon
 
-      @default_channel_effect "none"
-
       @impl(Weapon)
-      def fire(weapon, _target_position, arena) do
-        start_channeling(weapon, arena)
+      def fire(_weapon, _target_position, arena) do
+        {:ok, arena}
       end
 
       @impl(Weapon)
@@ -69,7 +71,7 @@ defmodule SpaceBirds.Weapons.Weapon do
 
       @impl(Weapon)
       def run(weapon, arena) do
-        {:ok, arena} = cool_down(weapon, arena)
+        {:ok, {weapon, arena}} = cool_down(weapon, arena)
         channel(weapon, arena)
       end
 
@@ -84,33 +86,16 @@ defmodule SpaceBirds.Weapons.Weapon do
       end
 
       defp cool_down(weapon, arena) do
-        Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
-          weapon = update_in(weapon.cooldown_remaining, & max(0, &1 - arena.delta_time * 1000))
-          Arsenal.put_weapon(arsenal, weapon)
-        end)
+        weapon = update_in(weapon.cooldown_remaining, & max(0, &1 - arena.delta_time * 1000))
+        {:ok, arena} = update_weapon(weapon, arena)
+        {:ok, {weapon, arena}}
       end
 
-      defp start_channeling(%{channel_time: 0}, arena) do
-        {:ok, arena}
-      end
 
-      defp start_channeling(weapon, arena) do
+      defp remove_channel(weapon, arena) do
         with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
         do
-          path = if weapon.channel_effect_path == "default" do
-                   @default_channel_effect
-                 else
-                   weapon.channel_effect_path
-                 end
-
-          channel = Channel.new(weapon.weapon_slot, path)
-          {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, channel, arena)
-
-          Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
-            weapon = put_in(weapon.channeling, true)
-            weapon = put_in(weapon.channel_time_remaining, weapon.channel_time)
-            Arsenal.put_weapon(arsenal, weapon)
-          end)
+          BuffDebuffStack.remove_by_type(buff_debuff_stack, "channel", arena)
         else
           _ ->
             {:ok, arena}
@@ -154,20 +139,8 @@ defmodule SpaceBirds.Weapons.Weapon do
         update_in(weapon.channel_time_remaining, &(max(0, &1 - arena.delta_time * 1000)))
       end
 
-      defp remove_channel(weapon, arena) do
-        with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
-        do
-          BuffDebuffStack.remove_by_type(buff_debuff_stack, "channel", arena)
-        else
-          _ ->
-            {:ok, arena}
-        end
-      end
-
       defp update_weapon(weapon, arena) do
-        Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
-          Arsenal.put_weapon(arsenal, weapon)
-        end)
+        Weapon.update_weapon(weapon, arena)
       end
 
       defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3, on_channel: 3]
@@ -178,15 +151,17 @@ defmodule SpaceBirds.Weapons.Weapon do
   def fire(weapon, target_position, arena) do
     full_module_name = find_module_name(weapon.weapon_name)
 
-    if is_on_cooldown?(weapon) do
-      apply(full_module_name, :on_cooldown, [weapon, target_position, arena])
-    else
-      weapon = start_cooling_down(weapon)
-      {:ok, arena} = Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
-        Arsenal.put_weapon(arsenal, weapon)
-      end)
-
-      apply(full_module_name, :fire, [weapon, target_position, arena])
+    case {is_on_cooldown?(weapon), is_out_of_energy?(weapon, arena)} do
+      {true, _} ->
+        apply(full_module_name, :on_cooldown, [weapon, target_position, arena])
+      {_, true} ->
+        {:ok, arena}
+      _ ->
+        weapon = start_cooling_down(weapon)
+        {:ok, arena} = expend_energy(weapon, arena)
+        {:ok, {weapon, arena}} = start_channeling(weapon, arena)
+        {:ok, arena} = update_weapon(weapon, arena)
+        apply(full_module_name, :fire, [weapon, target_position, arena])
     end
   end
 
@@ -201,6 +176,7 @@ defmodule SpaceBirds.Weapons.Weapon do
     1 - (weapon.cooldown_remaining / weapon.cooldown)
   end
 
+  @spec on_hit(String.t, Actor.t, number, Arena.t) :: {:ok, number} | {:error, term}
   def on_hit(weapon_type, actor, damage, arena) do
     with {:ok, arsenal} <- Components.fetch(arena.components, :arsenal, actor),
          {_, weapon} <- Enum.find(arsenal.component_data.weapons, &(elem(&1, 1).weapon_name == weapon_type))
@@ -213,8 +189,31 @@ defmodule SpaceBirds.Weapons.Weapon do
     end
   end
 
+  @spec update_weapon(t, Arena.t) :: {:ok, Arena.t} | {:error, term}
+  def update_weapon(weapon, arena) do
+    Arena.update_component(arena, :arsenal, weapon.actor, fn arsenal ->
+      Arsenal.put_weapon(arsenal, weapon)
+    end)
+  end
+
   defp is_on_cooldown?(weapon) do
     weapon.cooldown_remaining > 0
+  end
+
+  defp is_out_of_energy?(weapon, arena) do
+    with {:ok, stats} <- Stats.get_readonly(arena, weapon.actor)
+    do
+      weapon.energy_cost > stats.component_data.energy
+    else
+      _ ->
+        false
+    end
+  end
+
+  defp expend_energy(weapon, arena) do
+    Arena.update_component(arena, :stats, weapon.actor, fn stats ->
+      Stats.expend_energy(stats, weapon.energy_cost, arena)
+    end)
   end
 
   defp start_cooling_down(weapon) do
@@ -227,6 +226,32 @@ defmodule SpaceBirds.Weapons.Weapon do
     |> Enum.map(&String.capitalize/1)
     |> Enum.join
     |> (& Module.concat(SpaceBirds.Weapons, &1)).()
+  end
+
+  defp start_channeling(%{channel_time: 0} = weapon, arena) do
+    {:ok, {weapon, arena}}
+  end
+
+  defp start_channeling(weapon, arena) do
+    with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
+    do
+      path = if weapon.channel_effect_path == "default" do
+               @default_channel_effect
+             else
+               weapon.channel_effect_path
+             end
+
+      channel = Channel.new(weapon.weapon_slot, path)
+      {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, channel, arena)
+
+      weapon = put_in(weapon.channeling, true)
+      weapon = put_in(weapon.channel_time_remaining, weapon.channel_time)
+
+      {:ok, {weapon, arena}}
+    else
+      _ ->
+        {:ok, {weapon, arena}}
+    end
   end
 
 end

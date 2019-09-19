@@ -79,6 +79,16 @@ defmodule SpaceBirds.Components.Stats do
     receive_damage(component, raw_damage, arena)
   end
 
+  @spec expend_energy(Component.t, energy_cost :: number, Arena.t) :: {:ok, Component.t} | {:error, String.t}
+  def expend_energy(component, energy_cost, arena) do
+    {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)
+    energy_expended = min(adjusted_stats.energy, energy_cost)
+                      |> max(0)
+
+    component = update_in(component.component_data.energy, & max(0, &1 - energy_expended))
+    {:ok, component}
+  end
+
   @spec get_readonly(Arena.t, Actor.t) :: {:ok, Component.t} | {:error, String.t}
   def get_readonly(arena, actor) do
     Components.fetch(arena.components, :stats, actor)

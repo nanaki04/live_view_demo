@@ -1,0 +1,74 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 150,
+        "height": 750
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/solar_flare_03/solar_flare_03_0005.png",
+      "opacity": 255
+    }
+  },
+  "destination": {
+    "actor": 0,
+    "type": "destination",
+    "component_data": {
+      "target": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "lifetime": {
+    "actor": 0,
+    "type": "lifetime",
+    "component_data": {
+      "milliseconds": 1000
+    }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "projectile",
+      "owner": 0,
+      "collides_with": ["fighter", "ai"]
+    }
+  },
+  "damage": {
+    "actor": 0,
+    "type": "damage",
+    "component_data": {
+      "damage": 40,
+      "on_hit_effect_paths": ["explosion_red_on_hit"],
+      "buff_debuff_paths": ["slow"],
+      "piercing": {
+        "hit_cooldown": 200
+      }
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "solar_flare_03"
+    }
+  }
+}

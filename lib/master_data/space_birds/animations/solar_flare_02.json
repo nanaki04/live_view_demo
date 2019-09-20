@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": false,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 5,
+              "path": "/images/solar_flare_02/solar_flare_02"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 1000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 19,
+              "path": "/images/solar_flare_02/solar_flare_02"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

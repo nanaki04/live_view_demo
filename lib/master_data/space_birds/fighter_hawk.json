@@ -109,6 +109,25 @@
             "path": "space_mine",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 4,
+          "weapon_name": "solar_flare",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "channel_effect_path": "none",
+          "channel_time": 3000,
+          "energy_cost": 30,
+          "weapon_data": {
+            "phase_1_path": "default",
+            "phase_2_path": "default",
+            "phase_3_path": "default",
+            "enhancements": [],
+            "phase": 0,
+            "active_projectile": "none"
+          }
         }
       ],
       "selected_weapon": 0

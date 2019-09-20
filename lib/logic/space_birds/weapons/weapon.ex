@@ -49,6 +49,7 @@ defmodule SpaceBirds.Weapons.Weapon do
   @callback on_cooldown(t, Position.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback run(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_channel(t, channel_time_remaining :: number, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @callback on_channel_ended(t, Arena.t) :: {:ok, Arena.t} | {:error, term}
   @callback on_hit(t, damage :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
 
   @default_channel_effect "none"
@@ -85,6 +86,11 @@ defmodule SpaceBirds.Weapons.Weapon do
         {:ok, arena}
       end
 
+      @impl(Weapon)
+      def on_channel_ended(_weapon, arena) do
+        {:ok, arena}
+      end
+
       defp cool_down(weapon, arena) do
         weapon = update_in(weapon.cooldown_remaining, & max(0, &1 - arena.delta_time * 1000))
         {:ok, arena} = update_weapon(weapon, arena)
@@ -114,7 +120,8 @@ defmodule SpaceBirds.Weapons.Weapon do
         else
           weapon = put_in(weapon.channeling, false)
           {:ok, arena} = update_weapon(weapon, arena)
-          remove_channel(weapon, arena)
+          {:ok, arena} = remove_channel(weapon, arena)
+          on_channel_ended(weapon, arena)
         end
       end
 
@@ -143,7 +150,7 @@ defmodule SpaceBirds.Weapons.Weapon do
         Weapon.update_weapon(weapon, arena)
       end
 
-      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3, on_channel: 3]
+      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3, on_channel: 3, on_channel_ended: 2]
     end
   end
 

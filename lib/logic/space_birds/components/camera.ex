@@ -1,9 +1,11 @@
 defmodule SpaceBirds.Components.Camera do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Transform
   alias SpaceBirds.Components.Ui
   alias SpaceBirds.Logic.Color
   alias SpaceBirds.Logic.Vector2
+  alias SpaceBirds.Logic.Edge
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
   use Component
@@ -30,7 +32,10 @@ defmodule SpaceBirds.Components.Camera do
       camera_transform = cap_camera_position(camera_transform, player, background)
       {:ok, arena} = Arena.update_component(arena, camera_transform, fn _ -> {:ok, camera_transform} end)
 
-      transforms = sort_by_layer(transforms)
+      transforms = Enum.filter(transforms, fn {_, transform} ->
+                     not cull?(camera_transform, player.resolution, transform)
+                   end)
+                   |> sort_by_layer()
 
       render_data = [render_grid(player) | render_ui(component, arena)]
       Enum.reduce(transforms, render_data, fn {actor, transform}, render_data ->
@@ -110,6 +115,47 @@ defmodule SpaceBirds.Components.Camera do
     else
       _ -> []
     end
+  end
+
+  defp cull?(camera_transform, {width, height} = _resolution, transform) do
+    %{x: x, y: y} = camera_transform.component_data.position
+    p1 = %{x: x - width / 2, y: y - height / 2}
+    p2 = %{x: x + width / 2, y: y - height / 2}
+    p3 = %{x: x + width / 2, y: y + height / 2}
+    p4 = %{x: x - width / 2, y: y + height / 2}
+
+    camera_points = [p1, p2, p3, p4]
+
+    camera_edges = [
+      %{a: p1, b: p2},
+      %{a: p2, b: p3},
+      %{a: p3, b: p4},
+      %{a: p4, b: p1}
+    ]
+
+    transform_points = Transform.get_vertices(transform)
+    transform_edges = Transform.get_edges(transform)
+
+    cull = Enum.reduce(transform_points, true, fn
+      _, false ->
+        false
+      point, true ->
+        not Enum.all?(camera_edges, & Edge.is_starboard?(&1, point))
+    end)
+
+    cull = Enum.reduce(camera_points, cull, fn
+      _, false ->
+        false
+      point, true ->
+        not Enum.all?(transform_edges, & Edge.is_starboard?(&1, point))
+    end)
+
+    Enum.reduce(camera_edges, cull, fn
+      _, false ->
+        false
+      edge, true ->
+        not Enum.any?(transform_edges, & Edge.intersects?(&1, edge))
+    end)
   end
 
   defp parse_transform(render_data, %{component_data: component_data}, %{component_data: %{position: cam_pos}}, player) do

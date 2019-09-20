@@ -113,6 +113,9 @@ defmodule SpaceBirds.State.Arena do
     BackPressureSystem.id(player.id, arena.id)
     |> BackPressureSystem.stop
 
+    actor = find_player_actor(arena, player.id)
+    {:ok, arena} = remove_actor(arena, actor)
+
     arena = update_in(arena.players, fn players ->
       Enum.filter(players, fn joined_player ->
         joined_player.id != player.id

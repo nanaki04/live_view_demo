@@ -1,0 +1,13 @@
+{
+  "id": 0,
+  "type": "regenerate_energy",
+  "time": 3000,
+  "time_remaining": 3000,
+  "effect_type": "none",
+  "icon_path": "none",
+  "diminishing_returns_cooldown": 0,
+  "buff_data": {
+    "regeneration_increase": 20
+  },
+  "debuff_data": {}
+}

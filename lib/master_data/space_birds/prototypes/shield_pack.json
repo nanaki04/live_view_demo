@@ -1,0 +1,61 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 40,
+        "height": 40
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/plasma_burst/plasma_burst_0009.png",
+      "opacity": 255
+    }
+  },
+  "lifetime": {
+    "actor": 0,
+    "type": "lifetime",
+    "component_data": {
+      "milliseconds": 10000
+    }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "item",
+      "owner": 0,
+      "collides_with": ["fighter"]
+    }
+  },
+  "damage": {
+    "actor": 0,
+    "type": "damage",
+    "component_data": {
+      "damage": 0,
+      "on_hit_effect_paths": [],
+      "buff_debuff_paths": ["regenerate_shield"],
+      "piercing": false
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      }
+    }
+  }
+}

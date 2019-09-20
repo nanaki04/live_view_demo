@@ -187,7 +187,18 @@
   "defeatable": {
     "actor": 0,
     "type": "defeatable",
-    "component_data": {}
+    "component_data": {
+      "spawn_on_death": [
+        {
+          "path": "energy_pack",
+          "weight": 5
+        },
+        {
+          "path": "shield_pack",
+          "weight": 5
+        }
+      ]
+    }
   },
   "visual_effect_stack": {
     "actor": 0,

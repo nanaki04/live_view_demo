@@ -199,14 +199,20 @@ defmodule SpaceBirds.MasterData do
     with {:ok, json} <- File.read("#{@base_path}prototypes/#{prototype}.json"),
          {:ok, prototype} <- Jason.decode(json, keys: :atoms)
     do
+      prototype = case Map.fetch(prototype, :arsenal) do
+        {:ok, _} ->
+          prototype = put_in(prototype.arsenal.component_data.owner, :none)
+          update_in(prototype.arsenal.component_data.weapons, fn weapons ->
+            Enum.reduce(weapons, %{}, fn weapon, weapons ->
+              Map.put(weapons, weapon.weapon_slot, %{weapon | actor: actor_id})
+            end)
+          end)
+        _ ->
+          prototype
+      end
+
       prototype
       |> put_in([:collider, :component_data, :owner], actor_id)
-      |> put_in([:arsenal, :component_data, :owner], :none)
-      |> update_in([:arsenal, :component_data, :weapons], fn weapons ->
-        Enum.reduce(weapons, %{}, fn weapon, weapons ->
-          Map.put(weapons, weapon.weapon_slot, %{weapon | actor: actor_id})
-        end)
-      end)
       |> ResultEx.return
     else
       error ->

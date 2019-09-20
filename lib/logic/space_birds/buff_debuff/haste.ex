@@ -1,6 +1,5 @@
 defmodule SpaceBirds.BuffDebuff.Haste do
   alias SpaceBirds.Logic.ProgressOverTime
-  alias SpaceBirds.Components.Stats
   use SpaceBirds.BuffDebuff.BuffDebuff
 
   @type t :: %{
@@ -8,19 +7,6 @@ defmodule SpaceBirds.BuffDebuff.Haste do
     top_speed_increase: ProgressOverTime.t,
     drag_decrease: ProgressOverTime.t
   }
-
-  @impl(BuffDebuff)
-  def on_apply(haste, buff_debuff_stack, arena) do
-    with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, buff_debuff_stack.actor),
-         false <- MapSet.member?(readonly_stats.status, :haste_resistant),
-         false <- MapSet.member?(readonly_stats.status, :immune)
-    do
-      apply_default(haste, buff_debuff_stack, arena)
-    else
-      _ ->
-        {:ok, arena}
-    end
-  end
 
   @impl(BuffDebuff)
   def affect_stats(haste, stats, _arena) do

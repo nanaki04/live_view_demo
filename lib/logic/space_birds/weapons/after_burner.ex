@@ -31,6 +31,8 @@ defmodule SpaceBirds.Weapons.AfterBurner do
          {:ok, haste} <- MasterData.get_buff_debuff("after_burner"),
          {:ok, immune_to_slow} <- MasterData.get_buff_debuff("immune_to_slow")
     do
+      {:ok, arena} = BuffDebuffStack.remove_by_type(buff_debuff_stack, "slow", arena)
+      {:ok, buff_debuff_stack} = Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
       {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, haste, arena)
       {:ok, buff_debuff_stack} = Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)
       {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, immune_to_slow, arena)

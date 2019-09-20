@@ -7,7 +7,7 @@
   "icon_path": "none",
   "diminishing_returns_cooldown": 0,
   "buff_data": {
-    "to": "slow"
+    "to": "stun"
   },
   "debuff_data": {
   }

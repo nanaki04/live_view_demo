@@ -128,7 +128,8 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "2" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 2}, socket)
       "3" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 3}, socket)
       "4" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 4}, socket)
-      " " ->
+      " " -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 9}, socket)
+      "p" ->
         GenServer.call(socket.assigns.battle, :pause)
         socket
       "Enter" -> handle_chat(socket)

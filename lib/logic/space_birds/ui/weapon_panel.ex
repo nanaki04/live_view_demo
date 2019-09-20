@@ -7,7 +7,7 @@ defmodule SpaceBirds.UI.WeaponPanel do
   alias SpaceBirds.Weapons.Weapon
   use SpaceBirds.UI.Node
 
-  @icons_per_row 3
+  @icons_per_row 4
   @max_visible_icons 5
   @icon_size %{width: 50, height: 50}
 
@@ -18,6 +18,7 @@ defmodule SpaceBirds.UI.WeaponPanel do
   def run(node, component, arena) do
     {:ok, arsenal} = Components.fetch(arena.components, :arsenal, component.actor)
     main_weapon = arsenal.component_data.weapons[0]
+    discharge = arsenal.component_data.weapons[9]
 
     node = put_in(node.children, [])
     node = Enum.take(arsenal.component_data.weapons, @max_visible_icons)
@@ -88,7 +89,20 @@ defmodule SpaceBirds.UI.WeaponPanel do
       }
     }
 
-    node = update_in(node.children, & [main_weapon_cooldown_gauge | &1])
+    discharge_cooldown_gauge = %Node{
+      type: "vertical_gauge",
+      position: %Position{x: 10, y: 0},
+      size: %Size{width: 8, height: 50},
+      node_data: %Gauge{
+        gauge_color: Color.new_gradient(%{r: 255, g: 0, b: 0, a: 255}, %{r: 0, g: 0, b: 255, a: 255}),
+        max_value: 1,
+        min_value: 0,
+        current_value: Weapon.cooldown_progress(discharge),
+        border: 1
+      }
+    }
+
+    node = update_in(node.children, & [main_weapon_cooldown_gauge | [discharge_cooldown_gauge | &1]])
 
     node = if arsenal.component_data.selected_weapon > 0 do
       selected_effect = %Node{

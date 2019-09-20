@@ -8,6 +8,7 @@ defmodule SpaceBirds.BuffDebuff.Stun do
   def on_apply(stun, buff_debuff_stack, arena) do
     with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, buff_debuff_stack.actor),
          false <- MapSet.member?(readonly_stats.status, :stun_resistant),
+         false <- MapSet.member?(readonly_stats.status, {:immune_to, "stun"}),
          false <- MapSet.member?(readonly_stats.status, :immune)
     do
       apply_default(stun, buff_debuff_stack, arena)

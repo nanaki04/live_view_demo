@@ -128,7 +128,21 @@
             "phase": 0,
             "active_projectile": "none"
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 9,
+          "weapon_name": "discharge",
+          "icon": "none",
+          "cooldown": 60000,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "path": "default",
+            "enhancements": []
+          }
         }
+
       ],
       "selected_weapon": 0
     }

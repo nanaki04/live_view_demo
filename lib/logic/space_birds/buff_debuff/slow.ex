@@ -13,7 +13,8 @@ defmodule SpaceBirds.BuffDebuff.Slow do
   def on_apply(slow, buff_debuff_stack, arena) do
     with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, buff_debuff_stack.actor),
          false <- MapSet.member?(readonly_stats.status, :slow_resistant),
-         false <- MapSet.member?(readonly_stats.status, :immune)
+         false <- MapSet.member?(readonly_stats.status, :immune),
+         false <- MapSet.member?(readonly_stats.status, {:immune_to, "slow"})
     do
       apply_default(slow, buff_debuff_stack, arena)
     else

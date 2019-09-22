@@ -406,10 +406,35 @@
                 ]
               },
               {
-                "type": "button",
+                "type": "time_left_label",
                 "position": {
                   "x": 400,
                   "y": 10
+                },
+                "world_position": {
+                  "x": 0,
+                  "y": 0
+                },
+                "size": {
+                  "width": 50,
+                  "height": 10
+                },
+                "color": {
+                  "r": 255,
+                  "g": 255,
+                  "b": 255,
+                  "a": 255
+                },
+                "texture": "none",
+                "text": "",
+                "node_data": {},
+                "children": []
+              },
+              {
+                "type": "button",
+                "position": {
+                  "x": 400,
+                  "y": 40
                 },
                 "world_position": {
                   "x": 0,

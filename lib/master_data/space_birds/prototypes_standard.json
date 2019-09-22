@@ -1,0 +1,23 @@
+[
+  {
+    "x": -1000,
+    "y": -1000,
+    "prototype": "planet_01"
+  },
+  {
+    "x": -500,
+    "y": -500,
+    "prototype": "nebula_01"
+  },
+  {
+    "x": 1000,
+    "y": -1000,
+    "prototype": "planet_01"
+  },
+  {
+    "x": 500,
+    "y": -500,
+    "prototype": "nebula_01"
+  }
+
+]

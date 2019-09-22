@@ -8,5 +8,6 @@
   "frame_time": 0,
   "delta_time": 0,
   "paused": false,
-  "version": 0
+  "version": 0,
+  "time_left": 600000
 }

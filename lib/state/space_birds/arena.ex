@@ -26,7 +26,8 @@ defmodule SpaceBirds.State.Arena do
     frame_time: number,
     delta_time: number,
     paused: boolean,
-    version: number
+    version: number,
+    time_left: number
   }
 
   defstruct id: {:via, Registry, {SpaceBirds.State.ArenaRegistry, ""}},
@@ -37,7 +38,8 @@ defmodule SpaceBirds.State.Arena do
     frame_time: 0,
     delta_time: 0,
     paused: false,
-    version: 0
+    version: 0,
+    time_left: 600000
 
   def start_link([id: id]) do
     GenServer.start_link(__MODULE__, {id, :standard}, name: id)
@@ -90,6 +92,12 @@ defmodule SpaceBirds.State.Arena do
     {:ok, spawner} = MasterData.get_spawner("ufo")
     {:ok, arena} = add_actor(arena, background)
     {:ok, arena} = add_actor(arena, spawner)
+
+    next_id = arena.last_actor_id + 1
+    {:ok, prototypes} = MasterData.get_prototypes(arena_type, next_id)
+    {:ok, arena} = Enum.reduce(prototypes, {:ok, arena}, fn
+      prototype, {:ok, arena} -> add_actor(arena, prototype)
+    end)
 
     Process.send_after(self(), :tick, 1000)
 
@@ -156,16 +164,20 @@ defmodule SpaceBirds.State.Arena do
     arena = update_delta_time(arena)
     arena = update_in(arena.version, &(&1 + 1))
 
-    {:ok, arena} = Components.reduce(arena.components, arena, fn component, arena ->
-      module_name = Atom.to_string(component.type)
-                    |> String.split("_")
-                    |> Enum.map(&String.capitalize/1)
-                    |> Enum.join
+    {:ok, arena} = if arena.time_left > 0 do
+      Components.reduce(arena.components, arena, fn component, arena ->
+        module_name = Atom.to_string(component.type)
+                      |> String.split("_")
+                      |> Enum.map(&String.capitalize/1)
+                      |> Enum.join
 
-      full_module_name = Module.concat(SpaceBirds.Components, module_name)
+        full_module_name = Module.concat(SpaceBirds.Components, module_name)
 
-      apply(full_module_name, :run, [component, arena])
-    end)
+        apply(full_module_name, :run, [component, arena])
+      end)
+    else
+      {:ok, arena}
+    end
 
     {:ok, cameras} = Components.fetch(arena.components, :camera)
     online_players = Enum.filter(arena.players, fn player -> player.pid != nil end)
@@ -189,6 +201,12 @@ defmodule SpaceBirds.State.Arena do
     end)
 
     {:ok, arena} = SpaceBirds.Collision.Simulation.simulate(arena)
+
+    arena = if length(online_players) > 1 do
+      update_in(arena.time_left, &(&1 - arena.delta_time * 1000))
+    else
+      arena
+    end
 
     arena = Map.put(arena, :actions, [])
 

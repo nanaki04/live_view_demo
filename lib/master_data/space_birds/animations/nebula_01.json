@@ -1,0 +1,42 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 30000,
+    "is_loop?": true,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 25,
+              "path": "/images/nebula_01/nebula_01"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 15000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 100,
+              "path": "/images/nebula_01/nebula_01"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 30000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 25,
+              "path": "/images/nebula_01/nebula_01"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 18000,
+    "is_loop?": true,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 15,
+              "path": "/images/planet_01/planet_01"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 18000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 115,
+              "path": "/images/planet_01/planet_01"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

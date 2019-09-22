@@ -211,9 +211,32 @@ defmodule SpaceBirds.MasterData do
           prototype
       end
 
-      prototype
-      |> put_in([:collider, :component_data, :owner], actor_id)
-      |> ResultEx.return
+      prototype = case Map.fetch(prototype, :collider) do
+        {:ok, _} ->
+          put_in(prototype.collider.component_data.owner, actor_id)
+        _ ->
+          prototype
+      end
+
+      {:ok, prototype}
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_prototypes(arena_type, Actor.t) :: [t]
+  def get_prototypes(arena_type, next_actor_id) do
+    with {:ok, json} <- File.read("#{@base_path}prototypes_#{arena_type}.json"),
+         {:ok, prototypes} <- Jason.decode(json, keys: :atoms)
+    do
+      {_, prototypes} = Enum.reduce(prototypes, {next_actor_id, []}, fn %{x: x, y: y, prototype: prototype}, {next_id, prototypes} -> 
+        {:ok, prototype} = get_prototype(prototype, next_id)
+        prototype = put_in(prototype.transform.component_data.position, %{x: x, y: y})
+        {next_id + 1, [prototype | prototypes]}
+      end)
+
+      {:ok, Enum.reverse(prototypes)}
     else
       error ->
         error

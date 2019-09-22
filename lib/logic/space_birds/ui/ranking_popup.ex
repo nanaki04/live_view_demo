@@ -16,7 +16,9 @@ defmodule SpaceBirds.UI.RankingPopup do
   @impl(Node)
   def run(node, component, arena) do
     clicks = Button.find_click_events("ranking_popup", component, arena)
+
     node = if length(clicks) > 0, do: update_in(node.node_data.is_open?, & not &1), else: node
+    node = if arena.time_left <= 0, do: put_in(node.node_data.is_open?, true), else: node
 
     if node.node_data.is_open? do
       {:ok, scores} = Components.fetch(arena.components, :score)

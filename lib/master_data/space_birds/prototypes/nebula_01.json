@@ -1,0 +1,97 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 400,
+        "height": 400
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/nebula_01/nebula_01_0256.png",
+      "opacity": 255
+    }
+  },
+  "movement": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "bound_by_map": true
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "sequence",
+        "node_data": {  
+          "children": [
+            {
+              "type": "turn",
+              "node_data": {
+                "degrees": 10
+              }
+            },
+            {
+              "type": "move_forward",
+              "node_data": {
+                "distance": 50,
+                "distance_left": 50
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "stats": {
+    "actor": 0,
+    "type": "stats",
+    "component_data": {
+      "hp": 1,
+      "max_hp": 1,
+      "shield": 0,
+      "max_shield": 0,
+      "shield_regeneration": 0,
+      "energy": 100,
+      "energy_regeneration": 0,
+      "power": 0,
+      "armor": 0,
+      "top_speed": 20,
+      "acceleration": 200,
+      "drag": 0
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "nebula_01"
+    }
+  }
+}

@@ -53,8 +53,8 @@ defmodule SpaceBirds.Weapons.Blink do
          {:ok, origin_effect} <- MasterData.get_projectile(origin_path, origin_effect_id, weapon.actor),
          {:ok, destination_effect} <- MasterData.get_projectile(destination_path, destination_effect_id, weapon.actor),
          {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor),
-         {:ok, haste} <- MasterData.get_buff_debuff("haste"),
-         {:ok, immune_to_slow} <- MasterData.get_buff_debuff("immune_to_slow")
+         {:ok, haste} <- MasterData.get_buff_debuff("haste", weapon.actor),
+         {:ok, immune_to_slow} <- MasterData.get_buff_debuff("immune_to_slow", weapon.actor)
     do
       {:ok, arena} = BuffDebuffStack.remove_by_type(buff_debuff_stack, "slow", arena)
       {:ok, buff_debuff_stack} = Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)

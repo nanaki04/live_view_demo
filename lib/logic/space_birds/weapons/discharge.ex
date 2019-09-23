@@ -29,9 +29,9 @@ defmodule SpaceBirds.Weapons.Discharge do
 
   defp add_buffs(weapon, arena) do
     with {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, weapon.actor),
-         {:ok, haste} <- MasterData.get_buff_debuff("haste"),
-         {:ok, immune_to_slow} <- MasterData.get_buff_debuff("immune_to_slow"),
-         {:ok, immune_to_stun} <- MasterData.get_buff_debuff("immune_to_stun")
+         {:ok, haste} <- MasterData.get_buff_debuff("haste", weapon.actor),
+         {:ok, immune_to_slow} <- MasterData.get_buff_debuff("immune_to_slow", weapon.actor),
+         {:ok, immune_to_stun} <- MasterData.get_buff_debuff("immune_to_stun", weapon.actor)
     do
       {:ok, arena} = BuffDebuffStack.remove_by_type(buff_debuff_stack, "stun", arena)
       {:ok, buff_debuff_stack} = Components.fetch(arena.components, :buff_debuff_stack, weapon.actor)

@@ -2,7 +2,7 @@ defmodule SpaceBirds.BuffDebuff.Ignite do
   alias SpaceBirds.Logic.ProgressOverTime
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Stats
-  alias SpaceBirds.State.Arena
+  alias SpaceBirds.Components.Score
   use SpaceBirds.BuffDebuff.BuffDebuff
 
   @type t :: %{
@@ -14,11 +14,11 @@ defmodule SpaceBirds.BuffDebuff.Ignite do
   }
 
   @impl(BuffDebuff)
-  def on_apply(slow, buff_debuff_stack, arena) do
+  def on_apply(ignite, buff_debuff_stack, arena) do
     with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, buff_debuff_stack.actor),
          false <- MapSet.member?(readonly_stats.status, :immune)
     do
-      apply_default(slow, buff_debuff_stack, arena)
+      apply_default(ignite, buff_debuff_stack, arena)
     else
       _ ->
         {:ok, arena}
@@ -45,9 +45,19 @@ defmodule SpaceBirds.BuffDebuff.Ignite do
       ignite = update_in(ignite.debuff_data.damage_done, &(&1 + damage))
       ignite = put_in(ignite.debuff_data.current_tick, tick)
 
-      {:ok, stats} = Stats.receive_damage(stats, damage, arena)
+      life = stats.component_data.hp + stats.component_data.shield
+      {:ok, arena} = Stats.receive_damage(stats, damage, arena)
 
-      {:ok, arena} = Arena.update_component(arena, stats, fn _ -> {:ok, stats} end)
+      {:ok, stats} = Components.fetch(arena.components, :stats, component.actor)
+      damage_done = life - (stats.component_data.hp + stats.component_data.shield)
+
+      {:ok, arena} = Score.log_damage(arena, damage_done, component.actor, ignite.owner)
+      if stats.component_data.hp <= 0 do
+        Score.log_kill(arena, component.actor, ignite.owner)
+      else
+        {:ok, arena}
+      end
+
       update_in_stack(ignite, component, arena)
     else
       _ ->

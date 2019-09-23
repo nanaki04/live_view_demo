@@ -69,6 +69,31 @@
         },
         {
           "actor": 0,
+          "weapon_slot": 2,
+          "weapon_name": "divine_protection",
+          "icon": "white",
+          "cooldown": 15000,
+          "cooldown_remaining": 0,
+          "instant?": true,
+          "weapon_data": {
+            "projectile_path": "default",
+            "enhancements": []
+          }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 1,
+          "weapon_name": "fire_bolt",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "weapon_data": {
+            "projectile_base_path": "default",
+            "enhancements": []
+          }
+        },
+        {
+          "actor": 0,
           "weapon_slot": 9,
           "weapon_name": "discharge",
           "icon": "none",

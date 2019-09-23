@@ -4,6 +4,7 @@ defmodule SpaceBirds.Components.Stats do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.BuffDebuffStack
   alias SpaceBirds.Components.BuffDebuff
+  alias SpaceBirds.BuffDebuff.DivineProtection
   alias SpaceBirds.Logic.Actor
   use Component
 
@@ -61,9 +62,12 @@ defmodule SpaceBirds.Components.Stats do
     end)
   end
 
-  @spec receive_damage(Component.t, Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
+  @spec receive_damage(Component.t, Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def receive_damage(component, damage, arena) when is_number(damage) do
     {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)
+
+    {:ok, {damage, arena}} = DivineProtection.absorb(damage, component.actor, arena)
+
     damage_to_shields = min(damage, component.component_data.shield)
     damage_to_hull = min(damage - damage_to_shields - adjusted_stats.armor, component.component_data.hp)
                      |> max(0)
@@ -71,7 +75,7 @@ defmodule SpaceBirds.Components.Stats do
     component = update_in(component.component_data.shield, & &1 - damage_to_shields)
     component = update_in(component.component_data.hp, & &1 - damage_to_hull)
 
-    {:ok, component}
+    Arena.update_component(arena, component, fn _ -> {:ok, component} end)
   end
 
   def receive_damage(component, damage, arena) do

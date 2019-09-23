@@ -20,6 +20,7 @@ defmodule SpaceBirds.BuffDebuff.BuffDebuff do
     icon_path: String.t,
     buff_data: %{},
     debuff_data: %{},
+    owner: Actor.t,
     diminishing_returns_cooldown: number
   }
 
@@ -31,6 +32,7 @@ defmodule SpaceBirds.BuffDebuff.BuffDebuff do
     icon_path: "none",
     buff_data: %{},
     debuff_data: %{},
+    owner: 0,
     diminishing_returns_cooldown: 0
 
   @callback run(t, buff_debuff_stack :: Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}

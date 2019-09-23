@@ -1,0 +1,98 @@
+[
+  {
+    "interval": 30000,
+    "start_after": 10000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": 1000,
+      "y": 1000
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "ufo"
+  },
+  {
+    "interval": 30000,
+    "start_after": 20000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": -1000,
+      "y": 1000
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "ufo"
+  },
+  {
+    "interval": 30000,
+    "start_after": 30000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": -1000,
+      "y": -1000
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "ufo"
+  },
+  {
+    "interval": 30000,
+    "start_after": 40000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": 1000,
+      "y": -1000
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "ufo"
+  },
+  {
+    "interval": 20000,
+    "start_after": 5000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": 250,
+      "y": 250
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "asteroid_01"
+  },
+  {
+    "interval": 20000,
+    "start_after": 10000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": -250,
+      "y": 250
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "asteroid_01"
+  },
+  {
+    "interval": 20000,
+    "start_after": 15000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": -250,
+      "y": -250
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "asteroid_01"
+  },
+  {
+    "interval": 20000,
+    "start_after": 20000,
+    "max_spawns": 2,
+    "starting_pos": {
+      "x": 250,
+      "y": -250
+    },
+    "rotation": 45,
+    "distance": 500,
+    "prototype": "asteroid_01"
+  }
+]

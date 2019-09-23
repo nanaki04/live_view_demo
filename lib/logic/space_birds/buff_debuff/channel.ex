@@ -11,8 +11,9 @@ defmodule SpaceBirds.BuffDebuff.Channel do
   defstruct weapon: 0
 
   @spec new(Weapon.weapon_slot, effect_type :: String.t, time :: number) :: BuffDebuff.t
-  def new(weapon_slot, effect_type, time \\ 10000) do
+  def new(weapon_slot, effect_type, owner, time \\ 10000) do
     %BuffDebuff{
+      owner: owner,
       type: "channel",
       time: time,
       time_remaining: time,

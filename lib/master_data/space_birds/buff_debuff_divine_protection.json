@@ -1,0 +1,15 @@
+{
+  "id": 0,
+  "type": "divine_protection",
+  "time": 5000,
+  "time_remaining": 5000,
+  "effect_type": "none",
+  "icon_path": "white",
+  "diminishing_returns_cooldown": 0,
+  "buff_data": {
+    "absorb_per_hit": 10,
+    "damage_absorbed": 0,
+    "on_remove_effect": "divine_protection"
+  },
+  "debuff_data": {}
+}

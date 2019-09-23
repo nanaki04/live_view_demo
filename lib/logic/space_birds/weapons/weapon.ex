@@ -248,7 +248,7 @@ defmodule SpaceBirds.Weapons.Weapon do
                weapon.channel_effect_path
              end
 
-      channel = Channel.new(weapon.weapon_slot, path)
+      channel = Channel.new(weapon.weapon_slot, path, weapon.actor)
       {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, channel, arena)
 
       weapon = put_in(weapon.channeling, true)

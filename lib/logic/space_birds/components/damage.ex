@@ -12,7 +12,7 @@ defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.MasterData
   use Component
 
-  @default_on_hit_effect_path "01"
+  @default_on_hit_effect_path "explosion_red_on_hit"
 
   @type t :: %{
     damage: number,
@@ -112,9 +112,9 @@ defmodule SpaceBirds.Components.Damage do
     {:ok, arena} = with {:ok, stats} <- Components.fetch(arena.components, :stats, target)
     do
       life = stats.component_data.hp + stats.component_data.shield
-      {:ok, stats} = Stats.receive_damage(stats, component, arena)
+      {:ok, arena} = Stats.receive_damage(stats, component, arena)
+      {:ok, stats} = Components.fetch(arena.components, :stats, target)
       damage_done = life - (stats.component_data.hp + stats.component_data.shield)
-      {:ok, arena} = Arena.update_component(arena, stats, fn _ -> {:ok, stats} end)
       {:ok, arena} = Score.log_damage(arena, damage_done, target, owner)
       if stats.component_data.hp <= 0 do
         Score.log_kill(arena, target, owner)
@@ -135,7 +135,7 @@ defmodule SpaceBirds.Components.Damage do
       "default", {:ok, arena} ->
         {:ok, arena}
       path, {:ok, arena} ->
-        with {:ok, buff_debuff} <- MasterData.get_buff_debuff(path),
+        with {:ok, buff_debuff} <- MasterData.get_buff_debuff(path, owner),
              {:ok, buff_debuff_stack} <- Components.fetch(arena.components, :buff_debuff_stack, target)
         do
           BuffDebuffStack.apply(buff_debuff_stack, buff_debuff, arena)

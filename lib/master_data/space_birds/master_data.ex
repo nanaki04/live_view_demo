@@ -148,11 +148,12 @@ defmodule SpaceBirds.MasterData do
     end
   end
 
-  @spec get_buff_debuff(buff_debuff_type) :: {:ok, BuffDebuff.t} | {:error, String.t}
-  def get_buff_debuff(buff_debuff_type) do
+  @spec get_buff_debuff(buff_debuff_type, owner :: Actor.t) :: {:ok, BuffDebuff.t} | {:error, String.t}
+  def get_buff_debuff(buff_debuff_type, owner) do
     with {:ok, json} <- File.read("#{@base_path}buff_debuff_#{buff_debuff_type}.json"),
          {:ok, buff_debuff} <- Jason.decode(json, keys: :atoms)
     do
+      buff_debuff = Map.put(buff_debuff, :owner, owner)
       {:ok, buff_debuff}
     else
       error ->
@@ -250,6 +251,32 @@ defmodule SpaceBirds.MasterData do
     do
       spawner = put_in(spawner.spawner.component_data.prototype, prototype)
       {:ok, spawner}
+    else
+      error ->
+        error
+    end
+  end
+
+  @spec get_spawners(arena_type, Actor.t) :: [t]
+  def get_spawners(arena_type, next_actor_id) do
+    with {:ok, json} <- File.read("#{@base_path}spawners_#{arena_type}.json"),
+         {:ok, spawners} <- Jason.decode(json, keys: :atoms)
+    do
+      {_, spawners} = Enum.reduce(spawners, {next_actor_id, []}, fn settings, {next_id, spawners} ->
+        {:ok, spawner} = get_spawner(settings.prototype)
+        spawner = put_in(spawner.transform.component_data.position, settings.starting_pos)
+        spawner = put_in(spawner.spawner.component_data.max_children, settings.max_spawns)
+        spawner = put_in(spawner.spawner.component_data.interval, settings.interval)
+        spawner = put_in(spawner.spawner.component_data.time_until_next_spawn, settings.start_after)
+        spawner = update_in(spawner.behaviour.component_data.node_tree.node_data.children, fn [turn, move] ->
+          turn = put_in(turn.node_data.degrees, settings.rotation)
+          move = put_in(move.node_data.distance, settings.distance)
+          [turn, move]
+        end)
+        {next_id, [spawner | spawners]}
+      end)
+
+      {:ok, Enum.reverse(spawners)}
     else
       error ->
         error

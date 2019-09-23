@@ -89,14 +89,18 @@ defmodule SpaceBirds.State.Arena do
   def init({id, arena_type}) do
     {:ok, arena} = MasterData.get_map(arena_type)
     {:ok, background} = MasterData.get_background(arena_type)
-    {:ok, spawner} = MasterData.get_spawner("ufo")
     {:ok, arena} = add_actor(arena, background)
-    {:ok, arena} = add_actor(arena, spawner)
 
     next_id = arena.last_actor_id + 1
     {:ok, prototypes} = MasterData.get_prototypes(arena_type, next_id)
     {:ok, arena} = Enum.reduce(prototypes, {:ok, arena}, fn
       prototype, {:ok, arena} -> add_actor(arena, prototype)
+    end)
+
+    next_id = arena.last_actor_id + 1
+    {:ok, spawners} = MasterData.get_spawners(arena_type, next_id)
+    {:ok, arena} = Enum.reduce(spawners, {:ok, arena}, fn
+      spawner, {:ok, arena} -> add_actor(arena, spawner)
     end)
 
     Process.send_after(self(), :tick, 1000)

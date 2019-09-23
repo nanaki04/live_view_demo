@@ -87,7 +87,7 @@
     "component_data": {
       "layer": "projectile",
       "owner": 0,
-      "collides_with": ["fighter"]
+      "collides_with": ["fighter", "ai", "destructable"]
     }
   },
   "damage": {

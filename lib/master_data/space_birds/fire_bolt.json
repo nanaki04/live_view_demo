@@ -1,0 +1,151 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 50,
+        "height": 50
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/laser_beam/laser_beam_0000.png",
+      "opacity": 255
+    }
+  },
+  "destination": {
+    "actor": 0,
+    "type": "destination",
+    "component_data": {
+      "target": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "lifetime": {
+    "actor": 0,
+    "type": "lifetime",
+    "component_data": {
+      "milliseconds": 15000
+    }
+  },
+  "movement_controller": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "bound_by_map": false
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "selector",
+        "node_data": {
+          "children": [
+            {
+              "type": "chase",
+              "node_data": {
+                "target": ["player", "ai"],
+                "scan_distance": 500,
+                "target_distance": 0,
+                "distance_until_giveup": 10000,
+                "lerp": {
+                  "curve": "linear",
+                  "speed": 10
+                }
+              }
+            },
+            {
+              "type": "sequence",
+              "node_data": {
+                "children": [
+                  {
+                    "type": "move_forward",
+                    "node_data": {
+                      "distance": 400,
+                      "distance_left": 400
+                    }
+                  },
+                  {
+                    "type": "destroy_self",
+                    "node_data": {}
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "projectile",
+      "owner": 0,
+      "collides_with": ["fighter", "ai", "destructable"]
+    }
+  },
+  "damage": {
+    "actor": 0,
+    "type": "damage",
+    "component_data": {
+      "damage": 35,
+      "on_hit_effect_paths": ["explosion_red_on_hit"],
+      "buff_debuff_paths": ["slow"],
+      "piercing": false
+    }
+  },
+  "stats": {
+    "actor": 0,
+    "type": "stats",
+    "component_data": {
+      "hp": 1,
+      "max_hp": 1,
+      "shield": 0,
+      "max_shield": 0,
+      "shield_regeneration": 0,
+      "energy": 0,
+      "energy_regeneration": 0,
+      "power": 0,
+      "armor": 0,
+      "top_speed": 800,
+      "acceleration": 2000,
+      "drag": 1
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "laser_beam"
+    }
+  }
+}

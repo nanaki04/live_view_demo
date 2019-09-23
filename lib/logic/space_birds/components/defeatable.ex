@@ -46,7 +46,7 @@ defmodule SpaceBirds.Components.Defeatable do
         AnimationPlayer.play_animation(animation_player, "fade")
       end)
 
-      {:ok, arena} = if Tag.find_tag(arena, component.actor) == "ai" do
+      {:ok, arena} = if Tag.find_tag(arena, component.actor) == "ai" || Tag.find_tag(arena, component.actor) == "destructable" do
         Arena.add_component(arena, %Component{
           actor: component.actor,
           type: :lifetime,

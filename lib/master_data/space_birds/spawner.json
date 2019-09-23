@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "spawner",
     "component_data": {
-      "max_children": 1,
+      "max_children": 2,
       "interval": 5000,
       "time_until_next_spawn": 5000,
       "prototype": "none"

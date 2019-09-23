@@ -1,0 +1,127 @@
+{
+  "tag": {
+    "actor": 0,
+    "type": "tag",
+    "component_data": {
+      "tag": "destructable"
+    }
+  },
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 150,
+        "height": 150
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/asteroid_01/astroid_01_0095.png",
+      "opacity": 255
+    }
+  },
+  "movement": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "bound_by_map": true
+    }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "destructable",
+      "owner": 0,
+      "collides_with": []
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "sequence",
+        "node_data": {  
+          "children": [
+            {
+              "type": "turn",
+              "node_data": {
+                "degrees": 10,
+                "rotation_left": 10
+              }
+            },
+            {
+              "type": "move_forward",
+              "node_data": {
+                "distance": 50,
+                "distance_left": 50
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "stats": {
+    "actor": 0,
+    "type": "stats",
+    "component_data": {
+      "hp": 2000,
+      "max_hp": 2000,
+      "shield": 0,
+      "max_shield": 0,
+      "shield_regeneration": 0,
+      "energy": 100,
+      "energy_regeneration": 0,
+      "power": 0,
+      "armor": 0,
+      "top_speed": 75,
+      "acceleration": 500,
+      "drag": 0
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "asteroid_01"
+    }
+  },
+  "defeatable": {
+    "actor": 0,
+    "type": "defeatable",
+    "component_data": {
+    }
+  },
+  "visual_effect_stack": {
+    "actor": 0,
+    "type": "visual_effect_stack",
+    "component_data": {
+      "effects": {}
+    }
+  }
+}

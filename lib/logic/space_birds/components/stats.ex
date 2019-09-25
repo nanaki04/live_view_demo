@@ -62,7 +62,19 @@ defmodule SpaceBirds.Components.Stats do
     end)
   end
 
-  @spec receive_damage(Component.t, Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  @spec restore_shield(Component.t, Component.t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
+  def restore_shield(component, value, arena) do
+    {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)
+
+    restorable_shield = adjusted_stats.max_shield - adjusted_stats.shield
+    amount_restored = min(restorable_shield, value)
+
+    component = update_in(component.component_data.shield, & &1 + amount_restored)
+
+    Arena.update_component(arena, component, fn _ -> {:ok, component} end)
+  end
+
+  @spec receive_damage(Component.t, Component.t | number, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def receive_damage(component, damage, arena) when is_number(damage) do
     {:ok, %{component_data: adjusted_stats}} = apply_buff_debuffs(component, arena)
 

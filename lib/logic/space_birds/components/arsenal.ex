@@ -1,5 +1,6 @@
 defmodule SpaceBirds.Components.Arsenal do
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.Arena
@@ -50,6 +51,7 @@ defmodule SpaceBirds.Components.Arsenal do
       _, {:error, reason} ->
         {:error, reason}
       action, {:ok, arena} ->
+        {:ok, component} = Components.fetch(arena.components, :arsenal, component.actor)
         run_action(action, component, arena)
     end)
   end

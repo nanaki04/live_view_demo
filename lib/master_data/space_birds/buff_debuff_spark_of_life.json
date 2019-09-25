@@ -1,0 +1,16 @@
+{
+  "id": 0,
+  "type": "spark_of_life",
+  "time": 5000,
+  "time_remaining": 5000,
+  "effect_type": "none",
+  "icon_path": "white",
+  "diminishing_returns_cooldown": 0,
+  "buff_data": {
+    "bolt_strength": 4,
+    "bolt_count": 10,
+    "bolts_fired": 0,
+    "bolt_path": "spark_of_life_heal"
+  },
+  "debuff_data": {}
+}

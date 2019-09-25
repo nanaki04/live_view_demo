@@ -40,8 +40,28 @@ defmodule SpaceBirds.Weapons.Drones do
     update_weapon(weapon, arena)
   end
 
-  def fire(_weapon, _target_position, arena) do
-    # TODO pass order to drones
+  def fire(%{weapon_data: %{drones: drones}}, target_position, arena) do
+    Enum.each(drones, fn drone -> 
+      swap_weapon_action = %{
+        sender: {:actor, drone},
+        name: :swap_weapon,
+        payload: %{
+          weapon_slot: 1
+        }
+      }
+
+      fire_action = %{
+        sender: {:actor, drone},
+        name: :fire_weapon,
+        payload: %{
+          target: target_position
+        }
+      }
+
+      :ok = GenServer.cast(self(), {:push_action, swap_weapon_action})
+      :ok = GenServer.cast(self(), {:push_action, fire_action})
+    end)
+
     {:ok, arena}
   end
 

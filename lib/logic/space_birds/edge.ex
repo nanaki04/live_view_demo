@@ -126,8 +126,15 @@ defmodule SpaceBirds.Logic.Edge do
   end
 
   def rotate_by_distance(edge, distance) do
-    rotation = Math.asin((distance / 2) / distance(edge)) * 2
-    rotate(edge, rotation)
+    case distance(edge) do
+      0 ->
+        edge
+      0.0 ->
+        edge
+      edge_distance ->
+        rotation = Math.asin((distance / 2) / edge_distance) * 2
+        rotate(edge, rotation)
+    end
   end
 
   def rotate(%{a: a} = edge, rotation) do

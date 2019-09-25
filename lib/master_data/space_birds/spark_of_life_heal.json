@@ -1,0 +1,131 @@
+{
+  "transform": {
+    "actor": 0,
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rotation": 0,
+      "size": {
+        "width": 50,
+        "height": 50
+      }
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/plasma_burst/plasma_burst_0009.png",
+      "opacity": 255
+    }
+  },
+  "destination": {
+    "actor": 0,
+    "type": "destination",
+    "component_data": {
+      "target": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "lifetime": {
+    "actor": 0,
+    "type": "lifetime",
+    "component_data": {
+      "milliseconds": 5000
+    }
+  },
+  "movement_controller": {
+    "type": "movement",
+    "actor": 0,
+    "component_data": {
+      "owner": 0,
+      "direction": {
+        "x": 0,
+        "y": 0
+      },
+      "speed": {
+        "x": 0,
+        "y": 0
+      },
+      "bound_by_map": false
+    }
+  },
+  "behaviour": {
+    "actor": 0,
+    "type": "behaviour",
+    "component_data": {
+      "running_node": "none",
+      "node_tree": {
+        "type": "selector",
+        "node_data": {
+          "children": [
+            {
+              "type": "chase",
+              "node_data": {
+                "target": "ally_player",
+                "scan_distance": 500,
+                "target_distance": 0,
+                "distance_until_giveup": 10000,
+                "lerp": "none"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "collider": {
+    "actor": 0,
+    "type": "collider",
+    "component_data": {
+      "layer": "projectile",
+      "owner": 0,
+      "collides_with": ["fighter"]
+    }
+  },
+  "heal": {
+    "actor": 0,
+    "type": "heal",
+    "component_data": {
+      "heal": 2,
+      "on_hit_effect_paths": ["plasma_burst_on_hit"],
+      "buff_debuff_paths": [],
+      "piercing": false
+    },
+    "on_hit": "spark_of_life"
+  },
+  "stats": {
+    "actor": 0,
+    "type": "stats",
+    "component_data": {
+      "hp": 1,
+      "max_hp": 1,
+      "shield": 0,
+      "max_shield": 0,
+      "shield_regeneration": 0,
+      "energy": 0,
+      "energy_regeneration": 0,
+      "power": 0,
+      "armor": 0,
+      "top_speed": 2000,
+      "acceleration": 10000,
+      "drag": 1
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "plasma_burst"
+    }
+  }
+}

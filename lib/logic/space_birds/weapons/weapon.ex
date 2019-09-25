@@ -50,7 +50,7 @@ defmodule SpaceBirds.Weapons.Weapon do
   @callback run(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_channel(t, channel_time_remaining :: number, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback on_channel_ended(t, Arena.t) :: {:ok, Arena.t} | {:error, term}
-  @callback on_hit(t, damage :: Component.t, Arena.t) :: {:ok, Component.t} | {:error, String.t}
+  @callback on_hit(t, value :: number, target :: Actor.t, Arena.t) :: {:ok, {number, Arena.t}} | {:error, String.t}
 
   @default_channel_effect "none"
 
@@ -77,8 +77,8 @@ defmodule SpaceBirds.Weapons.Weapon do
       end
 
       @impl(Weapon)
-      def on_hit(_, damage, _) do
-        {:ok, damage}
+      def on_hit(_, damage, target, arena) do
+        {:ok, {damage, arena}}
       end
 
       @impl(Weapon)
@@ -150,7 +150,7 @@ defmodule SpaceBirds.Weapons.Weapon do
         Weapon.update_weapon(weapon, arena)
       end
 
-      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 3, on_channel: 3, on_channel_ended: 2]
+      defoverridable [fire: 3, run: 2, on_cooldown: 3, on_hit: 4, on_channel: 3, on_channel_ended: 2]
     end
   end
 
@@ -183,16 +183,16 @@ defmodule SpaceBirds.Weapons.Weapon do
     1 - (weapon.cooldown_remaining / weapon.cooldown)
   end
 
-  @spec on_hit(String.t, Actor.t, number, Arena.t) :: {:ok, number} | {:error, term}
-  def on_hit(weapon_type, actor, damage, arena) do
+  @spec on_hit(String.t, owner :: Actor.t, number, target :: Actor.t, Arena.t) :: {:ok, number} | {:error, term}
+  def on_hit(weapon_type, actor, damage, target, arena) do
     with {:ok, arsenal} <- Components.fetch(arena.components, :arsenal, actor),
          {_, weapon} <- Enum.find(arsenal.component_data.weapons, &(elem(&1, 1).weapon_name == weapon_type))
     do
       module_name = find_module_name(weapon_type)
-      apply(module_name, :on_hit, [weapon, damage, arena])
+      apply(module_name, :on_hit, [weapon, damage, target, arena])
     else
       _ ->
-        {:ok, damage}
+        {:ok, {damage, arena}}
     end
   end
 

@@ -46,6 +46,22 @@ defmodule SpaceBirds.Components.BuffDebuffStack do
     end)
   end
 
+  @spec dispel_newest(Component.t, Arena.t) :: {:ok, Arena.t} | {:error, term}
+  def dispel_newest(component, arena) do
+    component.component_data.buff_debuffs
+    |> Map.keys
+    |> Enum.sort
+    |> Enum.reverse
+    |> Enum.filter(& :last_id != &1)
+    |> (fn
+      [newest | _] ->
+        {:ok, buff_debuff} = Map.fetch(component.component_data.buff_debuffs, newest)
+        BuffDebuff.on_remove(buff_debuff, component, arena)
+      [] ->
+        {:ok, arena}
+    end).()
+  end
+
   @spec remove_by_type(Component.t, MasterData.buff_debuff_type, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def remove_by_type(component, buff_debuff_type, arena) do
     filter_by_type(component, buff_debuff_type)

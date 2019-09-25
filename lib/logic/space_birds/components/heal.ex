@@ -1,10 +1,8 @@
-defmodule SpaceBirds.Components.Damage do
+defmodule SpaceBirds.Components.Heal do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.BuffDebuffStack
-  alias SpaceBirds.Components.Tag
-  alias SpaceBirds.Components.Score
   alias SpaceBirds.Components.Team
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.BuffDebuff.ImmuneTo
@@ -16,14 +14,14 @@ defmodule SpaceBirds.Components.Damage do
   @default_on_hit_effect_path "explosion_red_on_hit"
 
   @type t :: %{
-    damage: number,
+    heal: number,
     on_hit_effect_paths: [String.t],
     buff_debuff_paths: [String.t],
     piercing: %{hit_cooldown: number} | false,
     on_hit: MasterData.weapon_type
   }
 
-  defstruct damage: 1,
+  defstruct heal: 0,
     on_hit_effect_paths: ["default"],
     buff_debuff_paths: [],
     piercing: false,
@@ -43,7 +41,7 @@ defmodule SpaceBirds.Components.Damage do
 
     Actions.filter_by_actor(arena.actions, component.actor)
     |> Actions.filter_by_action_name(:collide)
-    |> without_friendly_fire(component.actor, arena)
+    |> filter_team_mates(actor, arena)
     |> Enum.reverse
     |> (fn
       [_ | _] = collisions ->
@@ -51,45 +49,24 @@ defmodule SpaceBirds.Components.Damage do
           {:ok, _} ->
             Enum.reduce(collisions, {:ok, arena}, fn
               %{payload: %{target: target, at: at, owner: owner}}, {:ok, arena} ->
-                unless target_is_immune?(target, actor, arena) do
-                  apply_damage(component, target, at, owner, arena)
-                else
-                  {:ok, arena}
-                end
+                apply_heal(component, target, at, owner, arena)
               _, error ->
                 error
             end)
           _ ->
             %{payload: %{target: target, at: at, owner: owner}} = hd(collisions)
 
-            unless target_is_immune?(target, actor, arena) do
-              apply_damage(component, target, at, owner, arena)
-            else
-              {:ok, arena}
-            end
+            apply_heal(component, target, at, owner, arena)
         end
       _ ->
         {:ok, arena}
     end).()
   end
 
-  defp target_is_immune?(target, actor, arena) do
-    with {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, target),
-         false <- MapSet.member?(readonly_stats.status, {:immune_to, actor}),
-         false <- MapSet.member?(readonly_stats.status, {:immune_to, Tag.find_tag(arena, actor)}),
-         false <- MapSet.member?(readonly_stats.status, :immune)
-    do
-      false
-    else
-      _ ->
-        true
-    end
-  end
-
-  defp apply_damage(component, target, at, owner, arena) do
-    {:ok, {damage, arena}} = case component.component_data.on_hit do
-      "none" -> {:ok, {component.component_data.damage, arena}}
-      weapon -> Weapon.on_hit(weapon, owner, component.component_data.damage, target, arena)
+  defp apply_heal(component, target, at, owner, arena) do
+    {:ok, {value, arena}} = case component.component_data.on_hit do
+      "none" -> {:ok, {component.component_data.heal, arena}}
+      weapon -> Weapon.on_hit(weapon, owner, component.component_data.heal, target, arena)
     end
 
     # play on hit effects
@@ -110,19 +87,10 @@ defmodule SpaceBirds.Components.Damage do
         error
     end)
 
-    # deal damage to target
+    # heal target
     {:ok, arena} = with {:ok, stats} <- Components.fetch(arena.components, :stats, target)
     do
-      life = stats.component_data.hp + stats.component_data.shield
-      {:ok, arena} = Stats.receive_damage(stats, damage, arena)
-      {:ok, stats} = Components.fetch(arena.components, :stats, target)
-      damage_done = life - (stats.component_data.hp + stats.component_data.shield)
-      {:ok, arena} = Score.log_damage(arena, damage_done, target, owner)
-      if stats.component_data.hp <= 0 do
-        Score.log_kill(arena, target, owner)
-      else
-        {:ok, arena}
-      end
+      Stats.restore_shield(stats, value, arena)
     else
       _ ->
         {:ok, arena}
@@ -167,24 +135,13 @@ defmodule SpaceBirds.Components.Damage do
 
   end
 
-  defp without_friendly_fire(actions, actor, arena) do
-    owner = case Components.fetch(arena.components, :owner, actor) do
-      {:ok, owner} -> owner.component_data.owner
-      _ -> actor
-    end
-
-    collider = case Components.fetch(arena.components, :collider, actor) do
-      {:ok, collider} -> collider.component_data.owner
-      _ -> actor
-    end
-
+  defp filter_team_mates(actions, actor, arena) do
     team_id = Team.find_team_id(arena, actor)
 
     Enum.filter(actions, fn
       %{payload: %{target: target}} ->
-        is_ally? = OptionEx.map(team_id, fn team_id -> Team.is_ally?(team_id, target, arena) end)
-                   |> OptionEx.or_else(false)
-        target != owner && target != collider && !is_ally?
+        OptionEx.map(team_id, fn team_id -> Team.is_ally?(team_id, target, arena) end)
+        |> OptionEx.or_else(false)
       _ -> false
     end)
   end

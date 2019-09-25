@@ -33,6 +33,8 @@ defmodule SpaceBirds.Behaviour.Chase do
   @impl(Node)
   def init(node, _, _, _) do
     lerp = case Map.fetch(node.node_data, :lerp) do
+      {:ok, "none"} ->
+        :none
       {:ok, lerp} ->
         {:some, update_in(lerp.curve, &String.to_existing_atom/1)}
       _ ->
@@ -45,7 +47,13 @@ defmodule SpaceBirds.Behaviour.Chase do
 
   @impl(Node)
   def select(node, component, arena) do
-    with [_ | _] = actors <- Tag.find_by_tag_without_owner(arena, node.node_data.target, component.actor),
+    actors = case node.node_data.target do
+      "ally" <> _ -> Tag.find_by_tag_without_self(arena, node.node_data.target, component.actor)
+      ["ally" <> _ | _] -> Tag.find_by_tag_without_self(arena, node.node_data.target, component.actor)
+      target -> Tag.find_by_tag_without_owner(arena, target, component.actor)
+    end
+
+    with [_ | _] <- actors,
          {:ok, transforms} <- Enum.map(actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
@@ -69,7 +77,13 @@ defmodule SpaceBirds.Behaviour.Chase do
 
   @impl(Node)
   def run(node, component, arena) do
-    with [_ | _] = actors <- Tag.find_by_tag_without_owner(arena, node.node_data.target, component.actor),
+    actors = case node.node_data.target do
+      "ally" <> _ -> Tag.find_by_tag_without_self(arena, node.node_data.target, component.actor)
+      ["ally" <> _ | _] -> Tag.find_by_tag_without_self(arena, node.node_data.target, component.actor)
+      target -> Tag.find_by_tag_without_owner(arena, target, component.actor)
+    end
+
+    with [_ | _] <- actors,
          {:ok, transforms} <- Enum.map(actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),

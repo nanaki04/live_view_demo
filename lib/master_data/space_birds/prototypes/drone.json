@@ -64,6 +64,18 @@
             "projectile_path": "laser_beam",
             "enhancements": []
           }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 1,
+          "weapon_name": "spark_of_life",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "weapon_data": {
+            "projectile_path": "default",
+            "enhancements": []
+          }
         }
       ],
       "selected_weapon": 0

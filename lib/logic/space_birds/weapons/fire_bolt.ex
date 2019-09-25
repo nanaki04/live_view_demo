@@ -2,6 +2,7 @@ defmodule SpaceBirds.Weapons.FireBolt do
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Components.Team
   alias SpaceBirds.Logic.Vector2
   alias SpaceBirds.MasterData
   use Weapon
@@ -36,6 +37,7 @@ defmodule SpaceBirds.Weapons.FireBolt do
 
       [projectile3, projectile2, projectile1] = Enum.map([projectile3, projectile2, projectile1], fn projectile ->
 
+        {:ok, projectile} = Team.copy_team(projectile, arena, weapon.actor)
         projectile = put_in(projectile.transform.component_data.position, transform.component_data.position)
         projectile = put_in(projectile.transform.component_data.rotation, rotation)
         put_in(projectile.destination.component_data.target, {:some, target_position})

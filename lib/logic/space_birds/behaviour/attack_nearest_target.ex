@@ -17,7 +17,7 @@ defmodule SpaceBirds.Behaviour.AttackNearestTarget do
 
   @impl(Node)
   def select(node, component, arena) do
-    with {:ok, actors} <- Tag.find_actors_by_tag(arena, node.node_data.target),
+    with [_ | _] = actors <- Tag.find_by_tag_without_owner(arena, node.node_data.target, component.actor),
          {:ok, transforms} <- Enum.map(actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
@@ -32,7 +32,7 @@ defmodule SpaceBirds.Behaviour.AttackNearestTarget do
 
   @impl(Node)
   def run(node, component, arena) do
-    with {:ok, actors} <- Tag.find_actors_by_tag(arena, node.node_data.target),
+    with [_ | _] = actors <- Tag.find_by_tag_without_owner(arena, node.node_data.target, component.actor),
          {:ok, transforms} <- Enum.map(actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),

@@ -4,6 +4,8 @@ defmodule SpaceBirds.Components.Movement do
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Logic.Vector2
+  alias SpaceBirds.Logic.Edge
+  alias SpaceBirds.Logic.ProgressOverTime
   use Component
 
   @background_actor 1
@@ -21,6 +23,51 @@ defmodule SpaceBirds.Components.Movement do
   @impl(Component)
   def run(_component, arena) do
     {:ok, arena}
+  end
+
+  @spec orbit(movement :: Component.t, target_transform :: Component.t, radius :: number, Arena.t) :: {:ok, Arena.t} | {:error, term}
+  def orbit(component, target_transform, radius, arena) do
+    # TODO make the transform find the correct radius
+    with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
+         {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, component.actor),
+         false <- MapSet.member?(readonly_stats.status, :stunned)
+    do
+      speed = Vector2.distance(component.component_data.speed)
+              |> Kernel.+(arena.delta_time * readonly_stats.acceleration)
+              |> apply_drag(readonly_stats.drag)
+              |> min(readonly_stats.top_speed)
+              |> max(@min_speed)
+
+      position = transform.component_data.position
+      target_position = target_transform.component_data.position
+      distance = Edge.distance(%{a: target_position, b: position})
+      diff = Vector2.sub(position, target_position)
+      progress = abs(distance - radius) * arena.delta_time * 0.1
+                 |> min(1.0)
+                 |> max(0.0)
+
+      adjustment_x = ProgressOverTime.exponential(%{from: 0, to: diff.x}, progress)
+      adjustment_y = ProgressOverTime.exponential(%{from: 0, to: diff.y}, progress)
+      offset = %{x: adjustment_x, y: adjustment_y}
+
+      position = if radius > distance, do: Vector2.add(position, offset), else: Vector2.sub(position, offset)
+      rotated_edge = Edge.rotate_by_distance(
+        %{a: target_position, b: position},
+        speed * arena.delta_time
+      )
+
+      rotation = Edge.to_rotation(rotated_edge)
+      unit_vector = Vector2.from_rotation(rotation)
+
+      component = put_in(component.component_data.speed, Vector2.mul(unit_vector, speed))
+      transform = put_in(transform.component_data.position, rotated_edge.b)
+
+      {:ok, arena} = Arena.update_component(arena, component, fn _ -> {:ok, component} end)
+      Arena.update_component(arena, transform, fn _ -> {:ok, transform} end)
+    else
+      _ ->
+        {:ok, arena}
+    end
   end
 
   @spec move_forward(t, Arena.t, :unlimited | number) :: {:ok, number, Arena.t} | {:error, String.t}
@@ -68,8 +115,12 @@ defmodule SpaceBirds.Components.Movement do
     end
   end
 
-  defp apply_drag(speed, drag) do
+  defp apply_drag(%{x: _, y: _} = speed, drag) do
     Vector2.mul(speed, 1 / (1 + drag * 0.1))
+  end
+
+  defp apply_drag(speed, drag) do
+    speed * (1 / (1 + drag * 0.1))
   end
 
   defp cap_top_speed(speed, top_speed, unit_vector) do

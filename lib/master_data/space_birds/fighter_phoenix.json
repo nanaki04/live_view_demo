@@ -6,6 +6,13 @@
       "tag": "player"
     }
   },
+  "team": {
+    "actor": 0,
+    "type": "team",
+    "component_data": {
+      "team_id": 0
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",
@@ -69,6 +76,18 @@
         },
         {
           "actor": 0,
+          "weapon_slot": 1,
+          "weapon_name": "fire_bolt",
+          "icon": "white",
+          "cooldown": 10000,
+          "cooldown_remaining": 0,
+          "weapon_data": {
+            "projectile_base_path": "default",
+            "enhancements": []
+          }
+        },
+        {
+          "actor": 0,
           "weapon_slot": 2,
           "weapon_name": "divine_protection",
           "icon": "white",
@@ -82,14 +101,19 @@
         },
         {
           "actor": 0,
-          "weapon_slot": 1,
-          "weapon_name": "fire_bolt",
+          "weapon_slot": 3,
+          "weapon_name": "drones",
           "icon": "white",
-          "cooldown": 10000,
+          "cooldown": 15000,
           "cooldown_remaining": 0,
+          "instant?": true,
           "weapon_data": {
-            "projectile_base_path": "default",
-            "enhancements": []
+            "path": "default",
+            "enhancements": [],
+            "max_drone_count": 3,
+            "drones": [],
+            "spawn_interval": 15000,
+            "time_until_next_spawn": 5000
           }
         },
         {

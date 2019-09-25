@@ -8,7 +8,7 @@ defmodule SpaceBirds.UI.AiStatsPanel do
 
   @impl(Node)
   def run(node, component, arena) do
-    with {:ok, ai_actors} <- Tag.find_actors_by_tag(arena, "ai"),
+    with {:ok, ai_actors} <- Tag.find_actors_by_tag(arena, "ai", component.actor),
          {:ok, transforms} <- Enum.map(ai_actors, & Components.fetch(arena.components, :transform, &1))
                               |> ResultEx.flatten_enum,
          {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),

@@ -2,6 +2,7 @@ defmodule SpaceBirds.Weapons.LaserBeam do
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Components.Team
   alias SpaceBirds.Components.AnimationPlayer
   alias SpaceBirds.Logic.Vector2
   alias SpaceBirds.MasterData
@@ -33,6 +34,7 @@ defmodule SpaceBirds.Weapons.LaserBeam do
                  |> Vector2.sub(transform.component_data.position)
                  |> Vector2.to_rotation
 
+      {:ok, projectile} = Team.copy_team(projectile, arena, weapon.actor)
       projectile = put_in(projectile.transform.component_data.position, transform.component_data.position)
       projectile = put_in(projectile.transform.component_data.rotation, rotation)
       projectile = put_in(projectile.destination.component_data.target, {:some, target_position})

@@ -121,6 +121,12 @@ defmodule SpaceBirds.Components.Transform do
     {:ok, put_in(transform.component_data.rotation, rotation)}
   end
 
+  @spec look_away_from(transform1 :: Component.t, transform2 :: Component.t) :: {:ok, Component.t} | {:error, term}
+  def look_away_from(transform1, transform2) do
+    {:ok, transform} = look_at(transform1, transform2)
+    {:ok, update_in(transform.component_data.rotation, & Rotation.add(&1,180))}
+  end
+
   defp calculate_look_at_progress(transform1, destination, speed, arena) do
     Rotation.distance(transform1.component_data.rotation, destination)
     |> Rotation.add(arena.delta_time * -speed)

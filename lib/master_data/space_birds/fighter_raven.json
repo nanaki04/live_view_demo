@@ -6,6 +6,13 @@
       "tag": "player"
     }
   },
+  "team": {
+    "actor": 0,
+    "type": "team",
+    "component_data": {
+      "team_id": 0
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",

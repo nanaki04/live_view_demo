@@ -12,7 +12,11 @@ defmodule SpaceBirds.Logic.Math do
 
   @spec asin(number) :: number
   def asin(n) do
-    :math.asin(n) * (180 / :math.pi)
+    n
+    |> min(1)
+    |> max(-1)
+    |> :math.asin
+    |> Kernel.*(180 / :math.pi)
   end
 
   @spec atan2(number, number) :: number

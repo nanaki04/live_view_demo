@@ -45,6 +45,7 @@ defmodule SpaceBirds.MasterData do
       |> put_in([:arsenal, :component_data, :owner], {:some, player.id})
       |> put_in([:ui, :component_data, :owner], player.id)
       |> put_in([:score, :component_data, :name], player.name)
+      |> put_in([:team, :component_data, :team_id], actor_id)
       |> ResultEx.return
     else
       error ->

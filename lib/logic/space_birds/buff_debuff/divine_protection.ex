@@ -1,6 +1,7 @@
 defmodule SpaceBirds.BuffDebuff.DivineProtection do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Components.Team
   alias SpaceBirds.Components.BuffDebuffStack
   alias SpaceBirds.MasterData
   use SpaceBirds.BuffDebuff.BuffDebuff
@@ -20,6 +21,7 @@ defmodule SpaceBirds.BuffDebuff.DivineProtection do
     position = transform.component_data.position
 
     {:ok, projectile} = MasterData.get_projectile(divine_protection.buff_data.on_remove_effect, projectile_id, actor)
+    {:ok, projectile} = Team.copy_team(projectile, arena, buff_debuff_stack.actor)
     projectile = update_in(projectile.damage.component_data.damage, &(&1 + divine_protection.buff_data.damage_absorbed))
     projectile = put_in(projectile.transform.component_data.position, position)
 

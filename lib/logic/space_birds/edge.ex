@@ -1,5 +1,6 @@
 defmodule SpaceBirds.Logic.Edge do
   alias SpaceBirds.Logic.Vector2
+  alias SpaceBirds.Logic.Math
   import Kernel, except: [round: 1]
 
   @type t :: %{
@@ -114,6 +115,19 @@ defmodule SpaceBirds.Logic.Edge do
 
   def to_rotation(%{a: %{x: x1, y: y1}, b: %{x: x2, y: y2}}) do
     Vector2.to_rotation(%{x: x2 - x1, y: y2 - y1})
+  end
+
+  def rotate_by_distance(edge, 0.0) do
+    edge
+  end
+
+  def rotate_by_distance(edge, 0) do
+    edge
+  end
+
+  def rotate_by_distance(edge, distance) do
+    rotation = Math.asin((distance / 2) / distance(edge)) * 2
+    rotate(edge, rotation)
   end
 
   def rotate(%{a: a} = edge, rotation) do

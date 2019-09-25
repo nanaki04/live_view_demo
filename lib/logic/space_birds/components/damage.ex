@@ -5,6 +5,7 @@ defmodule SpaceBirds.Components.Damage do
   alias SpaceBirds.Components.BuffDebuffStack
   alias SpaceBirds.Components.Tag
   alias SpaceBirds.Components.Score
+  alias SpaceBirds.Components.Team
   alias SpaceBirds.Weapons.Weapon
   alias SpaceBirds.BuffDebuff.ImmuneTo
   alias SpaceBirds.Actions.Actions
@@ -42,6 +43,7 @@ defmodule SpaceBirds.Components.Damage do
 
     Actions.filter_by_actor(arena.actions, component.actor)
     |> Actions.filter_by_action_name(:collide)
+    |> without_friendly_fire(component.actor, arena)
     |> Enum.reverse
     |> (fn
       [_ | _] = collisions ->
@@ -163,6 +165,28 @@ defmodule SpaceBirds.Components.Damage do
         Arena.remove_actor(arena, component.actor)
     end
 
+  end
+
+  defp without_friendly_fire(actions, actor, arena) do
+    owner = case Components.fetch(arena.components, :owner, actor) do
+      {:ok, owner} -> owner.component_data.owner
+      _ -> actor
+    end
+
+    collider = case Components.fetch(arena.components, :collider, actor) do
+      {:ok, collider} -> collider.component_data.owner
+      _ -> actor
+    end
+
+    team_id = Team.find_team_id(arena, actor)
+
+    Enum.filter(actions, fn
+      %{payload: %{target: target}} ->
+        is_ally? = OptionEx.map(team_id, fn team_id -> Team.is_ally?(team_id, target, arena) end)
+                   |> OptionEx.or_else(false)
+        target != owner && target != collider && !is_ally?
+      _ -> false
+    end)
   end
 
 end

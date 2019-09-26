@@ -28,6 +28,7 @@ defmodule SpaceBirds.BuffDebuff.Haste do
     |> update_in([:buff_data, :acceleration_increase, :from], & &1 / (level + 1))
     |> update_in([:buff_data, :top_speed_increase, :from], & &1 / (level + 1))
     |> update_in([:buff_data, :drag_decrease, :from], & &1 / (level + 1))
+    |> ResultEx.return
   end
 
 end

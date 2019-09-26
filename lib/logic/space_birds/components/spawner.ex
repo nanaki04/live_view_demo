@@ -21,7 +21,7 @@ defmodule SpaceBirds.Components.Spawner do
   @impl(Component)
   def init(component, arena) do
     component_data = Map.merge(%__MODULE__{}, component.component_data)
-    Arena.update_component(arena, component, fn component ->
+    Arena.update_component(arena, component, fn _ ->
       {:ok, put_in(component.component_data, component_data)}
     end)
   end

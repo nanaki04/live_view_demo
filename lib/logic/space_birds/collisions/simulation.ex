@@ -5,6 +5,7 @@ defmodule SpaceBirds.Collision.Simulation do
 
   def simulate(arena) do
     {:ok, colliders} = Components.fetch(arena.components, :collider)
+                       |> ResultEx.map(fn colliders -> Enum.filter(colliders, fn {_, %{enabled?: enabled?}} -> enabled? end) end)
     {:ok, collider_and_transforms} = Enum.map(colliders, fn {actor, collider} ->
       Components.fetch(arena.components, :transform, actor)
       |> ResultEx.map(&{collider, &1})

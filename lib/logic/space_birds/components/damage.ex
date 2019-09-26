@@ -31,7 +31,7 @@ defmodule SpaceBirds.Components.Damage do
 
   @impl(Component)
   def init(component, arena) do
-    Arena.update_component(arena, component, fn component ->
+    Arena.update_component(arena, component, fn _ ->
       update_in(component.component_data, & Map.merge(%__MODULE__{}, &1))
       |> ResultEx.return
     end)

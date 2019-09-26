@@ -15,6 +15,14 @@ defmodule SpaceBirds.UI.MyStatsPanel do
       _ -> false
     end)
 
+    build(node, component, player, arena)
+  end
+
+  defp build(node, _component, nil, _arena) do
+    {:ok, node}
+  end
+
+  defp build(node, component, player, arena) do
     {:ok, stats} = Components.fetch(arena.components, :stats, component.actor)
     {:ok, buff_debuff_stack} = Components.fetch(arena.components, :buff_debuff_stack, component.actor)
 
@@ -26,13 +34,6 @@ defmodule SpaceBirds.UI.MyStatsPanel do
         text: player.name,
         color: %Color{r: 255, g: 255, b: 255, a: 255}
       },
-      #      %Node{
-      #        type: "label",
-      #        position: %Position{x: 10, y: 40},
-      #        size: %Size{width: 400, height: 20},
-      #        text: "#{stats.component_data.hp} / #{stats.component_data.max_hp}",
-      #        color: %Color{r: 255, g: 255, b: 255, a: 255}
-      #      },
       %Node{
         type: "gauge",
         position: %Position{x: 10, y: 40},

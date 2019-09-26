@@ -47,7 +47,7 @@ defmodule SpaceBirds.Components.Stats do
 
   @impl(Component)
   def init(component, arena) do
-    Arena.update_component(arena, component, fn component ->
+    Arena.update_component(arena, component, fn _ ->
       {:ok, update_in(component.component_data, & Map.put(&1, :status, MapSet.new()))}
     end)
   end
@@ -111,12 +111,19 @@ defmodule SpaceBirds.Components.Stats do
     |> ResultEx.bind(fn stats -> apply_buff_debuffs(stats, arena) end)
   end
 
-  @spec deactivate(Component.t) :: {:ok, Component.t} | {:error, String.t}
-  def deactivate(component) do
-    component = put_in(component.component_data.shield_regeneration, 0)
+  def clear_stats(component) do
     component = put_in(component.component_data.shield, 0)
-    component = put_in(component.component_data.energy_regeneration, 0)
+    component = put_in(component.component_data.hp, 0)
     component = put_in(component.component_data.energy, 0)
+
+    {:ok, component}
+  end
+
+  @spec restore_to_full(Component.t) :: {:ok, Arena.t} | {:error, term}
+  def restore_to_full(component) do
+    component = put_in(component.component_data.shield, component.component_data.max_shield)
+    component = put_in(component.component_data.hp, component.component_data.max_hp)
+    component = put_in(component.component_data.energy, 100)
 
     {:ok, component}
   end
@@ -125,7 +132,7 @@ defmodule SpaceBirds.Components.Stats do
   def find_diminishing_returns(component, buff_debuff_type, arena) do
     with {:ok, stats} <- get_readonly(arena, component.actor)
     do
-      stats
+      stats.component_data.status
       |> Enum.filter(fn
         {:diminishing_returns, ^buff_debuff_type, _} -> true
         _ -> false

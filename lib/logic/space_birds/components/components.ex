@@ -41,6 +41,25 @@ defmodule SpaceBirds.Components.Components do
     |> ResultEx.return
   end
 
+  @spec disable_component(t, Component.t) :: {:ok, t} | {:error, term}
+  def disable_component(components, component) do
+    disable_component(components, component.type, component.actor)
+  end
+
+  @spec disable_component(t, Component.component_type, Actor.t) :: {:ok, t} | {:error, term}
+  def disable_component(components, component_type, actor) do
+    update(components, component_type, actor, fn component -> {:ok, put_in(component.enabled?, false)} end)
+  end
+
+  @spec enable_component(t, Component.component_type, Actor.t) :: {:ok, t} | {:error, term}
+  def enable_component(components, component) do
+    enable_component(components, component.type, component.actor)
+  end
+
+  def enable_component(components, component_type, actor) do
+    update(components, component_type, actor, fn component -> {:ok, put_in(component.enabled?, true)} end)
+  end
+
   @spec map(t, (Component.t -> {:ok, Component.t} | {:error, String.t})) :: ResultEx.t
   def map(components, iterator) do
     Map.keys(components)
@@ -137,6 +156,11 @@ defmodule SpaceBirds.Components.Components do
       end)
       |> Enum.map(fn {_, component} -> component end)
     end)
+  end
+
+  @spec update(t, Component.t, (Component.t -> ResultEx.t)) :: ResultEx.t
+  def update(components, component, updater) do
+    update(components, component.type, component.actor, updater)
   end
 
   @spec update(t, Component.component_type, Actor.t, (Component.t -> ResultEx.t)) :: ResultEx.t

@@ -11,12 +11,14 @@ defmodule SpaceBirds.Components.Component do
   @type t :: %{
     actor: Actor.t,
     type: component_type,
-    component_data: component_data
+    component_data: component_data,
+    enabled?: boolean
   }
 
   defstruct actor: 0,
     type: :undefined,
-    component_data: %{}
+    component_data: %{},
+    enabled?: true
 
   @callback init(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   @callback run(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
@@ -29,7 +31,7 @@ defmodule SpaceBirds.Components.Component do
 
       @impl(Component)
       def init(component, arena) do
-        {:ok, arena}
+        Arena.update_component(arena, component, fn _ -> {:ok, component} end)
       end
 
       @impl(Component)
@@ -58,6 +60,7 @@ defmodule SpaceBirds.Components.Component do
 
   @spec init(t, Arena.t) :: {:ok, Arena.t} | {:error, String.t}
   def init(component, arena) do
+    component = Map.merge(%__MODULE__{}, component)
     component.type
     |> Atom.to_string
     |> String.split("_")

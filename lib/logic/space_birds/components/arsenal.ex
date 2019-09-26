@@ -23,7 +23,7 @@ defmodule SpaceBirds.Components.Arsenal do
 
   @impl(Component)
   def init(component, arena) do
-    Arena.update_component(arena, component, fn component ->
+    Arena.update_component(arena, component, fn _ ->
       component = update_in(component.component_data, & Map.merge(%__MODULE__{}, &1))
       update_in(component.component_data.weapons, fn weapons ->
         Enum.map(weapons, fn {id, weapon} -> {id, Map.merge(%Weapon{}, weapon)} end)

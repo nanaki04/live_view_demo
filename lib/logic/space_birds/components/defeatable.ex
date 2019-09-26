@@ -7,6 +7,7 @@ defmodule SpaceBirds.Components.Defeatable do
   alias SpaceBirds.Components.Stats
   alias SpaceBirds.Components.AnimationPlayer
   alias SpaceBirds.Components.VisualEffectStack
+  alias SpaceBirds.Components.PlayerSpawner
   alias SpaceBirds.MasterData
   use Component
 
@@ -16,14 +17,16 @@ defmodule SpaceBirds.Components.Defeatable do
   }
 
   @type t :: %{
-    spawn_on_death: String.t | [spawn_item]
+    spawn_on_death: String.t | [spawn_item],
+    is_defeated?: boolean
   }
 
-  defstruct spawn_on_death: "none"
+  defstruct spawn_on_death: "none",
+  is_defeated?: false
 
   @impl(Component)
   def init(component, arena) do
-    Arena.update_component(arena, component, fn component ->
+    Arena.update_component(arena, component, fn _ ->
       component = update_in(component.component_data, & Map.merge(%__MODULE__{}, &1))
       {:ok, component}
     end)
@@ -31,21 +34,17 @@ defmodule SpaceBirds.Components.Defeatable do
 
   @impl(Component)
   def run(component, arena) do
-    with {:ok, stats} <- Components.fetch(arena.components, :stats, component.actor),
+    {:ok, arena} = despawn(component, arena)
+    respawn(component, arena)
+  end
+
+  defp despawn(component, arena) do
+    with false <- component.component_data.is_defeated?,
+         {:ok, stats} <- Components.fetch(arena.components, :stats, component.actor),
          hull when hull <= 0 <- stats.component_data.hp
     do
       {:ok, visual_effect_stack} = Components.fetch(arena.components, :visual_effect_stack, component.actor)
       {:ok, arena} = VisualEffectStack.remove_all_visual_effects(visual_effect_stack, arena)
-      {:ok, arena} = Arena.remove_component(arena, :movement_controller, component.actor)
-      {:ok, arena} = Arena.remove_component(arena, :movement, component.actor)
-      {:ok, arena} = Arena.update_component(arena, :arsenal, component.actor, &{:ok, put_in(&1.component_data.enabled, false)})
-      {:ok, arena} = Arena.remove_component(arena, :collider, component.actor)
-      {:ok, arena} = Arena.remove_component(arena, :behaviour, component.actor)
-      {:ok, arena} = Arena.remove_component(arena, component)
-      {:ok, arena} = Arena.update_component(arena, :animation_player, component.actor, fn animation_player ->
-        AnimationPlayer.play_animation(animation_player, "fade")
-      end)
-
       {:ok, arena} = if Tag.find_tag(arena, component.actor) == "ai" || Tag.find_tag(arena, component.actor) == "destructable" do
         Arena.add_component(arena, %Component{
           actor: component.actor,
@@ -59,10 +58,66 @@ defmodule SpaceBirds.Components.Defeatable do
       end
 
       {:ok, arena} = Arena.update_component(arena, :stats, component.actor, fn stats ->
-        Stats.deactivate(stats)
+        Stats.clear_stats(stats)
       end)
 
-      spawn_on_death(component, arena)
+      {:ok, arena} = Arena.update_components(arena, fn components ->
+        {:ok, components} = Components.disable_component(components, :stats, component.actor)
+        {:ok, components} = Components.disable_component(components, :movement_controller, component.actor)
+        {:ok, components} = Components.disable_component(components, :movement, component.actor)
+        {:ok, components} = Components.disable_component(components, :arsenal, component.actor)
+        {:ok, components} = Components.disable_component(components, :collider, component.actor)
+        {:ok, components} = Components.disable_component(components, :behaviour, component.actor)
+        {:ok, components} = Components.disable_component(components, :tag, component.actor)
+
+        {:ok, components}
+      end)
+
+      {:ok, arena} = Arena.update_component(arena, :animation_player, component.actor, fn animation_player ->
+        AnimationPlayer.play_animation(animation_player, "fade")
+      end)
+
+      {:ok, arena} = spawn_on_death(component, arena)
+
+      Arena.update_component(arena, component, fn component ->
+        {:ok, put_in(component.component_data.is_defeated?, true)}
+      end)
+    else
+      _ ->
+        {:ok, arena}
+    end
+  end
+
+  defp respawn(component, arena) do
+    with true <- component.component_data.is_defeated?,
+         {:ok, player_spawner} <- Components.fetch(arena.components, :player_spawner, component.actor),
+         time_until_respawn when time_until_respawn <= 0 <- player_spawner.component_data.time_until_respawn
+    do
+      {:ok, arena} = Arena.update_components(arena, fn components ->
+        {:ok, components} = Components.enable_component(components, :stats, component.actor)
+        {:ok, components} = Components.enable_component(components, :movement_controller, component.actor)
+        {:ok, components} = Components.enable_component(components, :movement, component.actor)
+        {:ok, components} = Components.enable_component(components, :arsenal, component.actor)
+        {:ok, components} = Components.enable_component(components, :collider, component.actor)
+        {:ok, components} = Components.enable_component(components, :behaviour, component.actor)
+        {:ok, components} = Components.enable_component(components, :tag, component.actor)
+
+        {:ok, components}
+      end)
+
+      {:ok, arena} = Arena.update_component(arena, :stats, component.actor, fn stats ->
+        Stats.restore_to_full(stats)
+      end)
+
+      {:ok, arena} = Arena.update_component(arena, :animation_player, component.actor, fn animation_player ->
+        AnimationPlayer.play_starting_animation(animation_player)
+      end)
+
+      {:ok, arena} = PlayerSpawner.set_spawn_position(player_spawner, arena)
+
+      Arena.update_component(arena, component, fn component ->
+        {:ok, put_in(component.component_data.is_defeated?, false)}
+      end)
     else
       _ ->
         {:ok, arena}

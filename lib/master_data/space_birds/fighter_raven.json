@@ -29,6 +29,19 @@
       }
     }
   },
+  "player_spawner": {
+    "actor": 0,
+    "type": "player_spawner",
+    "component_data": {
+      "spawn_positions": [
+        {"x": 1500, "y": 1500},
+        {"x": -1500, "y": 1500},
+        {"x": -1500, "y": -1500},
+        {"x": 1500, "y": -1500}
+      ],
+      "respawn_time": 10000
+    }
+  },
   "texture": {
     "actor": 0,
     "type": "texture",

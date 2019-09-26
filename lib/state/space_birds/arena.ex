@@ -1,6 +1,7 @@
 defmodule SpaceBirds.State.Arena do
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.Component
+  alias SpaceBirds.Components.PlayerSpawner
   alias SpaceBirds.Logic.Actor
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.BackPressureSystem
@@ -148,6 +149,7 @@ defmodule SpaceBirds.State.Arena do
     {:ok, camera} = MasterData.get_camera(player.id, fighter_id)
     {:ok, arena} = add_actor(arena, fighter)
     {:ok, arena} = add_actor(arena, camera)
+    {:ok, arena} = PlayerSpawner.set_spawn_position(fighter_id, arena)
 
     arena = Map.update(arena, :players, [], fn players -> [player | players] end)
 
@@ -169,15 +171,18 @@ defmodule SpaceBirds.State.Arena do
     arena = update_in(arena.version, &(&1 + 1))
 
     {:ok, arena} = if arena.time_left > 0 do
-      Components.reduce(arena.components, arena, fn component, arena ->
-        module_name = Atom.to_string(component.type)
-                      |> String.split("_")
-                      |> Enum.map(&String.capitalize/1)
-                      |> Enum.join
+      Components.reduce(arena.components, arena, fn
+        %{enabled?: false}, arena ->
+          {:ok, arena}
+        component, arena ->
+          module_name = Atom.to_string(component.type)
+                        |> String.split("_")
+                        |> Enum.map(&String.capitalize/1)
+                        |> Enum.join
 
-        full_module_name = Module.concat(SpaceBirds.Components, module_name)
+          full_module_name = Module.concat(SpaceBirds.Components, module_name)
 
-        apply(full_module_name, :run, [component, arena])
+          apply(full_module_name, :run, [component, arena])
       end)
     else
       {:ok, arena}

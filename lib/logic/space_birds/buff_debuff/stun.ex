@@ -29,6 +29,7 @@ defmodule SpaceBirds.BuffDebuff.Stun do
     stun
     |> update_in([:time], & &1 / (level + 1))
     |> update_in([:time_remaining], & &1 / (level + 1))
+    |> ResultEx.return
   end
 
 end

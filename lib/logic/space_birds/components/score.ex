@@ -26,7 +26,7 @@ defmodule SpaceBirds.Components.Score do
 
   @impl(Component)
   def init(component, arena) do
-    Arena.update_component(arena, component, fn component ->
+    Arena.update_component(arena, component, fn _ ->
       {:ok, update_in(component.component_data, & Map.merge(%__MODULE__{}, &1))}
     end)
   end

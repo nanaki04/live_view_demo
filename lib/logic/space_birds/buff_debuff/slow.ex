@@ -43,6 +43,7 @@ defmodule SpaceBirds.BuffDebuff.Slow do
     |> update_in([:debuff_data, :acceleration_decrease, :from], & &1 / (level + 1))
     |> update_in([:debuff_data, :top_speed_decrease, :from], & &1 / (level + 1))
     |> update_in([:debuff_data, :drag_increase, :from], & &1 / (level + 1))
+    |> ResultEx.return
   end
 
 end

@@ -21,7 +21,7 @@ defmodule SpaceBirds.Components.AnimationPlayer do
   def init(component, arena) do
     case Map.fetch(component.component_data, :starting_animation) do
       {:ok, animation_type} ->
-        Arena.update_component(arena, component, fn component ->
+        Arena.update_component(arena, component, fn _ ->
           play_animation(component, animation_type)
         end)
       _ ->
@@ -52,6 +52,16 @@ defmodule SpaceBirds.Components.AnimationPlayer do
       _, error ->
         error
     end)
+  end
+
+  @spec play_starting_animation(Component.t) :: {:ok, t} | {:error, term}
+  def play_starting_animation(component) do
+    case Map.fetch(component.component_data, :starting_animation) do
+      {:ok, starting_animation} ->
+        play_animation(component, starting_animation)
+      _ ->
+        {:ok, component}
+    end
   end
 
   @spec add_animation(t, Animation.t) :: {:ok, t} | {:error, String.t}

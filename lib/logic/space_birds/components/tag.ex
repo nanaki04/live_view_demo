@@ -47,7 +47,7 @@ defmodule SpaceBirds.Components.Tag do
     Components.fetch(arena.components, :tag)
     |> ResultEx.map(fn tags ->
       Enum.filter(tags, fn
-        {_, %{component_data: %{tag: ^tag}}} -> true
+        {_, %{component_data: %{tag: ^tag}, enabled?: true}} -> true
         _ -> false
       end)
       |> Enum.map(fn {actor, _} -> actor end)

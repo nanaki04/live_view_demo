@@ -15,10 +15,10 @@ defmodule SpaceBirds.Components.Behaviour do
     running_node: :none
 
   @impl(Component)
-  def init(component, arena) do
-    Arena.update_component(arena, component, fn behaviour ->
+  def init(behaviour, arena) do
+    Arena.update_component(arena, behaviour, fn _ ->
       update_in(behaviour.component_data, fn component_data ->
-        {:ok, root} = Node.init(component_data.node_tree, 0, component, arena)
+        {:ok, root} = Node.init(component_data.node_tree, 0, behaviour, arena)
 
         Map.merge(component_data, %__MODULE__{
           node_tree: root,

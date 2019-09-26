@@ -102,6 +102,7 @@ defmodule SpaceBirds.Weapons.Drones do
       position = Vector2.add(transform.component_data.position, %{x: 250, y: 0}) # TODO auto lerp to orbit height
       drone = put_in(drone.transform.component_data.position, position)
       drone = put_in(drone.owner.component_data.owner, weapon.actor)
+      drone = put_in(drone.life_binder.component_data.target, weapon.actor)
       {:ok, drone} = Team.copy_team(drone, arena, weapon.actor)
 
       # TODO there must be a better way

@@ -94,6 +94,7 @@
           "icon": "white",
           "cooldown": 10000,
           "cooldown_remaining": 0,
+          "energy_cost": 20,
           "weapon_data": {
             "projectile_base_path": "default",
             "enhancements": []
@@ -106,6 +107,7 @@
           "icon": "white",
           "cooldown": 15000,
           "cooldown_remaining": 0,
+          "energy_cost": 10,
           "instant?": true,
           "weapon_data": {
             "projectile_path": "default",
@@ -119,6 +121,7 @@
           "icon": "white",
           "cooldown": 15000,
           "cooldown_remaining": 0,
+          "energy_cost": 20,
           "instant?": true,
           "weapon_data": {
             "path": "default",
@@ -127,6 +130,20 @@
             "drones": [],
             "spawn_interval": 15000,
             "time_until_next_spawn": 5000
+          }
+        },
+        {
+          "actor": 0,
+          "weapon_slot": 4,
+          "weapon_name": "rebirth",
+          "icon": "white",
+          "cooldown": 60000,
+          "cooldown_remaining": 0,
+          "energy_cost": 5,
+          "instant?": true,
+          "weapon_data": {
+            "path": "default",
+            "enhancements": []
           }
         },
         {
@@ -534,13 +551,13 @@
     "component_data": {
       "hp": 500,
       "max_hp": 500,
-      "shield": 500,
-      "max_shield": 500,
-      "shield_regeneration": 1,
+      "shield": 750,
+      "max_shield": 750,
+      "shield_regeneration": 2,
       "energy": 100,
       "energy_regeneration": 1,
       "power": 10,
-      "armor": 1,
+      "armor": 5,
       "top_speed": 350,
       "drag": 3,
       "acceleration": 1500

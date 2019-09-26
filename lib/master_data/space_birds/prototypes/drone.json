@@ -13,6 +13,13 @@
       "owner": 0
     }
   },
+  "life_binder": {
+    "actor": 0,
+    "type": "life_binder",
+    "component_data": {
+      "target": 0
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",

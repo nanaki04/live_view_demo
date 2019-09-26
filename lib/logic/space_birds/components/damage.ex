@@ -111,14 +111,15 @@ defmodule SpaceBirds.Components.Damage do
     end)
 
     # deal damage to target
-    {:ok, arena} = with {:ok, stats} <- Components.fetch(arena.components, :stats, target)
+    {:ok, arena} = with {:ok, stats} <- Components.fetch(arena.components, :stats, target),
+                        {:ok, readonly_stats} <- Stats.get_readonly(arena, component.actor)
     do
       life = stats.component_data.hp + stats.component_data.shield
       {:ok, arena} = Stats.receive_damage(stats, damage, arena)
       {:ok, stats} = Components.fetch(arena.components, :stats, target)
       damage_done = life - (stats.component_data.hp + stats.component_data.shield)
       {:ok, arena} = Score.log_damage(arena, damage_done, target, owner)
-      if stats.component_data.hp <= 0 do
+      if stats.component_data.hp <= 0 && MapSet.member?(readonly_stats.component_data.status, :undying) == false  do
         Score.log_kill(arena, target, owner)
       else
         {:ok, arena}

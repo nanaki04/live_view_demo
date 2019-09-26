@@ -1,0 +1,47 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 5000,
+    "is_loop?": false,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "tween_type": "inverse_sine_curve",
+            "frame_data": {
+              "value": 255
+            }
+          },
+          {
+            "type": "opacity",
+            "time": 1000,
+            "tween_type": "inverse_sine_curve",
+            "frame_data": {
+              "value": 0
+            }
+          },
+          {
+            "type": "opacity",
+            "time": 4000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0
+            }
+          },
+          {
+            "type": "opacity_frame",
+            "time": 5000,
+            "tween_type": "inverse_sine_curve",
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      }
+    }
+  }
+]

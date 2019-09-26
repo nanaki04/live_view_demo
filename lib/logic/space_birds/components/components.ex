@@ -92,6 +92,8 @@ defmodule SpaceBirds.Components.Components do
       _, :follow -> false
       :camera, _ -> true
       _, :camera -> false
+      :animation_player, _ -> true
+      _, :animation_player -> false
       :buff_debuff_stack, _ -> true
       _, :buff_debuff_stack -> false
       _, _ -> true

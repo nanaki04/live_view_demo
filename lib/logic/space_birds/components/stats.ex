@@ -15,6 +15,7 @@ defmodule SpaceBirds.Components.Stats do
     | {:immune_to, Actor.t | String.t}
     | {:diminishing_returns_for, BuffDebuff.buff_debuff_type, level :: number}
     | {:channeling, Weapon.weapon_slot}
+    | :undying
 
   @type t :: %{
     hp: number,
@@ -119,7 +120,7 @@ defmodule SpaceBirds.Components.Stats do
     {:ok, component}
   end
 
-  @spec restore_to_full(Component.t) :: {:ok, Arena.t} | {:error, term}
+  @spec restore_to_full(Component.t) :: {:ok, t} | {:error, term}
   def restore_to_full(component) do
     component = put_in(component.component_data.shield, component.component_data.max_shield)
     component = put_in(component.component_data.hp, component.component_data.max_hp)

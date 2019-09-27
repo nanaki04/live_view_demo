@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 4000,
+    "is_loop?": true,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 44,
+              "path": "/images/power_up_energy/power_up_energy"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 2000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 52,
+              "path": "/images/power_up_energy/power_up_energy"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

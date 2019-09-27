@@ -10,8 +10,8 @@
       },
       "rotation": 0,
       "size": {
-        "width": 40,
-        "height": 40
+        "width": 50,
+        "height": 50
       }
     }
   },
@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/laser_beam/laser_beam_0000.png",
+      "path": "/images/power_up_energy/power_up_energy_0044.png",
       "opacity": 255
     }
   },
@@ -55,7 +55,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "power_up_energy"
     }
   }
 }

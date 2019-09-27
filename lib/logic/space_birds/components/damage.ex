@@ -112,7 +112,7 @@ defmodule SpaceBirds.Components.Damage do
 
     # deal damage to target
     {:ok, arena} = with {:ok, stats} <- Components.fetch(arena.components, :stats, target),
-                        {:ok, readonly_stats} <- Stats.get_readonly(arena, component.actor)
+                        {:ok, readonly_stats} <- Stats.get_readonly(arena, target)
     do
       life = stats.component_data.hp + stats.component_data.shield
       {:ok, arena} = Stats.receive_damage(stats, damage, arena)

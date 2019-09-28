@@ -1,0 +1,47 @@
+{
+  "transform": {
+    "actor": "transform",
+    "type": "transform",
+    "component_data": {
+      "layer": "upper",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "size": {
+        "width": 70,
+        "height": 90
+      },
+      "rotation": 0
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/buff_debuff_ignite/buff_debuff_ignite_0040.png",
+      "opacity": 0
+    }
+  },
+  "follow": {
+    "actor": 0,
+    "type": "follow",
+    "component_data": {
+      "target": 0,
+      "offset": {
+        "x": 0,
+        "y": 0
+      }
+    }
+  },
+  "animation_player": {
+    "actor": 0,
+    "type": "animation_player",
+    "component_data": {
+      "animations": {
+        "last_id": 0
+      },
+      "starting_animation": "buff_debuff_ignite"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 500,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 2,
+              "path": "/images/disruptor_flash/disruptor_flash"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 500,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 16,
+              "path": "/images/disruptor_flash/disruptor_flash"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

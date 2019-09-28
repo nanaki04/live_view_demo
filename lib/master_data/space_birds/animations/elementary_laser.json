@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 26,
+              "path": "/images/drone_laser/drone_laser"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 200,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 36,
+              "path": "/images/drone_laser/drone_laser"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

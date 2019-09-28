@@ -94,7 +94,7 @@
     "type": "heal",
     "component_data": {
       "heal": 2,
-      "on_hit_effect_paths": ["plasma_burst_on_hit"],
+      "on_hit_effect_paths": ["heal"],
       "buff_debuff_paths": [],
       "piercing": false
     },
@@ -125,7 +125,7 @@
       "animations": {
         "last_id": 0
       },
-      "starting_animation": "plasma_burst"
+      "starting_animation": "spark_of_life"
     }
   }
 }

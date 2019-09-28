@@ -3,7 +3,7 @@
     "actor": 0,
     "type": "transform",
     "component_data": {
-      "layer": "upper",
+      "layer": "default",
       "position": {
         "x": 0,
         "y": 0
@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/plasma_burst/plasma_burst_0009.png",
+      "path": "/images/space_mine/space_mine_0010.png",
       "opacity": 255
     }
   },
@@ -133,7 +133,7 @@
       "animations": {
         "last_id": 0
       },
-      "starting_animation": "plasma_burst"
+      "starting_animation": "space_mine"
     }
   }
 }

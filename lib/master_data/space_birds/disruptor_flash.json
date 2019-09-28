@@ -15,16 +15,12 @@
       }
     }
   },
-  "paint": {
+  "texture": {
     "actor": 0,
-    "type": "paint",
+    "type": "texture",
     "component_data": {
-      "color": {
-        "r": 255,
-        "g": 255,
-        "b": 255,
-        "a": 255
-      }
+      "path": "/images/disruptor_flash/disruptor_flash_0002.png",
+      "opacity": 255
     }
   },
   "destination": {
@@ -41,7 +37,7 @@
     "actor": 0,
     "type": "lifetime",
     "component_data": {
-      "milliseconds": 200
+      "milliseconds": 500
     }
   },
   "collider": {
@@ -61,7 +57,7 @@
       "on_hit_effect_paths": ["plasma_burst_on_hit"],
       "buff_debuff_paths": ["stun"],
       "piercing": {
-        "hit_cooldown": 500
+        "hit_cooldown": 1000
       },
       "on_hit": "plasma_burst"
     }
@@ -73,7 +69,7 @@
       "animations": {
         "last_id": 0
       },
-      "starting_animation": "fade"
+      "starting_animation": "disruptor_flash"
     }
   }
 }

@@ -39,7 +39,7 @@ defmodule SpaceBirds.UI.BuffDebuffPanel do
                icon_count = length(node.children)
                icon = %Node{
                  type: "panel",
-                 texture: icon_path,
+                 texture: "/images/icons/#{icon_path}.png",
                  position: %Position{x: icon_count * 12.5, y: 0},
                  size: %Size{width: 12, height: 12},
                  color: %Color{r: 0, g: 0, b: 0, a: 255}

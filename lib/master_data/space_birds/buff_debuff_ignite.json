@@ -3,8 +3,8 @@
   "type": "ignite",
   "time": 3000,
   "time_remaining": 3000,
-  "effect_type": "slow",
-  "icon_path": "/images/icons/slow_icon.png",
+  "effect_type": "buff_debuff_ignite",
+  "icon_path": "buff_debuff_ignite",
   "diminishing_returns_cooldown": 0,
   "buff_data": {},
   "debuff_data": {

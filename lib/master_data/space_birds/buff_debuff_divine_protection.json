@@ -3,8 +3,8 @@
   "type": "divine_protection",
   "time": 5000,
   "time_remaining": 5000,
-  "effect_type": "none",
-  "icon_path": "white",
+  "effect_type": "shield_purple",
+  "icon_path": "buff_debuff_divine_protection",
   "diminishing_returns_cooldown": 0,
   "buff_data": {
     "absorb_per_hit": 10,

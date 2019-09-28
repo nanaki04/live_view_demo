@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 400,
+    "is_loop?": false,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 1,
+              "path": "/images/divine_protection/divine_protection"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 400,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 12,
+              "path": "/images/divine_protection/divine_protection"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

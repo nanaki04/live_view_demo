@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 800,
+    "is_loop?": false,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 2,
+              "path": "/images/rebirth_explosion/rebirth_explosion"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 800,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 15,
+              "path": "/images/rebirth_explosion/rebirth_explosion"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

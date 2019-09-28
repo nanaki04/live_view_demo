@@ -31,6 +31,7 @@ defmodule SpaceBirds.Weapons.DisruptorFlash do
     do
       position = Transform.offset(transform, @offset)
       effect = put_in(effect.transform.component_data.position, position)
+      effect = put_in(effect.transform.component_data.rotation, transform.component_data.rotation)
 
       Arena.add_actor(arena, effect)
     else

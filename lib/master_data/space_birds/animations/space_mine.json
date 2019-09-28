@@ -1,0 +1,72 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 8000,
+    "is_loop?": true,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 10,
+              "path": "/images/space_mine/space_mine"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 1000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/space_mine/space_mine"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 5000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/space_mine/space_mine"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 6000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 10,
+              "path": "/images/space_mine/space_mine"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 8000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 10,
+              "path": "/images/space_mine/space_mine"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

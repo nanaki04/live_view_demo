@@ -7,7 +7,7 @@ defmodule SpaceBirds.Weapons.Ignite do
   use Weapon
 
   @default_path "ignite"
-  @offset %{x: 0, y: -60}
+  @offset %{x: 0, y: -80}
 
   @type t :: %{
     enhancements: [term],
@@ -30,7 +30,9 @@ defmodule SpaceBirds.Weapons.Ignite do
          {:ok, effect} <- MasterData.get_projectile(path, effect_id, weapon.actor)
     do
       position = Transform.offset(transform, @offset)
+      rotation = transform.component_data.rotation
       effect = put_in(effect.transform.component_data.position, position)
+      effect = put_in(effect.transform.component_data.rotation, rotation)
 
       Arena.add_actor(arena, effect)
     else

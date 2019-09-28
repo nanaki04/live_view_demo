@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 2000,
+    "is_loop?": true,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/drone/drone"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 2000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 30,
+              "path": "/images/drone/drone"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

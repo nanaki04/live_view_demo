@@ -38,6 +38,7 @@ defmodule SpaceBirds.UI.WeaponPanel do
                  type: "vertical_gauge",
                  position: position,
                  size: @icon_size,
+                 color: %Color{r: 0, g: 0, b: 0, a: 0},
                  node_data: %Gauge{
                    gauge_color: Color.new_gradient(%{r: 0, g: 0, b: 0, a: 200}, %{r: 0, g: 0, b: 0, a: 100}),
                    max_value: 1,
@@ -54,7 +55,7 @@ defmodule SpaceBirds.UI.WeaponPanel do
 
                icon = %Node{
                  type: "panel",
-                 texture: icon_path,
+                 texture: "/images/icons/#{icon_path}.png",
                  position: position,
                  size: @icon_size
                }
@@ -63,6 +64,7 @@ defmodule SpaceBirds.UI.WeaponPanel do
                  type: "vertical_gauge",
                  position: position,
                  size: @icon_size,
+                 color: %Color{r: 0, g: 0, b: 0, a: 0},
                  node_data: %Gauge{
                    gauge_color: Color.new_gradient(%{r: 0, g: 0, b: 0, a: 200}, %{r: 0, g: 0, b: 0, a: 100}),
                    max_value: 1,

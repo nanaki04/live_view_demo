@@ -15,18 +15,6 @@
       }
     }
   },
-  "paint": {
-    "actor": 0,
-    "type": "paint",
-    "component_data": {
-      "color": {
-        "r": 255,
-        "g": 0,
-        "b": 100,
-        "a": 255
-      }
-    }
-  },
   "destination": {
     "actor": 0,
     "type": "destination",
@@ -41,7 +29,15 @@
     "actor": 0,
     "type": "lifetime",
     "component_data": {
-      "milliseconds": 200
+      "milliseconds": 400
+    }
+  },
+  "texture": {
+    "actor": 0,
+    "type": "texture",
+    "component_data": {
+      "path": "/images/divine_protection/divine_protection_0001.png",
+      "opacity": 255
     }
   },
   "collider": {
@@ -61,7 +57,7 @@
       "on_hit_effect_paths": ["explosion_red_on_hit"],
       "buff_debuff_paths": ["stun"],
       "piercing": {
-        "hit_cooldown": 500
+        "hit_cooldown": 1000
       }
     }
   },
@@ -72,7 +68,7 @@
       "animations": {
         "last_id": 0
       },
-      "starting_animation": "fade"
+      "starting_animation": "divine_protection"
     }
   }
 }

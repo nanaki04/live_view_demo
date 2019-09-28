@@ -1,0 +1,45 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 500,
+    "is_loop?": false,
+    "key_frames": {
+      "opacity_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "opacity_frame",
+            "time": 0,
+            "frame_data": {
+              "value": 255
+            }
+          }
+        ]
+      },
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 10,
+              "path": "/images/heal/heal"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 500,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 20,
+              "path": "/images/heal/heal"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

@@ -10,8 +10,8 @@
       },
       "rotation": 0,
       "size": {
-        "width": 50,
-        "height": 50
+        "width": 75,
+        "height": 60
       }
     }
   },
@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/plasma_burst/plasma_burst_0009.png",
+      "path": "/images/plasma_overload/plasma_overload_0014.png",
       "opacity": 255
     }
   },
@@ -145,7 +145,7 @@
       "animations": {
         "last_id": 0
       },
-      "starting_animation": "plasma_burst"
+      "starting_animation": "plasma_overload"
     }
   }
 }

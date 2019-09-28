@@ -4,7 +4,7 @@
   "time": 5000,
   "time_remaining": 5000,
   "effect_type": "none",
-  "icon_path": "white",
+  "icon_path": "none",
   "diminishing_returns_cooldown": 0,
   "buff_data": {
     "bolt_strength": 4,

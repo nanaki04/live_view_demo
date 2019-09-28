@@ -4,7 +4,7 @@
   "time": 3000,
   "time_remaining": 3000,
   "effect_type": "after_burner",
-  "icon_path": "white",
+  "icon_path": "haste",
   "diminishing_returns_cooldown": 3000,
   "buff_data": {
     "acceleration_increase": {

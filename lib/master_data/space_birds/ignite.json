@@ -15,16 +15,12 @@
       }
     }
   },
-  "paint": {
+  "texture": {
     "actor": 0,
-    "type": "paint",
+    "type": "texture",
     "component_data": {
-      "color": {
-        "r": 0,
-        "g": 255,
-        "b": 0,
-        "a": 255
-      }
+      "path": "/images/ignite/ignite_0001.png",
+      "opacity": 255
     }
   },
   "destination": {
@@ -72,7 +68,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "ignite"
     }
   }
 }

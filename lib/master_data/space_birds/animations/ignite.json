@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 3000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 1,
+              "path": "/images/ignite/ignite"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 3000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 39,
+              "path": "/images/ignite/ignite"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

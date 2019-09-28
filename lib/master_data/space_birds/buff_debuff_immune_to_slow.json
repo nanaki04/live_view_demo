@@ -4,7 +4,7 @@
   "time": 3000,
   "time_remaining": 3000,
   "effect_type": "none",
-  "icon_path": "none",
+  "icon_path": "immune_to_slow",
   "diminishing_returns_cooldown": 0,
   "buff_data": {
     "to": "slow"

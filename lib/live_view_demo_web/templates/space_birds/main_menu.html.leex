@@ -1,3 +1,7 @@
+<%= if @error != nil do %>
+  <div class="alert-danger"><%= @error %></div>
+<% end %>
+
 <%= case {@player, @fighter_confirmed} do %>
   <%= {nil, false} -> %>
     <div>Enter your nickname</div>

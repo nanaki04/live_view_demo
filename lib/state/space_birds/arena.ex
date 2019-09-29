@@ -135,7 +135,7 @@ defmodule SpaceBirds.State.Arena do
     BackPressureSystem.id(player.id, arena.id)
     |> BackPressureSystem.stop
 
-    actor = find_player_actor(arena, player.id)
+    {:ok, actor} = find_player_actor(arena, player.id)
     {:ok, arena} = remove_actor(arena, actor)
 
     arena = update_in(arena.players, fn players ->
@@ -151,8 +151,11 @@ defmodule SpaceBirds.State.Arena do
     end
   end
 
-  @impl(GenServer)
-  def handle_cast({:join, player, fighter_type}, arena) do
+  def handle_call({:join, _, _}, _, %{players: players} = arena) when length(players) >= 4 do
+    {:reply, {:error, :battle_full}, arena}
+  end
+
+  def handle_call({:join, player, fighter_type}, _, arena) do
     fighter_id = arena.last_actor_id + 1
     {:ok, fighter} = MasterData.get_player_fighter(fighter_type, fighter_id, player)
     {:ok, camera} = MasterData.get_camera(player.id, fighter_id)
@@ -164,9 +167,10 @@ defmodule SpaceBirds.State.Arena do
 
     {:ok, _} = BackPressureSupervisor.start_child(player.id, arena.id)
 
-    {:noreply, arena}
+    {:reply, :ok, arena}
   end
 
+  @impl(GenServer)
   def handle_cast({:push_action, action}, arena) do
     {:ok, action} = Action.init(action, arena)
     arena = Map.put(arena, :actions, [action | arena.actions])
@@ -278,11 +282,6 @@ defmodule SpaceBirds.State.Arena do
 
   @spec remove_actor(t, Actor.t) :: {:ok, t} | {:error, String.t}
   def remove_actor(arena, actor) do
-    #    Components.filter_by_actor(arena.components, actor)
-    #    |> Enum.reduce({:ok, arena}, fn
-    #      component, {:ok, arena} -> Component.destroy(component, arena)
-    #      _, error -> error
-    #    end)
     update_components(arena, fn components ->
       Components.remove_components(components, actor)
     end)

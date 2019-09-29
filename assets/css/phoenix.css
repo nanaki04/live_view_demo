@@ -183,6 +183,10 @@ option:hover {
   border: 2px inset #999944;
 }
 
+hr {
+  border: 2px inset #999944;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus,

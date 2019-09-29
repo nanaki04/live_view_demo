@@ -39,6 +39,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:fighter_confirmed, false)
     |> assign(:version, 0)
     |> assign(:fps, 30)
+    |> assign(:error, nil)
     |> ok
   end
 
@@ -50,7 +51,6 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
     assign(socket, player: player)
     |> assign(:fighter_information, ResultEx.unwrap!(SpaceBirds.MasterData.get_fighter_information(socket.assigns.selected_fighter_type)))
-    |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all())
     |> assign(:chat, {chat_id, members, messages})
     |> noreply
   end
@@ -73,16 +73,28 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       {:ok, battle_id, ChatSupervisor.via(selected_battle)}
     end
 
-    {:ok, player} = Players.update(player.id, fn player -> Map.put(player, :battle_id, battle_id) end)
-    GenServer.cast(battle_id, {:join, player, fighter_type})
-    {:ok, {members, messages}} = ChatRoom.join(chat_id, player)
-
-    socket
-    |> assign(player: player)
-    |> assign(battle: battle_id)
-    |> assign(chat: {chat_id, members, messages})
-    |> assign(state: Map.put(state, :location, :arena))
-    |> noreply
+    with :ok <- GenServer.call(battle_id, {:join, player, fighter_type}),
+         {:ok, player} <- Players.update(player.id, fn player -> Map.put(player, :battle_id, battle_id) end),
+         {:ok, {members, messages}} <- ChatRoom.join(chat_id, player)
+    do
+      socket
+      |> assign(player: player)
+      |> assign(battle: battle_id)
+      |> assign(chat: {chat_id, members, messages})
+      |> assign(state: Map.put(state, :location, :arena))
+      |> assign(:error, nil)
+      |> noreply
+    else
+      {:error, :battle_full} ->
+        socket
+        |> assign(:error, "Unable to join, the selected battle is full. Please select a different one.")
+        |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all_joinable())
+        |> noreply
+      _ ->
+        socket
+        |> assign(:error, "An unknown error occurred. Please try again.")
+        |> noreply
+    end
   end
 
   def handle_event("update_client_version", version, socket) do
@@ -196,11 +208,14 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
   def handle_event("confirm_fighter", _, socket) do
     assign(socket, :fighter_confirmed, true)
+    |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all_joinable())
+    |> assign(:error, nil)
     |> noreply
   end
 
   def handle_event("back_to_fighter_select", _, socket) do
     assign(socket, :fighter_confirmed, false)
+    |> assign(:error, nil)
     |> noreply
   end
 

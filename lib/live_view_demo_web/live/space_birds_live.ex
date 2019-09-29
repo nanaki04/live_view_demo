@@ -38,6 +38,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:selected_fighter_type, "hawk")
     |> assign(:fighter_confirmed, false)
     |> assign(:version, 0)
+    |> assign(:fps, 30)
     |> ok
   end
 
@@ -114,6 +115,13 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "d" -> push_action(:move_right_stop, socket)
       "a" -> push_action(:move_left_stop, socket)
       "Escape" -> push_action(:cancel, socket)
+        # debug only
+      "u" ->
+        fps = GenServer.call(socket.assigns.battle, :fps_up)
+        socket = assign(socket, :fps, fps)
+      "j" ->
+        fps = GenServer.call(socket.assigns.battle, :fps_down)
+        socket = assign(socket, :fps, fps)
       _ -> socket
     end
 

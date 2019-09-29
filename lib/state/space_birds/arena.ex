@@ -14,8 +14,6 @@ defmodule SpaceBirds.State.Arena do
   # and if we want to get really crazy, have a backup genserver running to recover the state entirely on restart
   use GenServer, restart: :transient
 
-  @fps 30
-
   @type id :: GenServer.name
 
   @type t :: %{
@@ -40,7 +38,8 @@ defmodule SpaceBirds.State.Arena do
     delta_time: 0,
     paused: false,
     version: 0,
-    time_left: 600000
+    time_left: 600000,
+    fps: 30
 
   def start_link([id: id]) do
     GenServer.start_link(__MODULE__, {id, :standard}, name: id)
@@ -104,7 +103,7 @@ defmodule SpaceBirds.State.Arena do
       spawner, {:ok, arena} -> add_actor(arena, spawner)
     end)
 
-    Process.send_after(self(), :tick, 1000)
+    Process.send_after(self(), :tick, 100)
 
     {:ok, %{arena | id: id}}
   end
@@ -117,9 +116,19 @@ defmodule SpaceBirds.State.Arena do
   def handle_call(:pause, _, state) do
     state = Map.put(state, :paused, !state.paused)
     if !state.paused do
-      Process.send_after(self(), :tick, max(round(1000 / @fps) - (System.system_time(:millisecond) - state.frame_time), 0))
+      Process.send_after(self(), :tick, max(round(1000 / state.fps) - (System.system_time(:millisecond) - state.frame_time), 0))
     end
     {:reply, state, state}
+  end
+
+  def handle_call(:fps_down, _, arena) do
+    arena = Map.update(arena, :fps, 30, &max(1, &1 - 1))
+    {:reply, arena.fps, arena}
+  end
+
+  def handle_call(:fps_up, _, arena) do
+    arena = Map.update(arena, :fps, 30, &min(30, &1 + 1))
+    {:reply, arena.fps, arena}
   end
 
   def handle_call({:leave, player}, _, arena) do
@@ -220,7 +229,7 @@ defmodule SpaceBirds.State.Arena do
     arena = Map.put(arena, :actions, [])
 
     if !arena.paused do
-      Process.send_after(self(), :tick, max(round(1000 / @fps) - (System.system_time(:millisecond) - arena.frame_time), 0))
+      Process.send_after(self(), :tick, max(round(1000 / arena.fps) - (System.system_time(:millisecond) - arena.frame_time), 0))
     end
 
     if length(online_players) > 0 do

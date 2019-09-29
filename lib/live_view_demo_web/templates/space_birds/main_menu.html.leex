@@ -5,7 +5,7 @@
       <input type="text" name="player_name"></input>
     </form>
     <img src="images/title/title_0053.png" style="border: 2px inset #bbbb88;" />
-  <%= {_, false} -> %>
+  <% {_, false} -> %>
     <div>Select your fighter model</div>
       <table><tr><td>
         <%= for fighter_type <- @fighter_types do %>
@@ -34,7 +34,7 @@
         <% end %>
     </table>
 
-  <%= {_, true} -> %>
+  <% {_, true} -> %>
     <table><tr><td>
       <div>Select a battle to join, or create a new one</div>
     </td><td>

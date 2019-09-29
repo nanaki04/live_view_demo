@@ -9,5 +9,6 @@
   "delta_time": 0,
   "paused": false,
   "version": 0,
-  "time_left": 600000
+  "time_left": 600000,
+  "fps": 30
 }

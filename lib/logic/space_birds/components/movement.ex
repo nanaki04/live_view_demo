@@ -27,14 +27,13 @@ defmodule SpaceBirds.Components.Movement do
 
   @spec orbit(movement :: Component.t, target_transform :: Component.t, radius :: number, Arena.t) :: {:ok, Arena.t} | {:error, term}
   def orbit(component, target_transform, radius, arena) do
-    # TODO make the transform find the correct radius
     with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor),
          {:ok, %{component_data: readonly_stats}} <- Stats.get_readonly(arena, component.actor),
          false <- MapSet.member?(readonly_stats.status, :stunned)
     do
       speed = Vector2.distance(component.component_data.speed)
               |> Kernel.+(arena.delta_time * readonly_stats.acceleration)
-              |> apply_drag(readonly_stats.drag)
+              |> apply_drag(readonly_stats.drag, arena.delta_time)
               |> min(readonly_stats.top_speed)
               |> max(@min_speed)
 
@@ -87,7 +86,7 @@ defmodule SpaceBirds.Components.Movement do
       component = update_in(component.component_data.speed, fn speed ->
         speed
         |> Vector2.add(speed_offset)
-        |> apply_drag(readonly_stats.drag)
+        |> apply_drag(readonly_stats.drag, arena.delta_time)
         |> cap_top_speed(readonly_stats.top_speed, unit_vector)
         |> discard_minimal_speed
       end)
@@ -115,12 +114,12 @@ defmodule SpaceBirds.Components.Movement do
     end
   end
 
-  defp apply_drag(%{x: _, y: _} = speed, drag) do
-    Vector2.mul(speed, 1 / (1 + drag * 0.1))
+  defp apply_drag(%{x: _, y: _} = speed, drag, delta_time) do
+    Vector2.mul(speed, 1 / (1 + drag * delta_time))
   end
 
-  defp apply_drag(speed, drag) do
-    speed * (1 / (1 + drag * 0.1))
+  defp apply_drag(speed, drag, delta_time) do
+    speed * (1 / (1 + drag * delta_time))
   end
 
   defp cap_top_speed(speed, top_speed, unit_vector) do

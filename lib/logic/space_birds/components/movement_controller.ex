@@ -103,7 +103,7 @@ defmodule SpaceBirds.Components.MovementController do
     component = update_in(component.component_data.speed, fn speed ->
       speed
       |> v2_add(speed_offset)
-      |> apply_drag(readonly_stats.drag)
+      |> apply_drag(readonly_stats.drag, arena.delta_time)
       |> cap_top_speed(readonly_stats.top_speed)
       |> discard_minimal_speed
     end)
@@ -171,12 +171,12 @@ defmodule SpaceBirds.Components.MovementController do
     v2_mul(direction, acceleration)
   end
 
-  defp apply_drag(speed, drag) when is_cross_angle(speed) do
-    v2_mul(speed, 1 / (1 + (drag * @cross_speed_coefficient * 0.1)))
+  defp apply_drag(speed, drag, delta_time) when is_cross_angle(speed) do
+    v2_mul(speed, 1 / (1 + (drag * @cross_speed_coefficient * 1 * delta_time)))
   end
 
-  defp apply_drag(speed, drag) do
-    v2_mul(speed, 1 / (1 + drag * 0.1))
+  defp apply_drag(speed, drag, delta_time) do
+    v2_mul(speed, 1 / (1 + drag * 1 * delta_time))
   end
 
   defp calculate_speed(speed) when is_cross_angle(speed), do: v2_mul(speed, @cross_speed_coefficient)

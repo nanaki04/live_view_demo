@@ -4,11 +4,12 @@
 
 <%= case {@player, @fighter_confirmed} do %>
   <%= {nil, false} -> %>
-    <div>Enter your nickname</div>
+    <img src="images/title/title_0053.png" style="border: 2px inset #bbbb88;" />
+    <hr />
+    <div>Enter your nickname and start playing!</div>
     <form phx-submit="new_player">
       <input type="text" name="player_name"></input>
     </form>
-    <img src="images/title/title_0053.png" style="border: 2px inset #bbbb88;" />
   <% {_, false} -> %>
     <div>Select your fighter model</div>
       <table><tr><td>

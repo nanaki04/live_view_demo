@@ -44,6 +44,11 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   end
 
   @impl(Phoenix.LiveView)
+  def handle_event("new_player", %{"player_name" => ""}, socket) do
+    socket
+    |> noreply
+  end
+
   def handle_event("new_player", %{"player_name" => player_name}, socket) do
     {:ok, player} = Players.join(self(), player_name)
     chat_id = ChatSupervisor.global_chat_id

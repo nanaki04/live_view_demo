@@ -7,7 +7,7 @@
   "icon_path": "buff_debuff_divine_protection",
   "diminishing_returns_cooldown": 0,
   "buff_data": {
-    "absorb_per_hit": 10,
+    "absorb_per_hit": 15,
     "damage_absorbed": 0,
     "on_remove_effect": "divine_protection"
   },

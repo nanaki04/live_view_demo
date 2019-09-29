@@ -1,0 +1,30 @@
+{
+  "description": "Sturdy fighter, with strong defensive abilities.",
+  "profile_image": "phoenix_profile_0018",
+  "weapons": [
+    {
+      "name": "Bolt of Fire",
+      "description": "Shoots three slow moving projectiles that seek out the nearest enemy in range. Enemies hit will be slowed.",
+      "icon": "fire_bolt",
+      "hotkey": "1"
+    },
+    {
+      "name": "Divine Protection",
+      "description": "Creates a shield that absorbs damage done for every hit the Phoenix takes while the shield is active. When the shield expires, all absorbed damage will be dealt to all enemies within range. All enemies hit will be stunned for a short period.",
+      "icon": "divine_protection",
+      "hotkey": "2"
+    },
+    {
+      "name": "Drones / Spark of Life",
+      "description": "Passively spawns up to three drones that follow the Phoenix, and attack nearby targets. Upon actively using the weapon, all active drones will emit sparks of life towards the Phoenix, restoring its shields, and removing debuffs.",
+      "icon": "drone",
+      "hotkey": "3"
+    },
+    {
+      "name": "Rebirth",
+      "description": "Creates a protective shield that last ten seconds. If the Phoenix is destroyed when the shield is up, it will be reconstructed with its shields and hull restored to full. Upon reconstruction, a shockwave is send out stunning nearby targets.",
+      "icon": "rebirth",
+      "hotkey": "4"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "description": "Agile fighter specialized at close range attacks. The Ravens weapons expend a lot of energy, but energy reneration is very high.",
+  "profile_image": "raven_profile_0016",
+  "weapons": [
+    {
+      "name": "Blink",
+      "description": "Teleports to the targetted location, slowing all targets withing range of either the starting point, or the destination of the teleport. Upon using blink, all slow effects will be removed, and the Ravens movement speed will be increased for a short time. Blink can be used two times in short succession before the cooldown kicks in.",
+      "icon": "blink",
+      "hotkey": "1"
+    },
+    {
+      "name": "Disruptor Flash",
+      "description": "Damages and stuns all targets within an area in front of the Raven.",
+      "icon": "disruptor_flash",
+      "hotkey": "2"
+    },
+    {
+      "name": "Ignite",
+      "description": "Deals a large amount of damage over time, and slows all targets within an area in front of the Raven.",
+      "icon": "ignite",
+      "hotkey": "3"
+    },
+    {
+      "name": "Plasma Overload",
+      "description": "Spawns a large number of projectiles while channeling, seeking out, slowing, and dealing damage to nearby targets.",
+      "icon": "plasma_overload",
+      "hotkey": "4"
+    }
+  ]
+}

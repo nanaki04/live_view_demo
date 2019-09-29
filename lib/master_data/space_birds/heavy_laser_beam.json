@@ -10,8 +10,8 @@
       },
       "rotation": 0,
       "size": {
-        "width": 50,
-        "height": 50
+        "width": 40,
+        "height": 100
       }
     }
   },
@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/plasma_burst/plasma_burst_0009.png",
+      "path": "/images/laser_beam/laser_beam_0000.png",
       "opacity": 255
     }
   },
@@ -37,7 +37,7 @@
     "actor": 0,
     "type": "lifetime",
     "component_data": {
-      "milliseconds": 5000
+      "milliseconds": 1500
     }
   },
   "movement_controller": {
@@ -62,17 +62,14 @@
     "component_data": {
       "running_node": "none",
       "node_tree": {
-        "type": "selector",
+        "type": "sequence",
         "node_data": {
           "children": [
             {
-              "type": "chase",
+              "type": "move_forward",
               "node_data": {
-                "target": "ally_player",
-                "scan_distance": 500,
-                "target_distance": 0,
-                "distance_until_giveup": 10000,
-                "lerp": "none"
+                "distance": 2000,
+                "distance_left": 2000
               }
             }
           ]
@@ -86,19 +83,18 @@
     "component_data": {
       "layer": "projectile",
       "owner": 0,
-      "collides_with": ["fighter"]
+      "collides_with": ["fighter", "ai", "destructable"]
     }
   },
-  "heal": {
+  "damage": {
     "actor": 0,
-    "type": "heal",
+    "type": "damage",
     "component_data": {
-      "heal": 4,
-      "on_hit_effect_paths": ["heal"],
+      "damage": 30,
+      "on_hit_effect_paths": ["explosion_red_on_hit"],
       "buff_debuff_paths": [],
       "piercing": false
-    },
-    "on_hit": "spark_of_life"
+    }
   },
   "stats": {
     "actor": 0,
@@ -113,8 +109,8 @@
       "energy_regeneration": 0,
       "power": 0,
       "armor": 0,
-      "top_speed": 2000,
-      "acceleration": 10000,
+      "top_speed": 2500,
+      "acceleration": 80000,
       "drag": 1
     }
   },
@@ -124,8 +120,7 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      },
-      "starting_animation": "spark_of_life"
+      }
     }
   }
 }

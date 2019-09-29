@@ -457,17 +457,17 @@
                   "y": 0
                 },
                 "size": {
-                  "width": 20,
-                  "height": 20
+                  "width": 120,
+                  "height": 40
                 },
                 "color": {
-                  "r": 255,
-                  "g": 255,
-                  "b": 255,
+                  "r": 100,
+                  "g": 100,
+                  "b": 50,
                   "a": 255
                 },
                 "texture": "none",
-                "text": "",
+                "text": "Ranking",
                 "node_data": {
                   "id": "ranking_popup"
                 },
@@ -549,13 +549,13 @@
     "actor": 0,
     "type": "stats",
     "component_data": {
-      "hp": 20,
+      "hp": 500,
       "max_hp": 500,
-      "shield": 5,
+      "shield": 750,
       "max_shield": 750,
       "shield_regeneration": 2,
       "energy": 100,
-      "energy_regeneration": 1,
+      "energy_regeneration": 0.2,
       "power": 10,
       "armor": 5,
       "top_speed": 350,

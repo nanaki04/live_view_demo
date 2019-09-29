@@ -54,7 +54,7 @@
           "cooldown": 500,
           "cooldown_remaining": 0,
           "weapon_data": {
-            "projectile_path": "laser_beam",
+            "projectile_path": "standard_laser_beam",
             "enhancements": []
           }
         }

@@ -36,6 +36,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:selected_battle, "new")
     |> assign(:fighter_types, ResultEx.unwrap!(MasterData.get_fighter_types()))
     |> assign(:selected_fighter_type, "hawk")
+    |> assign(:fighter_confirmed, false)
     |> assign(:version, 0)
     |> ok
   end
@@ -47,6 +48,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     {:ok, {members, messages}} = ChatRoom.join(chat_id, player)
 
     assign(socket, player: player)
+    |> assign(:fighter_information, ResultEx.unwrap!(SpaceBirds.MasterData.get_fighter_information(socket.assigns.selected_fighter_type)))
     |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all())
     |> assign(:chat, {chat_id, members, messages})
     |> noreply
@@ -144,6 +146,21 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> noreply
   end
 
+  def handle_event("key_down", "Backspace", %{assigns: %{typing: ""}} = socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("key_down", "Backspace", socket) do
+    msg = socket.assigns.typing
+    assign(socket, :typing, String.slice(msg, 0, String.length(msg) - 1))
+    |> noreply
+  end
+
+  def handle_event("key_down", "Escape", socket) do
+    assign(socket, :typing, false)
+    |> noreply
+  end
+
   def handle_event("key_down", key, socket) do
     case String.length(key) do
       1 ->
@@ -163,8 +180,19 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> noreply
   end
 
-  def handle_event("select_fighter", %{"fighter_pulldown" => fighter_type}, socket) do
+  def handle_event("select_fighter", fighter_type, socket) do
     assign(socket, :selected_fighter_type, fighter_type)
+    |> assign(:fighter_information, ResultEx.unwrap!(SpaceBirds.MasterData.get_fighter_information(fighter_type)))
+    |> noreply
+  end
+
+  def handle_event("confirm_fighter", _, socket) do
+    assign(socket, :fighter_confirmed, true)
+    |> noreply
+  end
+
+  def handle_event("back_to_fighter_select", _, socket) do
+    assign(socket, :fighter_confirmed, false)
     |> noreply
   end
 

@@ -1,0 +1,30 @@
+{
+  "description": "Agile fighter specialized at long range attacks.",
+  "profile_image": "hawk_profile_0018",
+  "weapons": [
+    {
+      "name": "Rail Gun",
+      "description": "Targetted long range piercing attack. Stuns all targets hit.",
+      "icon": "rail_gun",
+      "hotkey": "1"
+    },
+    {
+      "name": "Afterburner",
+      "description": "Drastically increases speed for a short period of time.",
+      "icon": "after_burner",
+      "hotkey": "2"
+    },
+    {
+      "name": "Space Mine",
+      "description": "Lays down a spacemine which will detonate when an enemy flies within its range. Enemies hit by the mine will be stunned for a short time.",
+      "icon": "space_mine",
+      "hotkey": "3"
+    },
+    {
+      "name": "Solar Flare",
+      "description": "A targetted long range channeling attack that will do increasing damage over time. Targets hit within the beam will be slowed.",
+      "icon": "solar_flare",
+      "hotkey": "4"
+    }
+  ]
+}

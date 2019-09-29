@@ -37,6 +37,18 @@ defmodule SpaceBirds.MasterData do
     end
   end
 
+  @spec get_fighter_information(fighter_type) :: term
+  def get_fighter_information(fighter_type) do
+    with {:ok, json} <- File.read("#{@base_path}fighter_information_#{fighter_type}.json"),
+         {:ok, fighter_information} <- Jason.decode(json, keys: :atoms)
+    do
+      {:ok, fighter_information}
+    else
+      error ->
+        error
+    end
+  end
+
   @spec get_player_fighter(fighter_type, Actor.t, Players.t) :: {:ok, t} | {:error, String.t}
   def get_player_fighter(fighter_type, actor_id, player) do
     with {:ok, fighter} <- get_fighter(fighter_type, actor_id) do

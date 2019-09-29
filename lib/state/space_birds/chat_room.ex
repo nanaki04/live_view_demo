@@ -67,6 +67,7 @@ defmodule SpaceBirds.State.ChatRoom do
 
   @impl(GenServer)
   def handle_call({:join, player}, _, state) do
+    state = remove_offline_members(state)
     state = update_in(state.members, &Map.put(&1, player.id, {player.pid, player.name}))
     message = %{body: join_message(player.name), sender: :system}
     state = update_in(state.messages, &Enum.slice([message | &1], 0, @message_limit))
@@ -154,6 +155,16 @@ defmodule SpaceBirds.State.ChatRoom do
     else
       {:reply, :ok, state}
     end
+  end
+
+  defp remove_offline_members(%{members: members} = state) do
+    Map.put(state, :members, Enum.filter(members, fn
+      {_id, {pid, _name}} ->
+        Process.alive?(pid)
+      _ ->
+        false
+    end)
+    |> Enum.into(%{}))
   end
 
 end

@@ -5,8 +5,9 @@
 <%= case {@player, @fighter_confirmed} do %>
   <%= {nil, false} -> %>
     <img src="images/title/title_0053.png" style="border: 2px inset #bbbb88;" />
-    <hr />
-    <div>Enter your nickname and start playing!</div>
+    <br /><br />
+    <div>Space birds is an action packed multiplayer top down sci-fi shooter game powered by Phoenix Live View.<br />
+    Enter your nickname and start playing!</div>
     <form phx-submit="new_player">
       <input type="text" name="player_name"></input>
     </form>
@@ -22,7 +23,50 @@
 
       <h1><%= String.capitalize(@selected_fighter_type) %></h1>
       <table><tr><td valign="top"><%= @fighter_information.description %></td><td><img src=<%= "images/title/#{@fighter_information.profile_image}.png" %> style="width: 400px; height: 400px; max-width: none; border: 2px inset #bbbb88;" /></td></tr></table>
-      <p></p>
+      <h2>Basic Controls</h2>
+      <table>
+        <tr>
+          <th>Hotkey</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>W</td>
+          <td>Move Up</td>
+        </tr>
+        <tr>
+          <td>S</td>
+          <td>Move Down</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td>Move Right</td>
+        </tr>
+        <tr>
+          <td>A</td>
+          <td>Move Left</td>
+        </tr>
+        <tr>
+          <td>Space</td>
+          <td><h3>Discharge</h3>Use to escape when in a pinch!</td>
+        </tr>
+        <tr>
+          <td>Left Mouse Button</td>
+          <td>Fire your main weapon, or the currently selected targetted weapon, aimed at the clicked location.</td>
+        </tr>
+        <tr>
+          <td>1 ~ 4</td>
+          <td>Use to select targetted weapons, or fire instant weapons.</td>
+        </tr>
+        <tr>
+          <td>Enter</td>
+          <td>Type a chat message to other players in the same battle.</td>
+        </tr>
+        <tr>
+          <td>Escape</td>
+          <td>Cancel the channeling of certain weapon types. When in chat mode, cancels the chat mode so you can fire weapons again!</td>
+        </tr>
+    </table>
+
       <h2>Weapons</h2>
       <table>
         <tr>

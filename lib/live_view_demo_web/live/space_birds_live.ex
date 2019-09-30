@@ -63,47 +63,6 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> noreply
   end
 
-  def handle_event(
-    "start_game",
-    _,
-    %{assigns: %{player: player, state: state, selected_battle: selected_battle, selected_fighter_type: fighter_type}} = socket
-  ) do
-    {chat_id, _, _} = socket.assigns.chat
-    ChatRoom.leave(chat_id, player)
-
-    {:ok, battle_id, chat_id} = if selected_battle == "new" do
-      {:ok, battle_id} = SpaceBirds.State.ArenaSupervisor.start_child()
-      {_via, _Registry, {_ArenaRegistry, raw_id}} = battle_id
-      {:ok, chat_id} = SpaceBirds.State.ChatSupervisor.start_child(raw_id)
-      {:ok, battle_id, chat_id}
-    else
-      battle_id = {:via, Registry, {SpaceBirds.State.ArenaRegistry, selected_battle}}
-      {:ok, battle_id, ChatSupervisor.via(selected_battle)}
-    end
-
-    with :ok <- GenServer.call(battle_id, {:join, player, fighter_type}),
-         {:ok, player} <- Players.update(player.id, fn player -> Map.put(player, :battle_id, battle_id) end),
-         {:ok, {members, messages}} <- ChatRoom.join(chat_id, player)
-    do
-      socket
-      |> assign(player: player)
-      |> assign(battle: battle_id)
-      |> assign(chat: {chat_id, members, messages})
-      |> assign(state: Map.put(state, :location, :arena))
-      |> assign(:error, nil)
-      |> noreply
-    else
-      {:error, :battle_full} ->
-        socket
-        |> assign(:error, "Unable to join, the selected battle is full. Please select a different one.")
-        |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all_joinable())
-        |> noreply
-      _ ->
-        socket
-        |> assign(:error, "An unknown error occurred. Please try again.")
-        |> noreply
-    end
-  end
 
   def handle_event("update_client_version", version, socket) do
     battle_id = socket.assigns.battle
@@ -134,6 +93,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "s" -> push_action(:move_down_stop, socket)
       "d" -> push_action(:move_right_stop, socket)
       "a" -> push_action(:move_left_stop, socket)
+      "Shift" -> push_action(:close_ranking, socket)
       "Escape" -> push_action(:cancel, socket)
         # debug only
       "u" ->
@@ -172,6 +132,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "3" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 3}, socket)
       "4" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 4}, socket)
       " " -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 9}, socket)
+      "Shift" -> push_action(:open_ranking, socket)
       "p" ->
         if Mix.env == :dev, do: GenServer.call(socket.assigns.battle, :pause)
         socket
@@ -216,8 +177,9 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     {:noreply, socket}
   end
 
-  def handle_event("select_battle", %{"battle_pulldown" => battle_id}, socket) do
+  def handle_event("select_battle", battle_id, socket) do
     assign(socket, :selected_battle, battle_id)
+    |> start_game
     |> noreply
   end
 
@@ -289,6 +251,44 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
 
     {chat_id, _, _} = socket.assigns.chat
     unless chat_id == nil, do: ChatRoom.leave(chat_id)
+  end
+
+  defp start_game(
+    %{assigns: %{player: player, state: state, selected_battle: selected_battle, selected_fighter_type: fighter_type}} = socket
+  ) do
+    {chat_id, _, _} = socket.assigns.chat
+    ChatRoom.leave(chat_id, player)
+
+    {:ok, battle_id, chat_id} = if selected_battle == "new" do
+      {:ok, battle_id} = SpaceBirds.State.ArenaSupervisor.start_child()
+      {_via, _Registry, {_ArenaRegistry, raw_id}} = battle_id
+      {:ok, chat_id} = SpaceBirds.State.ChatSupervisor.start_child(raw_id)
+      {:ok, battle_id, chat_id}
+    else
+      battle_id = {:via, Registry, {SpaceBirds.State.ArenaRegistry, selected_battle}}
+      {:ok, battle_id, ChatSupervisor.via(selected_battle)}
+    end
+
+    with :ok <- GenServer.call(battle_id, {:join, player, fighter_type}),
+         {:ok, player} <- Players.update(player.id, fn player -> Map.put(player, :battle_id, battle_id) end),
+         {:ok, {members, messages}} <- ChatRoom.join(chat_id, player)
+    do
+      socket
+      |> assign(player: player)
+      |> assign(battle: battle_id)
+      |> assign(chat: {chat_id, members, messages})
+      |> assign(state: Map.put(state, :location, :arena))
+      |> assign(:error, nil)
+    else
+      {:error, :battle_full} ->
+        socket
+        |> assign(:error, "Unable to join, the selected battle is full. Please select a different one.")
+        |> assign(:battle_list, SpaceBirds.State.ArenaRegistry.list_all_joinable())
+        |> noreply
+      _ ->
+        socket
+        |> assign(:error, "An unknown error occurred. Please try again.")
+    end
   end
 
   defp push_action(action_name, %{assigns: %{player: player, battle: battle_id}} = socket) do

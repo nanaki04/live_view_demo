@@ -3,8 +3,10 @@ defmodule SpaceBirds.UI.RankingPopup do
   alias SpaceBirds.Logic.Size
   alias SpaceBirds.Logic.Color
   alias SpaceBirds.Components.Components
+  alias SpaceBirds.Actions.Actions
   alias SpaceBirds.UI.Button
   alias SpaceBirds.UI.Label
+  alias SpaceBirds.State.Arena
   use SpaceBirds.UI.Node
 
   @type t :: %{
@@ -16,7 +18,20 @@ defmodule SpaceBirds.UI.RankingPopup do
   @impl(Node)
   def run(node, component, arena) do
     clicks = Button.find_click_events("ranking_popup", component, arena)
+    {:ok, player_id} = Arena.find_player_by_actor(arena, component.actor)
+    player_actions = Actions.filter_by_player_id(arena.actions, player_id)
+    has_open_actions? = case Actions.filter_by_action_name(player_actions, :open_ranking) do
+      [_ | _] -> true
+      _ -> false
+    end
 
+    has_close_actions? = case Actions.filter_by_action_name(player_actions, :close_ranking) do
+      [_ | _] -> true
+      _ -> false
+    end
+
+    node = if has_open_actions?, do: put_in(node.node_data.is_open?, true), else: node
+    node = if has_close_actions?, do: put_in(node.node_data.is_open?, false), else: node
     node = if length(clicks) > 0, do: update_in(node.node_data.is_open?, & not &1), else: node
     node = if arena.time_left <= 0, do: put_in(node.node_data.is_open?, true), else: node
 

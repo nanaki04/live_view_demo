@@ -1,3 +1,7 @@
+<%= for file <- @preload_list do %>
+  <div style="left: -1000px; right: -1000px; background-image: url(<%= Routes.static_path(LiveViewDemoWeb.Endpoint, file) %>);"></div>
+<% end %>
+
 <%= if @error != nil do %>
   <div class="alert-danger"><%= @error %></div>
 <% end %>
@@ -65,6 +69,10 @@
           <td>Escape</td>
           <td>Cancel the channeling of certain weapon types. When in chat mode, cancels the chat mode so you can fire weapons again!</td>
         </tr>
+        <tr>
+          <td>Shift</td>
+          <td>Open the ranking panel.</td>
+        </tr>
     </table>
 
       <h2>Weapons</h2>
@@ -89,15 +97,10 @@
     </td><td>
       <button phx-click="back_to_fighter_select">Back</button>
     </td></tr></table>
-    <form phx-change="select_battle">
-      <select name="battle_pulldown">
-        <option value="new">New Battle</option>
-        <%= for id <- @battle_list do %>
-          <option value=<%= id %> <%= if @selected_battle == id, do: "selected" %>><%= id %></option>
-        <% end %>
-      </select>
-    </form>
-    <button phx-click="start_game" style="height: 80px; width: 150px;">Start Game</button>
+    <button phx-click="select_battle" value="new">New Battle</button><br />
+    <%= for id <- @battle_list do %>
+      <button phx-click="select_battle" value=<%= id %>><%= id %></button><br />
+    <% end %>
 <% end %>
 
 <a name="chat"></a>
@@ -125,8 +128,4 @@
   </td></tr>
   </table>
 
-<% end %>
-
-<%= for file <- @preload_list do %>
-  <div style="left: -1000px; right: -1000px; background-image: url(<%= Routes.static_path(LiveViewDemoWeb.Endpoint, file) %>);"></div>
 <% end %>

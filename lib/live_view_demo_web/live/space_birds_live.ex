@@ -150,6 +150,11 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
         else
           socket
         end
+      "o" ->
+        if Mix.env == :dev do
+          GenServer.cast(socket.assigns.battle, :crash)
+        end
+        socket
       _ -> socket
     end
 

@@ -6,12 +6,9 @@ defmodule SpaceBirds.State.Arena do
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.BackPressureSystem
   alias SpaceBirds.State.BackPressureSupervisor
+  alias SpaceBirds.State.ArenaBackupSupervisor
   alias SpaceBirds.Actions.Action
   alias SpaceBirds.MasterData
-  # MEMO the restart strategy is transient, but the arena will be shut down normal anyway on the first tick of the recovered state,
-  # since all client references will be booted from the state when an error occurs
-  # this could be improved by either having the players rejoin the recovered process
-  # and if we want to get really crazy, have a backup genserver running to recover the state entirely on restart
   use GenServer, restart: :transient
 
   @type id :: GenServer.name
@@ -87,25 +84,32 @@ defmodule SpaceBirds.State.Arena do
 
   @impl(GenServer)
   def init({id, arena_type}) do
-    {:ok, arena} = MasterData.get_map(arena_type)
-    {:ok, background} = MasterData.get_background(arena_type)
-    {:ok, arena} = add_actor(arena, background)
+    case ArenaBackupSupervisor.find(id) do
+      {:some, arena} ->
+        Process.send_after(self(), :tick, 100)
 
-    next_id = arena.last_actor_id + 1
-    {:ok, prototypes} = MasterData.get_prototypes(arena_type, next_id)
-    {:ok, arena} = Enum.reduce(prototypes, {:ok, arena}, fn
-      prototype, {:ok, arena} -> add_actor(arena, prototype)
-    end)
+        {:ok, arena}
+      :none ->
+        {:ok, arena} = MasterData.get_map(arena_type)
+        {:ok, background} = MasterData.get_background(arena_type)
+        {:ok, arena} = add_actor(arena, background)
 
-    next_id = arena.last_actor_id + 1
-    {:ok, spawners} = MasterData.get_spawners(arena_type, next_id)
-    {:ok, arena} = Enum.reduce(spawners, {:ok, arena}, fn
-      spawner, {:ok, arena} -> add_actor(arena, spawner)
-    end)
+        next_id = arena.last_actor_id + 1
+        {:ok, prototypes} = MasterData.get_prototypes(arena_type, next_id)
+        {:ok, arena} = Enum.reduce(prototypes, {:ok, arena}, fn
+          prototype, {:ok, arena} -> add_actor(arena, prototype)
+        end)
 
-    Process.send_after(self(), :tick, 100)
+        next_id = arena.last_actor_id + 1
+        {:ok, spawners} = MasterData.get_spawners(arena_type, next_id)
+        {:ok, arena} = Enum.reduce(spawners, {:ok, arena}, fn
+          spawner, {:ok, arena} -> add_actor(arena, spawner)
+        end)
 
-    {:ok, %{arena | id: id}}
+        Process.send_after(self(), :tick, 100)
+
+        {:ok, %{arena | id: id}}
+    end
   end
 
   @impl(GenServer)
@@ -178,6 +182,11 @@ defmodule SpaceBirds.State.Arena do
     {:noreply, arena}
   end
 
+  def handle_cast(:crash, arena) do
+    put_in(arena.data.that.does.not.exist, :crash)
+    {:noreply, arena}
+  end
+
   @impl(GenServer)
   def handle_info(:tick, arena) do
     arena = update_delta_time(arena)
@@ -241,6 +250,17 @@ defmodule SpaceBirds.State.Arena do
     else
       {:stop, :normal, arena}
     end
+  end
+
+  @impl(GenServer)
+  def terminate(:normal, _arena) do
+    :ok
+  end
+
+  def terminate(_, arena) do
+    # backup without actions to prevent error loops
+    arena = Map.put(arena, :actions, [])
+    ArenaBackupSupervisor.start_child(arena)
   end
 
   defp update_delta_time(%{frame_time: 0} = arena) do

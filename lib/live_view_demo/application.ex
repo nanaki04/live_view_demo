@@ -15,11 +15,13 @@ defmodule LiveViewDemo.Application do
       # Starts a worker by calling: LiveViewDemo.Worker.start_link(arg)
       # {LiveViewDemo.Worker, arg},
       {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry},
+      {Registry, keys: :unique, name: SpaceBirds.State.ArenaBackupRegistry},
       {Registry, keys: :unique, name: SpaceBirds.State.ChatRegistry},
       {Registry, keys: :unique, name: SpaceBirds.State.BackPressureRegistry},
       {Registry, keys: :unique, name: SpaceBirds.State.PreloadRegistry},
       SpaceBirds.State.Players,
       SpaceBirds.State.ArenaSupervisor,
+      SpaceBirds.State.ArenaBackupSupervisor,
       SpaceBirds.State.ChatSupervisor,
       SpaceBirds.State.BackPressureSupervisor,
       SpaceBirds.State.PreloadSupervisor,

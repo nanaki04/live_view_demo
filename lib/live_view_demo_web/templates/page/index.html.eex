@@ -1,13 +1,15 @@
 <section class="phx-hero">
   <h1>My Phrenzy Entry</h1>
-  <p><%= link "This clock", to: Routes.live_path(@conn, LiveViewDemoWeb.ClockLive) %> is a basic live view in action.</p>
-  <p><%= link "Go Go", to: Routes.live_path(@conn, LiveViewDemoWeb.SpaceBirdsLive) %> space birds!</p>
+  <p><%= link "Go Go Space Birds!", to: Routes.live_path(@conn, LiveViewDemoWeb.SpaceBirdsLive) %></p>
 </section>
 
 <section class="row">
   <article class="column">
     <h2>Resources</h2>
     <ul>
+      <li>
+        <a href="https://github.com/nanaki04/live_view_demo">Space Birds Repository</a>
+      </li>
       <li>
         <a href="https://github.com/phoenixframework/phoenix_live_view">Phoenix LiveView README</a>
       </li>

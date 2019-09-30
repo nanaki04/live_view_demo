@@ -39,7 +39,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:selected_fighter_type, "hawk")
     |> assign(:fighter_confirmed, false)
     |> assign(:version, 0)
-    |> assign(:fps, 30)
+    |> assign(:fps, 15)
     |> assign(:error, nil)
     |> assign(:preload_list, [])
     |> ok
@@ -137,11 +137,19 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "Escape" -> push_action(:cancel, socket)
         # debug only
       "u" ->
-        fps = GenServer.call(socket.assigns.battle, :fps_up)
-        assign(socket, :fps, fps)
+        if Mix.env == :dev do
+          fps = GenServer.call(socket.assigns.battle, :fps_up)
+          assign(socket, :fps, fps)
+        else
+          socket
+        end
       "j" ->
-        fps = GenServer.call(socket.assigns.battle, :fps_down)
-        assign(socket, :fps, fps)
+        if Mix.env == :dev do
+          fps = GenServer.call(socket.assigns.battle, :fps_down)
+          assign(socket, :fps, fps)
+        else
+          socket
+        end
       _ -> socket
     end
 
@@ -160,7 +168,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       "4" -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 4}, socket)
       " " -> push_action(:swap_weapon, %SwapWeapon{weapon_slot: 9}, socket)
       "p" ->
-        GenServer.call(socket.assigns.battle, :pause)
+        if Mix.env == :dev, do: GenServer.call(socket.assigns.battle, :pause)
         socket
       "Enter" -> handle_chat(socket)
       _ -> socket

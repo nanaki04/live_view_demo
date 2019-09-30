@@ -53,7 +53,7 @@
     "actor": 0,
     "type": "damage",
     "component_data": {
-      "damage": 25,
+      "damage": 40,
       "on_hit_effect_paths": ["explosion_red_on_hit"],
       "buff_debuff_paths": ["slow"],
       "piercing": {

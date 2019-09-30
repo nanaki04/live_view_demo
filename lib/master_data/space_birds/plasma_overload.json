@@ -114,7 +114,7 @@
     "actor": 0,
     "type": "damage",
     "component_data": {
-      "damage": 18,
+      "damage": 22,
       "on_hit_effect_paths": ["plasma_burst_on_hit"],
       "buff_debuff_paths": ["slow"],
       "piercing": false

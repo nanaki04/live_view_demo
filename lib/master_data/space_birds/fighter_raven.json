@@ -138,7 +138,7 @@
           "weapon_slot": 4,
           "weapon_name": "plasma_overload",
           "icon": "plasma_overload",
-          "cooldown": 30000,
+          "cooldown": 60000,
           "cooldown_remaining": 0,
           "instant?": true,
           "channel_effect_path": "slow",

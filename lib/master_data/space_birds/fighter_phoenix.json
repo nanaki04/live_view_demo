@@ -83,7 +83,7 @@
           "cooldown": 500,
           "cooldown_remaining": 0,
           "weapon_data": {
-            "projectile_path": "default",
+            "projectile_path": "fire_blast",
             "enhancements": []
           }
         },

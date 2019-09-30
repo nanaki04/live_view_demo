@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 0,
+              "path": "/images/heavy_laser_beam/heavy_laser_beam"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 250,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 6,
+              "path": "/images/heavy_laser_beam/heavy_laser_beam"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

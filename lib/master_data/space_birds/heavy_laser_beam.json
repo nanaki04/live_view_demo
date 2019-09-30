@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/laser_beam/laser_beam_0000.png",
+      "path": "/images/heavy_laser_beam/heavy_laser_beam_0000.png",
       "opacity": 255
     }
   },
@@ -120,7 +120,8 @@
     "component_data": {
       "animations": {
         "last_id": 0
-      }
+      },
+      "starting_animation": "heavy_laser_beam"
     }
   }
 }

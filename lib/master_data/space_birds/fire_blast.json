@@ -10,8 +10,8 @@
       },
       "rotation": 0,
       "size": {
-        "width": 40,
-        "height": 100
+        "width": 50,
+        "height": 75
       }
     }
   },
@@ -19,7 +19,7 @@
     "actor": 0,
     "type": "texture",
     "component_data": {
-      "path": "/images/laser_beam/laser_beam_0000.png",
+      "path": "/images/fire_blast/fire_blast_0028.png",
       "opacity": 255
     }
   },
@@ -83,7 +83,7 @@
     "component_data": {
       "layer": "projectile",
       "owner": 0,
-      "collides_with": ["fighter", "destructable"]
+      "collides_with": ["fighter", "ai", "destructable"]
     }
   },
   "damage": {
@@ -109,8 +109,8 @@
       "energy_regeneration": 0,
       "power": 0,
       "armor": 0,
-      "top_speed": 1500,
-      "acceleration": 40000,
+      "top_speed": 1000,
+      "acceleration": 10000,
       "drag": 1
     }
   },
@@ -121,7 +121,7 @@
       "animations": {
         "last_id": 0
       },
-      "starting_animation": "laser_beam"
+      "starting_animation": "fire_blast"
     }
   }
 }

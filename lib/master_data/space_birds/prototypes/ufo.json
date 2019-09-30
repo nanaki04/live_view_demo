@@ -6,6 +6,13 @@
       "tag": "ai"
     }
   },
+  "name": {
+    "actor": 0,
+    "type": "name",
+    "component_data": {
+      "name": "UFO"
+    }
+  },
   "transform": {
     "actor": 0,
     "type": "transform",

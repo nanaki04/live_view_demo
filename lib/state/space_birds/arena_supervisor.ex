@@ -19,7 +19,6 @@ defmodule SpaceBirds.State.ArenaSupervisor do
 
   defp gen_id() do
     {:via, Registry, {SpaceBirds.State.ArenaRegistry, Ecto.UUID.generate()}}
-      #{:global, Ecto.UUID.generate()}
   end
 
   defp create_arena(id) do

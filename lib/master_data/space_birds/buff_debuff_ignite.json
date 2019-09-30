@@ -8,7 +8,7 @@
   "diminishing_returns_cooldown": 0,
   "buff_data": {},
   "debuff_data": {
-    "damage": 50,
+    "damage": 40,
     "damage_done": 0,
     "curve": "sine_curve",
     "ticks": 5,

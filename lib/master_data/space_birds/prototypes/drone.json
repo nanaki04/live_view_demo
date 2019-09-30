@@ -87,7 +87,7 @@
           "cooldown": 10000,
           "cooldown_remaining": 0,
           "weapon_data": {
-            "projectile_path": "default",
+            "projectile_path": "freeze",
             "enhancements": []
           }
         }
@@ -179,8 +179,8 @@
     "actor": 0,
     "type": "stats",
     "component_data": {
-      "hp": 500,
-      "max_hp": 500,
+      "hp": 300,
+      "max_hp": 300,
       "shield": 500,
       "max_shield": 500,
       "shield_regeneration": 1,

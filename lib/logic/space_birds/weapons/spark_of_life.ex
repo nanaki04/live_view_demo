@@ -3,10 +3,11 @@ defmodule SpaceBirds.Weapons.SparkOfLife do
   alias SpaceBirds.State.Arena
   alias SpaceBirds.Components.Components
   alias SpaceBirds.Components.BuffDebuffStack
+  alias SpaceBirds.Components.Team
   alias SpaceBirds.MasterData
   use Weapon
 
-  @default_path "shockwave"
+  @default_path "freeze"
 
   @type t :: %{
     projectile_path: MasterData.projectile_type,
@@ -33,6 +34,7 @@ defmodule SpaceBirds.Weapons.SparkOfLife do
       {:ok, arena} = BuffDebuffStack.apply(buff_debuff_stack, spark_of_life, arena)
 
       effect = put_in(effect.transform.component_data.position, transform.component_data.position)
+      {:ok, effect} = Team.copy_team(effect, arena, weapon.actor)
 
       Arena.add_actor(arena, effect)
       |> ResultEx.bind(& Arena.update_component(&1, transform, fn _ -> {:ok, transform} end))

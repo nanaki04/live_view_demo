@@ -11,6 +11,8 @@ defmodule SpaceBirds.Components.Defeatable do
   alias SpaceBirds.MasterData
   use Component
 
+  @on_death_explosion "red_explosion_big_on_hit"
+
   @type spawn_item :: %{
     path: String.t,
     weight: number
@@ -90,6 +92,7 @@ defmodule SpaceBirds.Components.Defeatable do
     end)
 
     {:ok, arena} = spawn_on_death(component, arena)
+    {:ok, arena} = play_on_death_effect(component, arena)
 
     Arena.update_component(arena, component, fn component ->
       {:ok, put_in(component.component_data.is_defeated?, true)}
@@ -117,6 +120,17 @@ defmodule SpaceBirds.Components.Defeatable do
     Arena.update_component(arena, :animation_player, component.actor, fn animation_player ->
       AnimationPlayer.play_starting_animation(animation_player)
     end)
+  end
+
+  defp play_on_death_effect(component, arena) do
+    with {:ok, transform} <- Components.fetch(arena.components, :transform, component.actor)
+    do
+      position = transform.component_data.position
+      play_explosion(@on_death_explosion, position, arena)
+    else
+      _ ->
+        {:ok, arena}
+    end
   end
 
   defp respawn(component, arena) do
@@ -173,6 +187,17 @@ defmodule SpaceBirds.Components.Defeatable do
     do
       prototype = put_in(prototype.transform.component_data.position, position)
       Arena.add_actor(arena, prototype)
+    else
+      _ ->
+        {:ok, arena}
+    end
+  end
+
+  defp play_explosion(path, position, arena) do
+    with {:ok, effect} <- MasterData.get_on_hit_effect(path)
+    do
+      effect = put_in(effect.transform.component_data.position, position)
+      Arena.add_actor(arena, effect)
     else
       _ ->
         {:ok, arena}

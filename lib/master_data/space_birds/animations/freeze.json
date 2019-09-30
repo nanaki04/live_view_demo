@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 1000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 22,
+              "path": "/images/freeze/freeze"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 1000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 37,
+              "path": "/images/freeze/freeze"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

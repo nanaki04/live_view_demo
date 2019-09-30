@@ -1,0 +1,33 @@
+[
+  {
+    "id": 0,
+    "time": 0,
+    "duration": 2000,
+    "is_loop?": false,
+    "key_frames": {
+      "texture_frame": {
+        "past": [],
+        "next": [
+          {
+            "type": "texture_frame",
+            "time": 0,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 44,
+              "path": "/images/red_explosion_big/red_explosion_big"
+            }
+          },
+          {
+            "type": "texture_frame",
+            "time": 2000,
+            "tween_type": "linear",
+            "frame_data": {
+              "value": 66,
+              "path": "/images/red_explosion_big/red_explosion_big"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

@@ -3,6 +3,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
   alias SpaceBirds.State.Players
   alias SpaceBirds.State.ChatRoom
   alias SpaceBirds.State.ChatSupervisor
+  alias SpaceBirds.State.PreloadSupervisor
   alias SpaceBirds.State.BackPressureSystem
   alias SpaceBirds.Actions.Action
   alias SpaceBirds.Actions.SwapWeapon
@@ -40,6 +41,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> assign(:version, 0)
     |> assign(:fps, 30)
     |> assign(:error, nil)
+    |> assign(:preload_list, [])
     |> ok
   end
 
@@ -53,6 +55,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     {:ok, player} = Players.join(self(), player_name)
     chat_id = ChatSupervisor.global_chat_id
     {:ok, {members, messages}} = ChatRoom.join(chat_id, player)
+    {:ok, _} = PreloadSupervisor.start_child(player.id, self())
 
     assign(socket, player: player)
     |> assign(:fighter_information, ResultEx.unwrap!(SpaceBirds.MasterData.get_fighter_information(socket.assigns.selected_fighter_type)))
@@ -135,10 +138,10 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
         # debug only
       "u" ->
         fps = GenServer.call(socket.assigns.battle, :fps_up)
-        socket = assign(socket, :fps, fps)
+        assign(socket, :fps, fps)
       "j" ->
         fps = GenServer.call(socket.assigns.battle, :fps_down)
-        socket = assign(socket, :fps, fps)
+        assign(socket, :fps, fps)
       _ -> socket
     end
 
@@ -253,12 +256,22 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     {:noreply, socket}
   end
 
+  def handle_info({:preload, files}, socket) do
+    assign(socket, :preload_list, files)
+    |> noreply
+  end
+
+  def handle_info(:preload_done, socket) do
+    # might use for feedback at some point
+    {:noreply, socket}
+  end
+
   @impl(Phoenix.LiveView)
   def terminate(_reason, socket) do
     OptionEx.return(socket.assigns.player)
     |> OptionEx.map(fn player ->
       Players.leave(player)
-      unless player.battle_id == nil, do: GenServer.call(player.battle_id, {:leave, player})
+      unless player.battle_id == nil || player.battle_id == 0, do: GenServer.call(player.battle_id, {:leave, player})
     end)
 
     {chat_id, _, _} = socket.assigns.chat

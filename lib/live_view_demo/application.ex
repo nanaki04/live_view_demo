@@ -17,10 +17,12 @@ defmodule LiveViewDemo.Application do
       {Registry, keys: :unique, name: SpaceBirds.State.ArenaRegistry},
       {Registry, keys: :unique, name: SpaceBirds.State.ChatRegistry},
       {Registry, keys: :unique, name: SpaceBirds.State.BackPressureRegistry},
+      {Registry, keys: :unique, name: SpaceBirds.State.PreloadRegistry},
       SpaceBirds.State.Players,
       SpaceBirds.State.ArenaSupervisor,
       SpaceBirds.State.ChatSupervisor,
       SpaceBirds.State.BackPressureSupervisor,
+      SpaceBirds.State.PreloadSupervisor,
       {Task.Supervisor, name: SpaceBirds.TaskSupervisor.Collision}
     ]
 

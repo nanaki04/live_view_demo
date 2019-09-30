@@ -296,4 +296,16 @@ defmodule SpaceBirds.MasterData do
     end
   end
 
+  @spec get_manifest() :: [String.t]
+  def get_manifest() do
+    with {:ok, json} <- File.read("#{@base_path}manifest.json"),
+         {:ok, manifest} <- Jason.decode(json)
+    do
+      manifest
+    else
+      error ->
+        error
+    end
+  end
+
 end

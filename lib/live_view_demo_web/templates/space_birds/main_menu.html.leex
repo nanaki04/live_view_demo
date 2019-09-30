@@ -82,3 +82,7 @@
   </table>
 
 <% end %>
+
+<%= for file <- @preload_list do %>
+  <div style="left: -1000px; right: -1000px; background-image: url(<%= Routes.static_path(LiveViewDemoWeb.Endpoint, file) %>);"></div>
+<% end %>

@@ -97,7 +97,11 @@
     </td><td>
       <button phx-click="back_to_fighter_select">Back</button>
     </td></tr></table>
-    <button phx-click="select_battle" value="new">New Battle</button><br />
+    <button phx-click="select_battle" value="new">New Battle</button>
+    <button phx-click="select_fps" value="5" <%= if @fps == 5, do: "disabled" %>>5 fps</button>
+    <button phx-click="select_fps" value="10" <%= if @fps == 10, do: "disabled" %>>10 fps</button>
+    <button phx-click="select_fps" value="15" <%= if @fps == 15, do: "disabled" %>>15 fps</button>
+    <br />
     <%= for id <- @battle_list do %>
       <button phx-click="select_battle" value=<%= id %>><%= id %></button><br />
     <% end %>

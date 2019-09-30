@@ -183,6 +183,12 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
     |> noreply
   end
 
+  def handle_event("select_fps", fps, socket) do
+    {fps, _} = Integer.parse(fps)
+    assign(socket, :fps, fps)
+    |> noreply
+  end
+
   def handle_event("select_fighter", fighter_type, socket) do
     assign(socket, :selected_fighter_type, fighter_type)
     |> assign(:fighter_information, ResultEx.unwrap!(SpaceBirds.MasterData.get_fighter_information(fighter_type)))
@@ -263,6 +269,7 @@ defmodule LiveViewDemoWeb.SpaceBirdsLive do
       {:ok, battle_id} = SpaceBirds.State.ArenaSupervisor.start_child()
       {_via, _Registry, {_ArenaRegistry, raw_id}} = battle_id
       {:ok, chat_id} = SpaceBirds.State.ChatSupervisor.start_child(raw_id)
+      GenServer.call(battle_id, {:fps, socket.assigns.fps})
       {:ok, battle_id, chat_id}
     else
       battle_id = {:via, Registry, {SpaceBirds.State.ArenaRegistry, selected_battle}}

@@ -135,6 +135,11 @@ defmodule SpaceBirds.State.Arena do
     {:reply, arena.fps, arena}
   end
 
+  def handle_call({:fps, fps}, _, arena) do
+    arena = Map.put(arena, :fps, fps)
+    {:reply, arena.fps, arena}
+  end
+
   def handle_call({:leave, player}, _, arena) do
     BackPressureSystem.id(player.id, arena.id)
     |> BackPressureSystem.stop
